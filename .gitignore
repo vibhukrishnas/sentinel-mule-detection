@@ -9,3 +9,7 @@ __pycache__/
 # local background-task logs
 *.output
 .DS_Store
+# personal notes & provided input docs (kept locally, not in the repo)
+memory.md
+Topic.pdf
+BOI hackathon manual.pdf
