@@ -1,0 +1,6001 @@
+{
+  "base_rate": 0.008918740365558247,
+  "n_features_audited": 3549,
+  "severity_counts": {
+    "WATCH": 539,
+    "MEDIUM": 52,
+    "HIGH": 6,
+    "CRITICAL": 1
+  },
+  "auto_block_recommended": [
+    "F2230",
+    "F3484",
+    "F3490",
+    "F3496",
+    "F3700",
+    "F3706",
+    "F3712"
+  ],
+  "findings": [
+    {
+      "feature": "F2230",
+      "severity": "CRITICAL",
+      "mules_covered": 81,
+      "univariate_auc": 0.593,
+      "best_bucket_fraud_rate": 1.0,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 112.1,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3484",
+      "severity": "HIGH",
+      "mules_covered": 81,
+      "univariate_auc": 0.592,
+      "best_bucket_fraud_rate": 0.818,
+      "best_decile_fraud_rate": 0.081,
+      "lift_vs_base": 91.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3700",
+      "severity": "HIGH",
+      "mules_covered": 81,
+      "univariate_auc": 0.534,
+      "best_bucket_fraud_rate": 0.8,
+      "best_decile_fraud_rate": 0.073,
+      "lift_vs_base": 89.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3706",
+      "severity": "HIGH",
+      "mules_covered": 81,
+      "univariate_auc": 0.568,
+      "best_bucket_fraud_rate": 0.545,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 61.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3712",
+      "severity": "HIGH",
+      "mules_covered": 81,
+      "univariate_auc": 0.568,
+      "best_bucket_fraud_rate": 0.545,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 61.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3490",
+      "severity": "HIGH",
+      "mules_covered": 81,
+      "univariate_auc": 0.547,
+      "best_bucket_fraud_rate": 0.5,
+      "best_decile_fraud_rate": 0.051,
+      "lift_vs_base": 56.1,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3496",
+      "severity": "HIGH",
+      "mules_covered": 81,
+      "univariate_auc": 0.547,
+      "best_bucket_fraud_rate": 0.5,
+      "best_decile_fraud_rate": 0.051,
+      "lift_vs_base": 56.1,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3598",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.553,
+      "best_bucket_fraud_rate": 0.357,
+      "best_decile_fraud_rate": 0.058,
+      "lift_vs_base": 40.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3604",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.553,
+      "best_bucket_fraud_rate": 0.357,
+      "best_decile_fraud_rate": 0.058,
+      "lift_vs_base": 40.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F950",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.765,
+      "best_bucket_fraud_rate": 0.3,
+      "best_decile_fraud_rate": 0.031,
+      "lift_vs_base": 33.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1274",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.755,
+      "best_bucket_fraud_rate": 0.3,
+      "best_decile_fraud_rate": 0.03,
+      "lift_vs_base": 33.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F265",
+      "severity": "MEDIUM",
+      "mules_covered": 80,
+      "univariate_auc": 0.692,
+      "best_bucket_fraud_rate": 0.3,
+      "best_decile_fraud_rate": 0.036,
+      "lift_vs_base": 33.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F217",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.642,
+      "best_bucket_fraud_rate": 0.273,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 30.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2828",
+      "severity": "MEDIUM",
+      "mules_covered": 9,
+      "univariate_auc": 0.696,
+      "best_bucket_fraud_rate": 0.267,
+      "best_decile_fraud_rate": 0.083,
+      "lift_vs_base": 29.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2825",
+      "severity": "MEDIUM",
+      "mules_covered": 9,
+      "univariate_auc": 0.72,
+      "best_bucket_fraud_rate": 0.25,
+      "best_decile_fraud_rate": 0.078,
+      "lift_vs_base": 28.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2075",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.638,
+      "best_bucket_fraud_rate": 0.25,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 28.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3641",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.634,
+      "best_bucket_fraud_rate": 0.231,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 25.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2783",
+      "severity": "MEDIUM",
+      "mules_covered": 71,
+      "univariate_auc": 0.524,
+      "best_bucket_fraud_rate": 0.231,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 25.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1495",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.763,
+      "best_bucket_fraud_rate": 0.222,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 24.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1501",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.763,
+      "best_bucket_fraud_rate": 0.222,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 24.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2721",
+      "severity": "MEDIUM",
+      "mules_covered": 14,
+      "univariate_auc": 0.671,
+      "best_bucket_fraud_rate": 0.22,
+      "best_decile_fraud_rate": 0.078,
+      "lift_vs_base": 24.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2034",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.664,
+      "best_bucket_fraud_rate": 0.214,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 24.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2040",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.664,
+      "best_bucket_fraud_rate": 0.214,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 24.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3538",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.603,
+      "best_bucket_fraud_rate": 0.214,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 24.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1165",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.809,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.044,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1166",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.793,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.037,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1490",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.785,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.034,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1172",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.725,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.038,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1178",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.725,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.038,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2076",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.724,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1496",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.718,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.036,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1502",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.718,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.036,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3104",
+      "severity": "MEDIUM",
+      "mules_covered": 77,
+      "univariate_auc": 0.714,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3107",
+      "severity": "MEDIUM",
+      "mules_covered": 77,
+      "univariate_auc": 0.714,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3105",
+      "severity": "MEDIUM",
+      "mules_covered": 79,
+      "univariate_auc": 0.71,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.035,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3108",
+      "severity": "MEDIUM",
+      "mules_covered": 79,
+      "univariate_auc": 0.71,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.035,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3103",
+      "severity": "MEDIUM",
+      "mules_covered": 80,
+      "univariate_auc": 0.703,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3106",
+      "severity": "MEDIUM",
+      "mules_covered": 80,
+      "univariate_auc": 0.703,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1064",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.702,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1070",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.702,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1388",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.694,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1394",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.694,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2859",
+      "severity": "MEDIUM",
+      "mules_covered": 17,
+      "univariate_auc": 0.645,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2861",
+      "severity": "MEDIUM",
+      "mules_covered": 17,
+      "univariate_auc": 0.645,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2862",
+      "severity": "MEDIUM",
+      "mules_covered": 17,
+      "univariate_auc": 0.645,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2864",
+      "severity": "MEDIUM",
+      "mules_covered": 17,
+      "univariate_auc": 0.645,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3749",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.626,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2826",
+      "severity": "MEDIUM",
+      "mules_covered": 9,
+      "univariate_auc": 0.625,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.063,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2135",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.599,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3825",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.59,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F358",
+      "severity": "MEDIUM",
+      "mules_covered": 48,
+      "univariate_auc": 0.585,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F69",
+      "severity": "MEDIUM",
+      "mules_covered": 28,
+      "univariate_auc": 0.577,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3821",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.576,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F322",
+      "severity": "MEDIUM",
+      "mules_covered": 79,
+      "univariate_auc": 0.557,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3817",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.549,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2033",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.541,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2039",
+      "severity": "MEDIUM",
+      "mules_covered": 81,
+      "univariate_auc": 0.541,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F565",
+      "severity": "MEDIUM",
+      "mules_covered": 51,
+      "univariate_auc": 0.535,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F572",
+      "severity": "MEDIUM",
+      "mules_covered": 77,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.2,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 22.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2718",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.721,
+      "best_bucket_fraud_rate": 0.191,
+      "best_decile_fraud_rate": 0.074,
+      "lift_vs_base": 21.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2489",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.709,
+      "best_bucket_fraud_rate": 0.19,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 21.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3829",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.567,
+      "best_bucket_fraud_rate": 0.188,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 21.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3633",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.518,
+      "best_bucket_fraud_rate": 0.188,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 21.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F955",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.761,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.034,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F961",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.761,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.034,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3750",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.694,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2385",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.684,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.041,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3062",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.64,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3065",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.64,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3068",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.64,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3071",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.64,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3063",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3066",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3069",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3072",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1967",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.625,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2248",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.616,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3061",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.612,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3064",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.612,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3067",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.612,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3070",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.612,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3057",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.611,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3060",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.611,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3098",
+      "severity": "WATCH",
+      "mules_covered": 43,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3101",
+      "severity": "WATCH",
+      "mules_covered": 43,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3097",
+      "severity": "WATCH",
+      "mules_covered": 51,
+      "univariate_auc": 0.601,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3100",
+      "severity": "WATCH",
+      "mules_covered": 51,
+      "univariate_auc": 0.601,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3056",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.6,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3059",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.6,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1810",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.593,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3055",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.592,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3058",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.592,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2298",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.573,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F739",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F745",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F506",
+      "severity": "WATCH",
+      "mules_covered": 4,
+      "univariate_auc": 0.563,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2297",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.557,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3753",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.556,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F733",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.546,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2685",
+      "severity": "WATCH",
+      "mules_covered": 75,
+      "univariate_auc": 0.533,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F426",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.526,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F432",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.526,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F578",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3824",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.518,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1027",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1028",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1351",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1352",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3867",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.182,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 20.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2290",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.646,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.041,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2028",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.643,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3110",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3113",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3109",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.602,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3112",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.602,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3896",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.535,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F625",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.176,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 19.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1966",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.726,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2486",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.695,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.053,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3642",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.693,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2142",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.673,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2148",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.673,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1639",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.67,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2444",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.664,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2450",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.664,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F225",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.661,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F231",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.661,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1920",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.639,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2183",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.637,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1962",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.599,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F841",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.595,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2423",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.593,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3819",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.581,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3645",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.568,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3827",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.564,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1956",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.539,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1954",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.537,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1429",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.528,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1675",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1676",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3861",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F425",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.503,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F431",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.503,
+      "best_bucket_fraud_rate": 0.167,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 18.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F507",
+      "severity": "WATCH",
+      "mules_covered": 20,
+      "univariate_auc": 0.553,
+      "best_bucket_fraud_rate": 0.164,
+      "best_decile_fraud_rate": 0.042,
+      "lift_vs_base": 18.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2823",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.649,
+      "best_bucket_fraud_rate": 0.16,
+      "best_decile_fraud_rate": 0.05,
+      "lift_vs_base": 17.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2755",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.16,
+      "best_decile_fraud_rate": 0.064,
+      "lift_vs_base": 17.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2757",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.16,
+      "best_decile_fraud_rate": 0.064,
+      "lift_vs_base": 17.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2719",
+      "severity": "WATCH",
+      "mules_covered": 15,
+      "univariate_auc": 0.652,
+      "best_bucket_fraud_rate": 0.158,
+      "best_decile_fraud_rate": 0.05,
+      "lift_vs_base": 17.7,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1171",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.772,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.033,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1177",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.772,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.033,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2184",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.727,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1968",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.717,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2484",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.69,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F157",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.682,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.031,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2621",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.666,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.073,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2481",
+      "severity": "WATCH",
+      "mules_covered": 46,
+      "univariate_auc": 0.661,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2442",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.658,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2448",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.658,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2068",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.65,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2421",
+      "severity": "WATCH",
+      "mules_covered": 15,
+      "univariate_auc": 0.591,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3822",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.589,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1816",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.586,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1822",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.586,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2141",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.548,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2147",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.548,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3830",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.545,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F575",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.538,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F361",
+      "severity": "WATCH",
+      "mules_covered": 48,
+      "univariate_auc": 0.523,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F609",
+      "severity": "WATCH",
+      "mules_covered": 20,
+      "univariate_auc": 0.501,
+      "best_bucket_fraud_rate": 0.154,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 17.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1273",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.779,
+      "best_bucket_fraud_rate": 0.15,
+      "best_decile_fraud_rate": 0.031,
+      "lift_vs_base": 16.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3533",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.62,
+      "best_bucket_fraud_rate": 0.15,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 16.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2027",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.591,
+      "best_bucket_fraud_rate": 0.15,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 16.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2064",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.524,
+      "best_bucket_fraud_rate": 0.15,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 16.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2682",
+      "severity": "WATCH",
+      "mules_covered": 75,
+      "univariate_auc": 0.507,
+      "best_bucket_fraud_rate": 0.15,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 16.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2618",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.642,
+      "best_bucket_fraud_rate": 0.148,
+      "best_decile_fraud_rate": 0.068,
+      "lift_vs_base": 16.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F606",
+      "severity": "WATCH",
+      "mules_covered": 20,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.148,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 16.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F505",
+      "severity": "WATCH",
+      "mules_covered": 22,
+      "univariate_auc": 0.563,
+      "best_bucket_fraud_rate": 0.145,
+      "best_decile_fraud_rate": 0.037,
+      "lift_vs_base": 16.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1387",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.75,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.038,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1393",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.75,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.038,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2182",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.742,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3534",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.692,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F956",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.688,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F962",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.688,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1280",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.68,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1286",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.68,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3091",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.67,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3094",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.67,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3093",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.667,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3096",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.667,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2136",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.65,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2436",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.646,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3708",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.635,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3714",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.635,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1919",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.589,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1961",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.586,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2993",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.582,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2996",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.582,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2246",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.58,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3752",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.58,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F574",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.531,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2062",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.521,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1214",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1538",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.143,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 16.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2716",
+      "severity": "WATCH",
+      "mules_covered": 15,
+      "univariate_auc": 0.655,
+      "best_bucket_fraud_rate": 0.138,
+      "best_decile_fraud_rate": 0.077,
+      "lift_vs_base": 15.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F504",
+      "severity": "WATCH",
+      "mules_covered": 20,
+      "univariate_auc": 0.572,
+      "best_bucket_fraud_rate": 0.138,
+      "best_decile_fraud_rate": 0.051,
+      "lift_vs_base": 15.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2752",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.569,
+      "best_bucket_fraud_rate": 0.138,
+      "best_decile_fraud_rate": 0.052,
+      "lift_vs_base": 15.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2754",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.569,
+      "best_bucket_fraud_rate": 0.138,
+      "best_decile_fraud_rate": 0.052,
+      "lift_vs_base": 15.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1926",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.654,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1932",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.654,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2482",
+      "severity": "WATCH",
+      "mules_covered": 38,
+      "univariate_auc": 0.644,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2339",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.637,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1960",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2288",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.628,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.03,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3526",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.617,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3743",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.606,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3820",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.584,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F541",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.58,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.041,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F543",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.58,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.041,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F562",
+      "severity": "WATCH",
+      "mules_covered": 51,
+      "univariate_auc": 0.571,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F204",
+      "severity": "WATCH",
+      "mules_covered": 20,
+      "univariate_auc": 0.569,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3816",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.569,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3643",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.535,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F607",
+      "severity": "WATCH",
+      "mules_covered": 22,
+      "univariate_auc": 0.524,
+      "best_bucket_fraud_rate": 0.133,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 14.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1489",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.791,
+      "best_bucket_fraud_rate": 0.132,
+      "best_decile_fraud_rate": 0.035,
+      "lift_vs_base": 14.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3923",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.525,
+      "best_bucket_fraud_rate": 0.13,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 14.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F469",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.128,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 14.4,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3592",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.536,
+      "best_bucket_fraud_rate": 0.127,
+      "best_decile_fraud_rate": 0.056,
+      "lift_vs_base": 14.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3812",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.791,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.033,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1279",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.742,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1285",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.742,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2447",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.667,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2453",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.667,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2081",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.602,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3644",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.582,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3539",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3826",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.566,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F370",
+      "severity": "WATCH",
+      "mules_covered": 28,
+      "univariate_auc": 0.562,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F23",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.558,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F29",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.558,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2086",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.557,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1925",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.539,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1931",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.539,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F323",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.52,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F367",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.513,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F631",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.511,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F637",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.511,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1321",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.125,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 14.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F502",
+      "severity": "WATCH",
+      "mules_covered": 22,
+      "univariate_auc": 0.564,
+      "best_bucket_fraud_rate": 0.122,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 13.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F538",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.577,
+      "best_bucket_fraud_rate": 0.121,
+      "best_decile_fraud_rate": 0.042,
+      "lift_vs_base": 13.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F540",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.577,
+      "best_bucket_fraud_rate": 0.121,
+      "best_decile_fraud_rate": 0.042,
+      "lift_vs_base": 13.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3748",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.679,
+      "best_bucket_fraud_rate": 0.12,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 13.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3646",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.622,
+      "best_bucket_fraud_rate": 0.12,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 13.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F266",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.662,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2438",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.655,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2347",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.654,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2353",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.654,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F219",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.65,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2341",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.645,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F115",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.644,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 13.2,
+      "bank_listed": true
+    },
+    {
+      "feature": "F121",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.644,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2251",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2257",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2069",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.606,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2252",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.594,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2258",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.594,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F524",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.561,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F563",
+      "severity": "WATCH",
+      "mules_covered": 43,
+      "univariate_auc": 0.561,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3823",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.553,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F202",
+      "severity": "WATCH",
+      "mules_covered": 22,
+      "univariate_auc": 0.55,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F998",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.545,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1322",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.545,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F530",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.539,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F536",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.539,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F566",
+      "severity": "WATCH",
+      "mules_covered": 43,
+      "univariate_auc": 0.535,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F368",
+      "severity": "WATCH",
+      "mules_covered": 75,
+      "univariate_auc": 0.531,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2583",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.513,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.031,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F327",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.511,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F333",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.511,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F369",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.035,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F503",
+      "severity": "WATCH",
+      "mules_covered": 4,
+      "univariate_auc": 0.508,
+      "best_bucket_fraud_rate": 0.118,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 13.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2787",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.52,
+      "best_bucket_fraud_rate": 0.117,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 13.1,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1381",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.788,
+      "best_bucket_fraud_rate": 0.115,
+      "best_decile_fraud_rate": 0.036,
+      "lift_vs_base": 12.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F604",
+      "severity": "WATCH",
+      "mules_covered": 22,
+      "univariate_auc": 0.532,
+      "best_bucket_fraud_rate": 0.114,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 12.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2720",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.736,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.042,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F270",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.705,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.042,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F267",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.693,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3640",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.685,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3532",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.677,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2345",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.648,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2351",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.648,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2445",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2451",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3492",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.626,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3498",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.626,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3702",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.615,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F15",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.597,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2454",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.593,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2456",
+      "severity": "WATCH",
+      "mules_covered": 17,
+      "univariate_auc": 0.593,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2992",
+      "severity": "WATCH",
+      "mules_covered": 41,
+      "univariate_auc": 0.574,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2995",
+      "severity": "WATCH",
+      "mules_covered": 41,
+      "univariate_auc": 0.574,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F371",
+      "severity": "WATCH",
+      "mules_covered": 28,
+      "univariate_auc": 0.559,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1858",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F329",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.517,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F335",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.517,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F362",
+      "severity": "WATCH",
+      "mules_covered": 41,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F429",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F435",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.111,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 12.5,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2777",
+      "severity": "WATCH",
+      "mules_covered": 38,
+      "univariate_auc": 0.544,
+      "best_bucket_fraud_rate": 0.108,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 12.1,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2686",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.526,
+      "best_bucket_fraud_rate": 0.108,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 12.1,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2074",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.743,
+      "best_bucket_fraud_rate": 0.107,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 12.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2441",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.644,
+      "best_bucket_fraud_rate": 0.107,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 12.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2654",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.107,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 12.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2656",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.107,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 12.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3536",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.107,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 12.0,
+      "bank_listed": false
+    },
+    {
+      "feature": "F159",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.682,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.049,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F158",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.675,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2346",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.667,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2352",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.667,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2340",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.641,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2178",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.616,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3703",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.615,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3489",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.608,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1860",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.564,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2991",
+      "severity": "WATCH",
+      "mules_covered": 48,
+      "univariate_auc": 0.552,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2994",
+      "severity": "WATCH",
+      "mules_covered": 48,
+      "univariate_auc": 0.552,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3920",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.534,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3751",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.521,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 11.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F321",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.507,
+      "best_bucket_fraud_rate": 0.105,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.8,
+      "bank_listed": true
+    },
+    {
+      "feature": "F3798",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.523,
+      "best_bucket_fraud_rate": 0.103,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.6,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2694",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.864,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3143",
+      "severity": "WATCH",
+      "mules_covered": 4,
+      "univariate_auc": 0.819,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3146",
+      "severity": "WATCH",
+      "mules_covered": 4,
+      "univariate_auc": 0.819,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1057",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.811,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.039,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F949",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.81,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2837",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.805,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2840",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.805,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3806",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.804,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F174",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.783,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.006,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1058",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.783,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1382",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.774,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2697",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.774,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1598",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.768,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.033,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1063",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.762,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1069",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.762,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1167",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.751,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.032,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1491",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.746,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.034,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1065",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.714,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.033,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1071",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.714,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.033,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1389",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.712,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.032,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1395",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.712,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.032,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1747",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.692,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2487",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.692,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.035,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2387",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.689,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.053,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F459",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.688,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2443",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.685,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2449",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.685,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3138",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.685,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.006,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3141",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.685,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.006,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1219",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.683,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1543",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.683,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2386",
+      "severity": "WATCH",
+      "mules_covered": 75,
+      "univariate_auc": 0.683,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.031,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2293",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.677,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.036,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2317",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.676,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2479",
+      "severity": "WATCH",
+      "mules_covered": 38,
+      "univariate_auc": 0.673,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F991",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.662,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1315",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.661,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F288",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.66,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F289",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.66,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2349",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.66,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2355",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.66,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2176",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.658,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2379",
+      "severity": "WATCH",
+      "mules_covered": 48,
+      "univariate_auc": 0.657,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F223",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.656,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F229",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.656,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F208",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.655,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.007,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1220",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.653,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2188",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.653,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1544",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.652,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3742",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.647,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F62",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.642,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2380",
+      "severity": "WATCH",
+      "mules_covered": 41,
+      "univariate_auc": 0.641,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2437",
+      "severity": "WATCH",
+      "mules_covered": 78,
+      "univariate_auc": 0.641,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F238",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.637,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F240",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.637,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1651",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.637,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F847",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.636,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F853",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.636,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3754",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.636,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F376",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.635,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.008,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2080",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.635,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F218",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.633,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F110",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.632,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2490",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.632,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2722",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.632,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.008,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F109",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.631,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2254",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.631,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2260",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.631,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3099",
+      "severity": "WATCH",
+      "mules_covered": 18,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3102",
+      "severity": "WATCH",
+      "mules_covered": 18,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3600",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3606",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.63,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2967",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.629,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.046,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2969",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.629,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.046,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2970",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.629,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.046,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2972",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.629,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.046,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F992",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.627,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1316",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.627,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3039",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.627,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3042",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.627,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2283",
+      "severity": "WATCH",
+      "mules_covered": 38,
+      "univariate_auc": 0.626,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F59",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.625,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2619",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.624,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.052,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2488",
+      "severity": "WATCH",
+      "mules_covered": 71,
+      "univariate_auc": 0.623,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.035,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2177",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.621,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F564",
+      "severity": "WATCH",
+      "mules_covered": 18,
+      "univariate_auc": 0.616,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2446",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.615,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2452",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.615,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2494",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.611,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3486",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.611,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2522",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.61,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3744",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.609,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2017",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.606,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F113",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.605,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3755",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.605,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2122",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.602,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": true
+    },
+    {
+      "feature": "F2250",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.601,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2256",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.601,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3597",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.6,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3037",
+      "severity": "WATCH",
+      "mules_covered": 15,
+      "univariate_auc": 0.599,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3040",
+      "severity": "WATCH",
+      "mules_covered": 15,
+      "univariate_auc": 0.599,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2439",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.598,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3704",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.597,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2289",
+      "severity": "WATCH",
+      "mules_covered": 71,
+      "univariate_auc": 0.596,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3831",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.594,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3635",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.593,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3528",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.591,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3647",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.59,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2292",
+      "severity": "WATCH",
+      "mules_covered": 71,
+      "univariate_auc": 0.586,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2493",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.586,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2933",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.582,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.039,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2936",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.582,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.039,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1973",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.58,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3537",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.578,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2158",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.575,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3527",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.574,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3709",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.574,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3715",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.574,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F781",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.573,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3797",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.572,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3828",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.572,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2173",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.57,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2244",
+      "severity": "WATCH",
+      "mules_covered": 78,
+      "univariate_auc": 0.568,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F311",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.566,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.007,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2175",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.566,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3814",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.565,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2587",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.564,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2727",
+      "severity": "WATCH",
+      "mules_covered": 4,
+      "univariate_auc": 0.564,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3760",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.564,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3733",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.563,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1197",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.562,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1521",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.562,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1812",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.562,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F108",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.56,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F403",
+      "severity": "WATCH",
+      "mules_covered": 15,
+      "univariate_auc": 0.559,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.037,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2170",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.559,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2829",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.557,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2832",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.557,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2172",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.556,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2824",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.556,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.062,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1936",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.555,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1938",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.555,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2582",
+      "severity": "WATCH",
+      "mules_covered": 71,
+      "univariate_auc": 0.554,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.029,
+      "lift_vs_base": 11.2,
+      "bank_listed": true
+    },
+    {
+      "feature": "F3765",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.554,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2152",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.553,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2154",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.553,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2016",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.552,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2758",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.551,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1702",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.549,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2044",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.549,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2046",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.549,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1764",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.548,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2047",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.548,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2049",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.548,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2581",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.547,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3710",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.547,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3716",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.547,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1709",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.546,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1715",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.546,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3043",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.546,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": true
+    },
+    {
+      "feature": "F3046",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.546,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3657",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.546,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3568",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.545,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1708",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.544,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1714",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.544,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F405",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.543,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.047,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F408",
+      "severity": "WATCH",
+      "mules_covered": 7,
+      "univariate_auc": 0.543,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.006,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1831",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.543,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1833",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.543,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1859",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.542,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1980",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.542,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3535",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.542,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2671",
+      "severity": "WATCH",
+      "mules_covered": 13,
+      "univariate_auc": 0.541,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3601",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.541,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3607",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.541,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2885",
+      "severity": "WATCH",
+      "mules_covered": 16,
+      "univariate_auc": 0.54,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2888",
+      "severity": "WATCH",
+      "mules_covered": 16,
+      "univariate_auc": 0.54,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2427",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.539,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F364",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.538,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.025,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2637",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.538,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1106",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.536,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1430",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.536,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.023,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F523",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.534,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F402",
+      "severity": "WATCH",
+      "mules_covered": 14,
+      "univariate_auc": 0.533,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.046,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F421",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.533,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F475",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.531,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1107",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.531,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1431",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.531,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2784",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.531,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.037,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F476",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.53,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1596",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.53,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2931",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.529,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2934",
+      "severity": "WATCH",
+      "mules_covered": 9,
+      "univariate_auc": 0.529,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2624",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.528,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1105",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.527,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.028,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F439",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.525,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.032,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F441",
+      "severity": "WATCH",
+      "mules_covered": 23,
+      "univariate_auc": 0.525,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.032,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2788",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.525,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.016,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F570",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.524,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.043,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2591",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.52,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F427",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F433",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.019,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2226",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3602",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3608",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3888",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.519,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.013,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2021",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.518,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2773",
+      "severity": "WATCH",
+      "mules_covered": 10,
+      "univariate_auc": 0.518,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.045,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2789",
+      "severity": "WATCH",
+      "mules_covered": 25,
+      "univariate_auc": 0.518,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3808",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.518,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F525",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.517,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2542",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.517,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2548",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.517,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F605",
+      "severity": "WATCH",
+      "mules_covered": 4,
+      "univariate_auc": 0.516,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2359",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.516,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2361",
+      "severity": "WATCH",
+      "mules_covered": 19,
+      "univariate_auc": 0.516,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.024,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2571",
+      "severity": "WATCH",
+      "mules_covered": 10,
+      "univariate_auc": 0.516,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.051,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F473",
+      "severity": "WATCH",
+      "mules_covered": 31,
+      "univariate_auc": 0.515,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.015,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F397",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.514,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.007,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1041",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1215",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.03,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1365",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1539",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.031,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1660",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3337",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3339",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.512,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2569",
+      "severity": "WATCH",
+      "mules_covered": 10,
+      "univariate_auc": 0.511,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.042,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3880",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.511,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.012,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F308",
+      "severity": "WATCH",
+      "mules_covered": 5,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.062,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F423",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F573",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.027,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2683",
+      "severity": "WATCH",
+      "mules_covered": 79,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.04,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2865",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2867",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2868",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2870",
+      "severity": "WATCH",
+      "mules_covered": 3,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3857",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.509,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3865",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.507,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F470",
+      "severity": "WATCH",
+      "mules_covered": 77,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.026,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2623",
+      "severity": "WATCH",
+      "mules_covered": 2,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.006,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3150",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.0,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3818",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.506,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.014,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1136",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1459",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1460",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2009",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3859",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.505,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F527",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": true
+    },
+    {
+      "feature": "F533",
+      "severity": "WATCH",
+      "mules_covered": 80,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.017,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1135",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1783",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F1784",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2116",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.504,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.009,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F463",
+      "severity": "WATCH",
+      "mules_covered": 51,
+      "univariate_auc": 0.503,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2937",
+      "severity": "WATCH",
+      "mules_covered": 7,
+      "univariate_auc": 0.503,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2940",
+      "severity": "WATCH",
+      "mules_covered": 7,
+      "univariate_auc": 0.503,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.018,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2008",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.502,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2676",
+      "severity": "WATCH",
+      "mules_covered": 41,
+      "univariate_auc": 0.502,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.022,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F3856",
+      "severity": "WATCH",
+      "mules_covered": 81,
+      "univariate_auc": 0.502,
+      "best_bucket_fraud_rate": 0.1,
+      "best_decile_fraud_rate": 0.01,
+      "lift_vs_base": 11.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F515",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.994,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 1.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F518",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.994,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 1.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F413",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.991,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 1.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F416",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.991,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.011,
+      "lift_vs_base": 1.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2629",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.981,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.02,
+      "lift_vs_base": 2.2,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2632",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.979,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.021,
+      "lift_vs_base": 2.3,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2668",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.951,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.007,
+      "lift_vs_base": 0.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2666",
+      "severity": "WATCH",
+      "mules_covered": 1,
+      "univariate_auc": 0.95,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.007,
+      "lift_vs_base": 0.8,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2877",
+      "severity": "WATCH",
+      "mules_covered": 10,
+      "univariate_auc": 0.716,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.106,
+      "lift_vs_base": 11.9,
+      "bank_listed": false
+    },
+    {
+      "feature": "F2880",
+      "severity": "WATCH",
+      "mules_covered": 10,
+      "univariate_auc": 0.716,
+      "best_bucket_fraud_rate": 0.0,
+      "best_decile_fraud_rate": 0.106,
+      "lift_vs_base": 11.9,
+      "bank_listed": false
+    }
+  ]
+}

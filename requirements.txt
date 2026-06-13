@@ -1,0 +1,15 @@
+# SENTINEL — PS2 mule-account detection. Python 3.11+.
+# Pinned to the versions this project was built & validated on (2026-06-10).
+pandas==2.3.2
+numpy==2.2.6
+scikit-learn==1.7.1
+lightgbm==4.6.0
+xgboost==3.2.0
+shap==0.52.0
+scipy>=1.13
+pyarrow>=15.0          # parquet cache
+joblib>=1.4
+streamlit==1.53.1      # demo dashboard (app.py)
+fastapi>=0.110         # scoring API (src/api.py)
+uvicorn>=0.29          # ASGI server for the API
+pytest>=8.0            # tests

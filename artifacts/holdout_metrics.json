@@ -1,0 +1,67 @@
+{
+  "model": "LightGBM",
+  "holdout_pr_auc": 0.9719024122807017,
+  "holdout_roc_auc": 0.9997223764575236,
+  "holdout_brier": 0.0022280799080584657,
+  "prevalence": 0.008918740365558247,
+  "holdout_positives": 16,
+  "recall_at_prec50": 1.0,
+  "threshold_table": [
+    {
+      "threshold": 0.3,
+      "alerts": 12,
+      "mules_caught": 12,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.75
+    },
+    {
+      "threshold": 0.5,
+      "alerts": 11,
+      "mules_caught": 11,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.688
+    },
+    {
+      "threshold": 0.7,
+      "alerts": 11,
+      "mules_caught": 11,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.688
+    },
+    {
+      "threshold": 0.8,
+      "alerts": 10,
+      "mules_caught": 10,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.625
+    },
+    {
+      "threshold": 0.9,
+      "alerts": 10,
+      "mules_caught": 10,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.625
+    },
+    {
+      "threshold": 0.95,
+      "alerts": 10,
+      "mules_caught": 10,
+      "false_alarms": 0,
+      "precision": 1.0,
+      "recall": 0.625
+    },
+    {
+      "threshold": 0.99,
+      "alerts": 0,
+      "mules_caught": 0,
+      "false_alarms": 0,
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "leak_rate": 0.3,
+  "pure_rate": 0.9,
+  "suspects": [
+    {
+      "feature": "F2230",
+      "best_value": 0.0,
+      "fraud_rate": 1.0,
+      "n": 10,
+      "mules_in_bucket": 10,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3484",
+      "best_value": 0.05999999865889549,
+      "fraud_rate": 0.8181818181818182,
+      "n": 11,
+      "mules_in_bucket": 9,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3700",
+      "best_value": 0.05999999865889549,
+      "fraud_rate": 0.8,
+      "n": 10,
+      "mules_in_bucket": 8,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3706",
+      "best_value": 0.10999999940395355,
+      "fraud_rate": 0.5454545454545454,
+      "n": 11,
+      "mules_in_bucket": 6,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3712",
+      "best_value": 0.10999999940395355,
+      "fraud_rate": 0.5454545454545454,
+      "n": 11,
+      "mules_in_bucket": 6,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3490",
+      "best_value": 0.10999999940395355,
+      "fraud_rate": 0.5,
+      "n": 10,
+      "mules_in_bucket": 5,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3496",
+      "best_value": 0.10999999940395355,
+      "fraud_rate": 0.5,
+      "n": 10,
+      "mules_in_bucket": 5,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3598",
+      "best_value": 0.10999999940395355,
+      "fraud_rate": 0.35714285714285715,
+      "n": 14,
+      "mules_in_bucket": 5,
+      "bank_hint": false
+    },
+    {
+      "feature": "F3604",
+      "best_value": 0.10999999940395355,
+      "fraud_rate": 0.35714285714285715,
+      "n": 14,
+      "mules_in_bucket": 5,
+      "bank_hint": false
+    },
+    {
+      "feature": "F1274",
+      "best_value": 3000.0,
+      "fraud_rate": 0.3,
+      "n": 10,
+      "mules_in_bucket": 3,
+      "bank_hint": false
+    },
+    {
+      "feature": "F265",
+      "best_value": 0.7599999904632568,
+      "fraud_rate": 0.3,
+      "n": 10,
+      "mules_in_bucket": 3,
+      "bank_hint": false
+    },
+    {
+      "feature": "F950",
+      "best_value": 3000.0,
+      "fraud_rate": 0.3,
+      "n": 10,
+      "mules_in_bucket": 3,
+      "bank_hint": false
+    }
+  ],
+  "proposed_blocklist": [
+    "F2230"
+  ],
+  "mules_in_pure_buckets": 10
+}

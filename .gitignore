@@ -1,0 +1,11 @@
+# Raw data & large caches — NOT needed by the deployed app (regenerate locally)
+DataSet.csv
+artifacts/X_clean.parquet
+artifacts/y.parquet
+# Python caches
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+# local background-task logs
+*.output
+.DS_Store
