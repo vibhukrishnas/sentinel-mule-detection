@@ -82,7 +82,7 @@ pdf.set_font("Helvetica", "BI", 12); pdf.set_text_color(40, 40, 40)
 pdf.mc(0, 7, san('"Catch the mules. Trust the score. Defend every number."'), align="C"); pdf.ln(3)
 # honest-differentiator hook (clean single line, no heavy banner)
 pdf.set_font("Helvetica", "BI", 10.5); pdf.set_text_color(*NAVY)
-pdf.set_x(pdf.l_margin); pdf.mc(0, 6, san("Most teams will show '99%' - that is data leakage. We detect it, "
+pdf.set_x(pdf.l_margin); pdf.mc(0, 6, san("This dataset hides leakage that fakes a '99%' score. We detect it, "
        "remove it, and report a number we can defend."), align="C"); pdf.ln(4)
 pdf.set_font("Helvetica", "", 12); pdf.set_text_color(40, 40, 40)
 pdf.mc(0, 7, san("CyberShield Hackathon 2026  -  Bank of India x IIT Hyderabad\n"
@@ -147,11 +147,11 @@ pdf.body("Mule-account fraud is a declared national priority: RBI's MuleHunter.A
          "what those are not publicly known for: explainable alerts and provable leakage-free scoring. "
          "Primary users are bank fraud/AML analysts and transaction-monitoring & cyber-fraud desks; outputs "
          "feed risk officers and ultimately protect defrauded customers.")
-pdf.h2("The trap most teams will fall into")
+pdf.h2("The trap hidden in this data")
 pdf.body("The dataset is riddled with TARGET LEAKAGE. A naive XGBoost scores PR-AUC 1.000 / ROC-AUC 1.000 "
          "- impossible for genuine fraud detection on 81 anonymised positives; the model is simply reading "
-         "the answer. A team that submits that 0.99 gets dismantled by one judge question: 'why is fraud "
-         "detection perfect?'. Our entire approach is built to NOT fall into this trap.")
+         "the answer. Any 0.99 on this data invites one fatal question: 'why is fraud detection perfect?'. "
+         "Our entire approach is built to detect, remove and prove the absence of that leakage.")
 
 # ---------- 2. DATASET ----------
 pdf.add_page(); pdf.h1("2. Dataset - Detailed Description")
@@ -199,19 +199,21 @@ pdf.body("After hygiene + leakage removal + missingness flags, the modelling mat
 
 # ---------- 3. USP ----------
 pdf.add_page(); pdf.h1("3. Our Unique Selling Proposition")
-pdf.body("Anyone can fit a classifier on this data. Four things make SENTINEL different - and we will "
-         "defend every one of them in front of any judge:")
-pdf.h2("USP 1  -  We find the leakage everyone else ships")
-pdf.body("Most teams will proudly present a ~1.000 score. We built an automated Data Integrity Auditor, "
-         "caught ~585 leak features, and report a DEFENSIBLE 0.885 with the audit to prove it. When the "
-         "judge asks 'why is your fraud model perfect?', we are the team with the answer.")
-pdf.h2("USP 2  -  A ranked watchlist that puts real mules on top")
-pdf.body("On out-of-fold validation, our top-50 ranked accounts were ALL real mules (precision@50 = 100%) - "
-         "a ready-to-action watchlist for a fraud desk. We present this as a validation result on the "
-         "provided data, not a universal guarantee.")
-pdf.h2("USP 3  -  Every alert explains itself")
-pdf.body("Score + severity band + plain-English SHAP reasons + peer-deviation + a one-click investigation "
-         "report + recommended action. An analyst acts in minutes; nothing is a black box.")
+pdf.body("Fitting a classifier on this data is the easy part. Four things make SENTINEL different - and we "
+         "will defend every one of them in front of any judge:")
+pdf.h2("USP 1  -  Leakage-safe scoring you can defend")
+pdf.body("This dataset hides severe target leakage that fakes a perfect ~1.000 score. We built an automated "
+         "Data Integrity Auditor, caught ~585 leak features, and report a DEFENSIBLE 0.885 with the audit to "
+         "prove it. When the judge asks 'why is your fraud model perfect?', we are the team with the answer.")
+pdf.h2("USP 2  -  Mule-RING discovery, not just single accounts")
+pdf.body("Banks want the network, not one account. Our behavioral-similarity graph groups 67 of 81 mules into "
+         "5 candidate rings (largest = 50 accounts) - so a desk investigates a ring as a batch (Section 7). "
+         "It is a working prototype today; with real link data it becomes production network detection.")
+pdf.h2("USP 3  -  Explainable containment (every alert explains itself)")
+pdf.body("Score + severity band + plain-English SHAP reasons + peer-deviation + a recommended action "
+         "(monitor / hold / escalate) + a one-click investigation report. As a supporting result, the top-50 "
+         "watchlist on out-of-fold validation contained all 50 true mules - ready for a fraud desk. An analyst "
+         "acts in minutes; nothing is a black box.")
 pdf.h2("USP 4  -  We speak the bank's language: rupees and capacity")
 pdf.body("A rupee-cost engine turns the threshold into money (~Rs 1.7 cr saved / 9,082 accounts) and frames "
          "the operating point as an analyst-capacity decision - exactly how a risk officer thinks.")
@@ -252,7 +254,7 @@ pdf.body("The score maps to a tiered ACTION, so the output is a decision, not ju
 pdf.h2("How we compare")
 pdf.body("vs RBI MuleHunter.AI / NPCI pilots: same regulatory target, but we add explainable alerts and "
          "PROVABLE leakage-free scoring (not publicly documented for those). vs traditional rule engines: we "
-         "catch the non-monotonic, networked patterns rules miss. vs black-box ML / teams chasing 0.99: every "
+         "catch the non-monotonic, networked patterns rules miss. vs black-box ML: every "
          "score is explained and every number is leakage-audited - we trade a fake 1.0 for a defensible 0.885.")
 
 # ---------- 3. RESULTS ----------
@@ -261,8 +263,9 @@ pdf.figure("10_leakage_before_after.png", 175,
            "The leakage story in one picture: with all features the score is a fake 0.998; after our auditor "
            "removes the leaks, the defensible score is 0.81-0.89 - with a concrete example (F2230).")
 pdf.h2("Headline result a judge cannot knock down")
-for b in ["precision@50 = 100% (out-of-fold validation): the 50 highest-risk RANKED accounts were all real "
-          "mules - a watchlist result on the provided data, not a universal guarantee.",
+for b in ["Top-50 watchlist contained all 50 true mules (out-of-fold validation): the 50 highest-risk RANKED "
+          "accounts were all real mules - a ready-to-action watchlist result on the provided data, not a "
+          "universal guarantee.",
           "PR-AUC 0.885 +/- 0.055, ROC-AUC 0.979 (tuned LightGBM, repeated 5x2 cross-validation) - ~99x the "
           "0.0089 random baseline. Calibrated (CV Brier 0.0022). Scoring + explanation ~35 ms "
           "(measured, 100-iteration benchmark).",
@@ -313,6 +316,19 @@ pdf.body("Result (real, on this dataset): 67/81 mules cluster into 5 candidate r
          "near-identical accounts. This is the SAME engine that, fed real shared-device / beneficiary / "
          "transaction edges (Phase-2), becomes production mule-NETWORK detection - we show the capability "
          "today rather than only promising it.")
+pdf.ln(1)
+pdf.set_draw_color(*NAVY); pdf.set_fill_color(245, 246, 250)
+pdf.set_font("Helvetica", "B", 10.5); pdf.set_text_color(*NAVY)
+pdf.mc(0, 6, san("Case study: how SENTINEL stops a ring (real account from this data)"),
+       border="LTR", fill=True)
+pdf.set_font("Helvetica", "", 9.5); pdf.set_text_color(20, 20, 20)
+pdf.mc(0, 5.0, san("Account #9003 is flagged -> risk score 100 / CRITICAL (Section 6 shows its live scoring "
+       "card & SHAP reasons). SENTINEL then asks the network question: #9003 is the hub of candidate Ring #1 "
+       "- 50 behaviourally near-identical accounts. Estimated exposure ~Rs 1.25 crore (50 x Rs 2.5L avg mule "
+       "loss). Analyst action: don't chase one account - freeze + investigate the batch, with the auto-built "
+       "report as evidence. One alert -> a whole ring contained."),
+       border="LBR", fill=True)
+pdf.set_text_color(0, 0, 0); pdf.ln(1)
 
 # ---------- 8. IMPACT + ALERTS ----------
 pdf.add_page(); pdf.h1("8. Business Impact & Intelligent Alerts")
@@ -332,7 +348,7 @@ pdf.body("Users & buyers: PSU & private banks' fraud, AML and transaction-monito
          "Head of Fraud), plus payment bodies (NPCI) and regulator programmes (RBIH).")
 pdf.body("Deployment: on-prem / bank-VPC - data never leaves the bank - integrating with core banking and "
          "the existing transaction-monitoring + case-management systems; scoring on-demand via the REST API.")
-pdf.body("Adoption path: single-bank pilot on the bank's own book (prove precision@50) -> production scoring "
+pdf.body("Adoption path: single-bank pilot on the bank's own book (prove the watchlist on real labels) -> production scoring "
          "-> multi-bank consortium / federated intelligence - the same distribution model RBIH uses for "
          "MuleHunter.AI.")
 pdf.body("Revenue & sustainability: per-bank annual licence + a per-account-scored usage tier; the shared "
@@ -386,7 +402,7 @@ pdf.set_text_color(0, 0, 0)
 pdf.h2("Traction: technical validation today, customer validation next (honest)")
 pdf.body("WHAT WE HAVE (technical traction): a working end-to-end prototype, CI smoke tests (5/5), a "
          "deployable FastAPI service, a live Streamlit dashboard, reproducible results and a ranked watchlist "
-         "(precision@50 = 100%). WHAT WE DO NOT YET HAVE: customers, paid pilots or LOIs - all traction so far "
+         "(top-50 watchlist caught all 50 true mules). WHAT WE DO NOT YET HAVE: customers, paid pilots or LOIs - all traction so far "
          "is technical, and we say so plainly.")
 for b in ["Gate 1 (0-3 mo): 1-2 design-partner banks; run SENTINEL on their historical book; validate "
           "precision@50 on real labels; target 2-3 letters of intent.",
@@ -438,8 +454,9 @@ for b in ["Why is the model so good? We removed target leakage (F3912 + ~585 lea
           "interpretable scoring make LightGBM the right fit; DL would overfit."]:
     pdf.bullet(b)
 pdf.ln(2); pdf.set_font("Helvetica", "B", 10.5); pdf.set_text_color(*NAVY)
-pdf.mc(0, 5.5, san("Bottom line: most teams will present a fake 1.000. We present a defensible 0.81-0.89, a "
-    "100%-precision validation watchlist, a rupee impact, and the leakage audit that proves we earned it."))
+pdf.mc(0, 5.5, san("Bottom line: a fake 1.000 is easy on this data. We present a defensible 0.81-0.89, a "
+    "top-50 watchlist that caught all 50 true mules, candidate mule-rings, a rupee impact, and the leakage "
+    "audit that proves we earned it."))
 
 (ROOT / "docs").mkdir(exist_ok=True)
 out = ROOT / "docs" / "SOLUTION_APPROACH_PS2.pdf"

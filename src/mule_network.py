@@ -61,6 +61,23 @@ def main():
     if comps:
         print(f"largest ring: {len(comps[0])} mules -> accounts {sorted(comps[0])[:8]}...")
 
+    # ---- per-ring detail for the case study (real risk scores, honest exposure) ----
+    AVG_MULE_LOSS = 250_000   # same assumption as insights.py; configurable
+    try:
+        scores = pd.read_csv(ART.parent / "outputs" / "predictions.csv").set_index("account_id")["risk_score"]
+    except (FileNotFoundError, KeyError):
+        scores = pd.Series(dtype=float)
+    rings = []
+    for ci, c in enumerate(comps):
+        members = sorted(int(n) for n in c)
+        sc = {int(a): int(scores.get(a)) for a in members if a in scores.index}
+        rep = max(sc, key=sc.get) if sc else members[0]
+        rings.append({"ring_id": ci + 1, "size": len(members), "members": members,
+                      "rep_account": rep, "rep_score": sc.get(rep),
+                      "exposure_rupees": len(members) * AVG_MULE_LOSS})
+        print(f"  ring #{ci+1}: {len(members)} accts | rep #{rep} (risk {sc.get(rep)}) | "
+              f"exposure ~Rs {len(members)*AVG_MULE_LOSS:,}")
+
     # ---- visualize ----
     plt.figure(figsize=(9, 6.2), dpi=130)
     pos = nx.spring_layout(G, seed=42, k=0.45)
@@ -82,7 +99,7 @@ def main():
     out = {"n_mules": len(ids), "edges": G.number_of_edges(), "mules_with_tie": paired,
            "n_candidate_rings": len(comps), "mules_in_rings": in_rings,
            "ring_sizes": [len(c) for c in comps], "similarity_threshold": float(thr),
-           "top_features_used": topf}
+           "rings": rings, "top_features_used": topf}
     (ART / "mule_network.json").write_text(json.dumps(out, indent=2, default=float))
     print(f"Saved figures/11_mule_network.png + artifacts/mule_network.json")
 
