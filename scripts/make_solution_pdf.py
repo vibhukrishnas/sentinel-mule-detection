@@ -101,13 +101,28 @@ pdf.mc(0, 6.5, san("One line: SENTINEL is the leakage-proof DETECTION & CONTAINM
     "perfect score - so we report the number we can defend."),
     align="C", fill=True, border=1)
 
+# ---------- EXECUTIVE SUMMARY ----------
+pdf.add_page(); pdf.h1("Executive Summary - the 30-second story")
+pdf.bullet("What it is: SENTINEL detects mule accounts with LEAKAGE-SAFE scoring and EXPLAINABLE containment "
+           "(monitor / hold / escalate).")
+pdf.bullet("Honest headline: PR-AUC 0.81-0.89 (repeated CV). We removed the data leakage that fakes a perfect "
+           "1.0 and report a number we can defend.")
+pdf.bullet("Why you can trust it: an automated Data Integrity Auditor caught ~585 leak features; every alert "
+           "carries a plain-English reason.")
+pdf.bullet("Built today vs next: the detection core + API + dashboard + scored watchlist are built on the "
+           "PROVIDED SNAPSHOT. Live feeds + graph mule-ring detection are Phase-2 (marked solid vs dashed in "
+           "the architecture).")
+pdf.bullet("'Real-time' = on-demand low-latency account scoring (~35 ms), NOT stream processing - the "
+           "provided data is an account snapshot.")
+pdf.bullet("The ask: a design-partner bank pilot to validate on real labels.")
+
 # ---------- 1. PROBLEM ----------
 pdf.add_page(); pdf.h1("1. Problem Understanding")
 pdf.set_font("Helvetica", "BI", 10.5); pdf.set_text_color(*RED)
-pdf.mc(0, 5.6, san("Mule accounts are the conduit for nearly all cyber-enabled financial fraud in India - "
-    "fraud that runs into thousands of crores a year - which is why RBI made it a national priority and "
-    "launched MuleHunter.AI. The bottleneck is no longer 'can we detect it' but 'can we detect it FAST, "
-    "explain it, and stop the money before it disperses'."))
+pdf.mc(0, 5.6, san("Mule accounts are a primary conduit for laundering cyber-fraud proceeds in India - losses "
+    "that run into thousands of crores a year - which is why RBI made this a priority and launched "
+    "MuleHunter.AI. The bottleneck is no longer 'can we detect it' but 'can we detect it FAST, explain it, "
+    "and stop the money before it disperses'."))
 pdf.ln(2); pdf.set_text_color(0, 0, 0)
 pdf.body("Mule accounts receive, move and launder fraudulent funds across banking channels. "
          "Rule-based monitoring is reactive, brittle, and drowns analysts in false positives. "
@@ -185,9 +200,10 @@ pdf.h2("USP 1  -  We find the leakage everyone else ships")
 pdf.body("Most teams will proudly present a ~1.000 score. We built an automated Data Integrity Auditor, "
          "caught ~585 leak features, and report a DEFENSIBLE 0.885 with the audit to prove it. When the "
          "judge asks 'why is your fraud model perfect?', we are the team with the answer.")
-pdf.h2("USP 2  -  A 100%-precision watchlist on day one")
-pdf.body("precision@50 = 100%: our 50 highest-risk accounts are all real mules. That is a ready-to-action "
-         "watchlist a fraud desk can use immediately - not a research metric.")
+pdf.h2("USP 2  -  A ranked watchlist that puts real mules on top")
+pdf.body("On out-of-fold validation, our top-50 ranked accounts were ALL real mules (precision@50 = 100%) - "
+         "a ready-to-action watchlist for a fraud desk. We present this as a validation result on the "
+         "provided data, not a universal guarantee.")
 pdf.h2("USP 3  -  Every alert explains itself")
 pdf.body("Score + severity band + plain-English SHAP reasons + peer-deviation + a one-click investigation "
          "report + recommended action. An analyst acts in minutes; nothing is a black box.")
@@ -237,8 +253,8 @@ pdf.body("vs RBI MuleHunter.AI / NPCI pilots: same regulatory target, but we add
 # ---------- 3. RESULTS ----------
 pdf.add_page(); pdf.h1("5. Results (honest, measured, leakage-removed)")
 pdf.h2("Headline result a judge cannot knock down")
-for b in ["precision@50 = 100%: the 50 highest-risk accounts are ALL 50 real mules - zero false positives "
-          "in a 0.89%-mule population.",
+for b in ["precision@50 = 100% (out-of-fold validation): the 50 highest-risk RANKED accounts were all real "
+          "mules - a watchlist result on the provided data, not a universal guarantee.",
           "PR-AUC 0.885 +/- 0.055, ROC-AUC 0.979 (tuned LightGBM, repeated 5x2 cross-validation) - ~99x the "
           "0.0089 random baseline. Calibrated (CV Brier 0.0022). Scoring + explanation ~35 ms.",
           "Honest range 0.81-0.89: even deleting the entire near-label feature block, a leak-paranoid FLOOR "
@@ -386,9 +402,21 @@ for b in ["Not a transaction stream (snapshot data) - we say so plainly.",
           "81 positives -> estimates carry real variance; we report a range and a confidence interval.",
           "Decision-support for analysts, not an autonomous freeze authority."]:
     pdf.bullet(b)
+pdf.h2("Anticipated questions (and our answers)")
+for b in ["Why is the model so good? We removed target leakage (F3912 + ~585 leaks via the auditor); the "
+          "honest score is 0.81-0.89, not 1.0.",
+          "Built today vs future? SOLID boxes in the architecture = built on the provided data; DASHED = "
+          "Phase-2 (live feeds + graph mule-rings).",
+          "Deployment realism? Decision-support that recommends actions to an analyst - NOT an autonomous "
+          "freeze authority.",
+          "Live fraud data? The prototype is trained on the PROVIDED SNAPSHOT; live transaction / alert / "
+          "regulatory feeds are Phase-2.",
+          "Why not deep learning? 81 positives, ~3,900 sparse features, 27.6% NaN, and the need for fast, "
+          "interpretable scoring make LightGBM the right fit; DL would overfit."]:
+    pdf.bullet(b)
 pdf.ln(2); pdf.set_font("Helvetica", "B", 10.5); pdf.set_text_color(*NAVY)
-pdf.mc(0, 5.5, san("Bottom line: most teams will present a fake 1.000. We present a defensible 0.885, a "
-    "100%-precision watchlist, a rupee impact, and the leakage audit that proves we earned it."))
+pdf.mc(0, 5.5, san("Bottom line: most teams will present a fake 1.000. We present a defensible 0.81-0.89, a "
+    "100%-precision validation watchlist, a rupee impact, and the leakage audit that proves we earned it."))
 
 (ROOT / "docs").mkdir(exist_ok=True)
 out = ROOT / "docs" / "SOLUTION_APPROACH_PS2.pdf"
