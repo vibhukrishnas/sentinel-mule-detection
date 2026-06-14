@@ -301,8 +301,65 @@ pdf.body("Revenue & sustainability: per-bank annual licence + a per-account-scor
          "fraction of the fraud prevented (~Rs 1.7 cr per 9,082 accounts above). Acquisition is pulled by "
          "regulator credibility and a measurable ROI, with a low-friction pilot on the bank's existing data.")
 
-# ---------- 5. FEASIBILITY / ROADMAP ----------
-pdf.add_page(); pdf.h1("8. Feasibility, Prototype Roadmap & Honesty")
+# ---------- 8. MARKET / BUSINESS / TRACTION ----------
+def table(headers, rows, widths, hh=7, rh=6):
+    pdf.set_x(pdf.l_margin); pdf.set_font("Helvetica", "B", 8.5)
+    pdf.set_fill_color(*NAVY); pdf.set_text_color(255, 255, 255)
+    for h, w in zip(headers, widths):
+        pdf.cell(w, hh, " " + san(h), border=1, fill=True)
+    pdf.ln(hh)
+    pdf.set_font("Helvetica", "", 8.5); pdf.set_text_color(20, 20, 20)
+    for r in rows:
+        pdf.set_x(pdf.l_margin)
+        for c, w in zip(r, widths):
+            pdf.cell(w, rh, " " + san(str(c)), border=1)
+        pdf.ln(rh)
+    pdf.ln(2)
+
+pdf.add_page(); pdf.h1("8. Market, Business Model & Traction")
+pdf.h2("Market opportunity (illustrative, bottom-up)")
+pdf.body("Bottom-up estimates with explicit assumptions; exact market value to be finalised from RBI Annual "
+         "Report fraud statistics, I4C / NCRP and industry AML-tech reports.")
+table(["Tier", "Definition", "Size (illustrative)"],
+      [["TAM", "All Indian banks + payment cos needing mule/AML scoring", "~Rs 300-350 cr/yr"],
+       ["SAM", "Scheduled commercial + payment + SFBs (~120, real-time-capable)", "~Rs 120 cr/yr @ ~Rs 1 cr ACV"],
+       ["SOM", "3-year capture: design partners -> ~20 banks", "~Rs 18-20 cr ARR"]],
+      [18, 110, 46])
+pdf.body("Context: RBI-reported bank frauds run into tens of thousands of crores a year and mule accounts are "
+         "the conduit - this is regulatory-mandated spend, not discretionary.")
+pdf.h2("Business model & unit economics (illustrative)")
+table(["Metric", "Value*", "Basis / assumption"],
+      [["ACV / bank / yr", "Rs 0.8-1.2 cr", "enterprise licence + per-account usage tier"],
+       ["Gross margin", "~80%", "software-led; cloud/compute + support"],
+       ["CAC / bank", "~Rs 20-30 L", "enterprise sales + pilot + integration"],
+       ["LTV (5-yr)", "~Rs 3.5 cr", "ACV x margin x retention"],
+       ["LTV : CAC", "~12-15x", "well above the 3x benchmark"],
+       ["CAC payback", "< 6 months", "post-landing"]],
+      [34, 28, 112])
+table(["Year", "Banks (cum.)", "ARR*", "Driver"],
+      [["Y1", "3 (design partners)", "~Rs 1.5 cr", "discounted pilots; prove ROI on real books"],
+       ["Y2", "10", "~Rs 8 cr", "regulator-backed referrals (RBIH / NPCI)"],
+       ["Y3", "22", "~Rs 18-20 cr", "+ consortium shared-intelligence revenue"]],
+      [14, 40, 28, 92])
+pdf.set_font("Helvetica", "I", 8); pdf.set_text_color(*GREY)
+pdf.mc(0, 4.5, san("*Illustrative & assumption-driven - to be calibrated during paid pilots; not a forecast."))
+pdf.set_text_color(0, 0, 0)
+pdf.h2("Traction: technical validation today, customer validation next (honest)")
+pdf.body("WHAT WE HAVE (technical traction): a working end-to-end prototype, CI smoke tests (5/5), a "
+         "deployable FastAPI service, a live Streamlit dashboard, reproducible results and a ranked watchlist "
+         "(precision@50 = 100%). WHAT WE DO NOT YET HAVE: customers, paid pilots or LOIs - all traction so far "
+         "is technical, and we say so plainly.")
+for b in ["Gate 1 (0-3 mo): 1-2 design-partner banks; run SENTINEL on their historical book; validate "
+          "precision@50 on real labels; target 2-3 letters of intent.",
+          "Gate 2 (3-9 mo): RBIH / NPCI engagement + regulatory sandbox; first paid pilot.",
+          "Gate 3 (9-18 mo): production deployment at 1-2 banks; published case study; consortium pilot."]:
+    pdf.bullet(b)
+pdf.body("Why this is winnable, not wishful: a hard regulatory mandate (RBI MuleHunter.AI), a low-friction "
+         "pilot that runs on the bank's own data on-prem, and a measurable rupee ROI - the three levers that "
+         "shorten enterprise-bank sales cycles.")
+
+# ---------- 9. FEASIBILITY / ROADMAP ----------
+pdf.add_page(); pdf.h1("9. Feasibility, Prototype Roadmap & Honesty")
 pdf.h2("Already working (reproducible)")
 for b in ["End-to-end pipeline (preprocess -> auditor -> model -> finalize -> insights -> scoring).",
           "Real-time FastAPI /score + /report service (~35 ms) and a Streamlit analyst dashboard.",
