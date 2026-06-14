@@ -103,6 +103,9 @@ pdf.mc(0, 6.5, san("One line: SENTINEL is the leakage-proof DETECTION & CONTAINM
 
 # ---------- EXECUTIVE SUMMARY ----------
 pdf.add_page(); pdf.h1("Executive Summary - the 30-second story")
+pdf.set_font("Helvetica", "B", 11.5); pdf.set_text_color(*NAVY)
+pdf.mc(0, 6, san("In one sentence: we found the leakage, removed it, built a defensible model, and turned it "
+                 "into an explainable analyst tool.")); pdf.ln(1); pdf.set_text_color(0, 0, 0)
 pdf.bullet("What it is: SENTINEL detects mule accounts with LEAKAGE-SAFE scoring and EXPLAINABLE containment "
            "(monitor / hold / escalate).")
 pdf.bullet("Honest headline: PR-AUC 0.81-0.89 (repeated CV). We removed the data leakage that fakes a perfect "
@@ -252,11 +255,15 @@ pdf.body("vs RBI MuleHunter.AI / NPCI pilots: same regulatory target, but we add
 
 # ---------- 3. RESULTS ----------
 pdf.add_page(); pdf.h1("5. Results (honest, measured, leakage-removed)")
+pdf.figure("10_leakage_before_after.png", 175,
+           "The leakage story in one picture: with all features the score is a fake 0.998; after our auditor "
+           "removes the leaks, the defensible score is 0.81-0.89 - with a concrete example (F2230).")
 pdf.h2("Headline result a judge cannot knock down")
 for b in ["precision@50 = 100% (out-of-fold validation): the 50 highest-risk RANKED accounts were all real "
           "mules - a watchlist result on the provided data, not a universal guarantee.",
           "PR-AUC 0.885 +/- 0.055, ROC-AUC 0.979 (tuned LightGBM, repeated 5x2 cross-validation) - ~99x the "
-          "0.0089 random baseline. Calibrated (CV Brier 0.0022). Scoring + explanation ~35 ms.",
+          "0.0089 random baseline. Calibrated (CV Brier 0.0022). Scoring + explanation ~35 ms "
+          "(measured, 100-iteration benchmark).",
           "Honest range 0.81-0.89: even deleting the entire near-label feature block, a leak-paranoid FLOOR "
           "holds at ~0.81. We report the range, not a cherry-picked point."]:
     pdf.bullet(b)
