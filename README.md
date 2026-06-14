@@ -30,7 +30,7 @@ SENTINEL is the **leakage-proof detection & containment core** of a real-time mu
 | LogReg (L2) | 0.404 ± 0.059 | 0.936 | 0.0103 |
 
 - **Top-50 watchlist caught all 50 true mules** (out-of-fold validation) — the 50 highest-risk *ranked* accounts were all real mules, zero false positives in a 0.89%-mule population. A validation result on the provided data, not a universal guarantee. → `outputs/top_suspicious_accounts.csv`
-- **Mule-ring prototype:** a behavioral-similarity graph groups **67 of 81 mules into 5 candidate rings** (largest = 50 near-identical accounts). Case study: demo account **#9003 is the hub of the 50-account ring (~₹1.25 cr exposure)** → freeze + investigate the batch. Network output today, production link-analysis in Phase-2 (`src/mule_network.py`).
+- **Mule-ring prototype:** a behavioral-similarity graph groups **67 of 81 mules into 5 candidate rings** (largest = 50 near-identical accounts). Candidate Ring #1 is **~30× tighter than a random legit group** (similarity 0.43 vs 0.01) and **stable under feature subsampling** (Jaccard 0.82) — a real, validated proxy, not a coincidence. Case study: demo account **#9003 is a central node in candidate Ring #1** (~₹1.25 cr *potential* exposure, configurable assumption) → investigate the ring as a batch. Confirmation needs bank link data (Phase-2); `src/mule_network.py`.
 - **Business impact:** ≈ **₹1.7 crore saved** per 9,082-account population at **85–89% mules caught** (analyst-capacity-bound).
 - **Calibration:** CV Brier 0.0022. **Latency:** score + SHAP ≈ 35 ms (p95). **Recall:** ≈72% of mules (58/81) score ≥70/100.
 

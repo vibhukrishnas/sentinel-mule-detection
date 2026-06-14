@@ -96,10 +96,48 @@ def main():
     plt.axis("off"); plt.tight_layout()
     plt.savefig(FIG / "11_mule_network.png", bbox_inches="tight"); plt.close()
 
+    # ---- validation: is candidate Ring #1 tighter than chance, and stable? ----
+    # honest backing for the Section-7 caveat: we have NO ground-truth links, so we test
+    # (a) intra-ring similarity vs random legit subsets, (b) stability under feature subsampling.
+    rng = np.random.RandomState(42)
+    idxall = {a: i for i, a in enumerate(X.index)}
+    allZ = StandardScaler().fit_transform(SimpleImputer(strategy="median").fit_transform(X[topf]))
+    allS = cosine_similarity(allZ); np.fill_diagonal(allS, 0.0)
+    val = {}
+    if comps:
+        ring1 = sorted(int(a) for a in comps[0])
+        ri = [idxall[a] for a in ring1]
+        sub = allS[np.ix_(ri, ri)]
+        val["ring1_intra_sim"] = float(sub[np.triu_indices_from(sub, k=1)].mean())
+        legit = [idxall[a] for a in X.index[y.values == 0]]
+        draws = [allS[np.ix_(p, p)][np.triu_indices(len(ring1), k=1)].mean()
+                 for p in (rng.choice(legit, size=len(ring1), replace=False) for _ in range(300))]
+        val["legit_subset_sim_mean"] = float(np.mean(draws))
+        val["legit_subset_sim_p95"] = float(np.percentile(draws, 95))
+        # stability: rebuild the graph on 80% feature subsamples, Jaccard of largest component vs Ring #1
+        base_set, jac, nf = set(ring1), [], len(topf)
+        for _ in range(30):
+            cols = rng.choice(nf, size=max(5, int(nf * 0.8)), replace=False)
+            Zi = StandardScaler().fit_transform(SimpleImputer(strategy="median").fit_transform(M.iloc[:, cols]))
+            Si = cosine_similarity(Zi); np.fill_diagonal(Si, 0.0)
+            ti = np.percentile(Si[np.triu_indices_from(Si, k=1)], 94)
+            Gi = nx.Graph(); Gi.add_nodes_from(ids)
+            for a in range(len(ids)):
+                for b in range(a + 1, len(ids)):
+                    if Si[a, b] >= ti:
+                        Gi.add_edge(ids[a], ids[b])
+            cc = set(max(nx.connected_components(Gi), key=len)) if Gi.number_of_edges() else set()
+            union = len(base_set | cc)
+            jac.append(len(base_set & cc) / union if union else 0.0)
+        val["ring1_subsample_stability_jaccard"] = float(np.mean(jac))
+        print(f"validation: Ring#1 intra-sim={val['ring1_intra_sim']:.3f} vs random legit subset "
+              f"{val['legit_subset_sim_mean']:.3f} (p95 {val['legit_subset_sim_p95']:.3f}) | "
+              f"feature-subsample stability Jaccard={val['ring1_subsample_stability_jaccard']:.2f}")
+
     out = {"n_mules": len(ids), "edges": G.number_of_edges(), "mules_with_tie": paired,
            "n_candidate_rings": len(comps), "mules_in_rings": in_rings,
            "ring_sizes": [len(c) for c in comps], "similarity_threshold": float(thr),
-           "rings": rings, "top_features_used": topf}
+           "rings": rings, "validation": val, "top_features_used": topf}
     (ART / "mule_network.json").write_text(json.dumps(out, indent=2, default=float))
     print(f"Saved figures/11_mule_network.png + artifacts/mule_network.json")
 

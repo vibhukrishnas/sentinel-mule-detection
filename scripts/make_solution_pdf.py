@@ -72,12 +72,27 @@ class PDF(FPDF):
 
 pdf = PDF(); pdf.set_auto_page_break(True, margin=15); pdf.set_margins(18, 15, 18)
 
+
+def table(headers, rows, widths, hh=7, rh=6):
+    pdf.set_x(pdf.l_margin); pdf.set_font("Helvetica", "B", 8.5)
+    pdf.set_fill_color(*NAVY); pdf.set_text_color(255, 255, 255)
+    for h, w in zip(headers, widths):
+        pdf.cell(w, hh, " " + san(h), border=1, fill=True)
+    pdf.ln(hh)
+    pdf.set_font("Helvetica", "", 8.5); pdf.set_text_color(20, 20, 20)
+    for r in rows:
+        pdf.set_x(pdf.l_margin)
+        for c, w in zip(r, widths):
+            pdf.cell(w, rh, " " + san(str(c)), border=1)
+        pdf.ln(rh)
+    pdf.ln(2)
+
 # ---------- COVER ----------
 pdf.add_page(); pdf.ln(30)
 pdf.set_font("Helvetica", "B", 30); pdf.set_text_color(*NAVY)
 pdf.mc(0, 14, "SENTINEL", align="C")
 pdf.set_font("Helvetica", "B", 15); pdf.set_text_color(*RED)
-pdf.mc(0, 9, san("Leakage-Proof, Explainable Mule-Account Detection"), align="C"); pdf.ln(1)
+pdf.mc(0, 9, san("Explainable Mule-Account Detection & Containment"), align="C"); pdf.ln(1)
 pdf.set_font("Helvetica", "BI", 12); pdf.set_text_color(40, 40, 40)
 pdf.mc(0, 7, san('"Catch the mules. Trust the score. Defend every number."'), align="C"); pdf.ln(3)
 # honest-differentiator hook (clean single line, no heavy banner)
@@ -104,10 +119,11 @@ pdf.mc(0, 6.5, san("One line: SENTINEL is the leakage-proof DETECTION & CONTAINM
 # ---------- EXECUTIVE SUMMARY ----------
 pdf.add_page(); pdf.h1("Executive Summary - the 30-second story")
 pdf.set_font("Helvetica", "B", 11.5); pdf.set_text_color(*NAVY)
-pdf.mc(0, 6, san("In one sentence: we found the leakage, removed it, built a defensible model, and turned it "
-                 "into an explainable analyst tool.")); pdf.ln(1); pdf.set_text_color(0, 0, 0)
-pdf.bullet("What it is: SENTINEL detects mule accounts with LEAKAGE-SAFE scoring and EXPLAINABLE containment "
-           "(monitor / hold / escalate).")
+pdf.mc(0, 6, san("In one sentence: SENTINEL detects mule accounts, explains every alert, recommends a "
+                 "containment action, and surfaces the candidate ring behind each one - and we made the score "
+                 "trustworthy by removing the data leakage that fakes a perfect result.")); pdf.ln(1); pdf.set_text_color(0, 0, 0)
+pdf.bullet("What it is: SENTINEL detects mule accounts and drives EXPLAINABLE containment "
+           "(monitor / hold / escalate) - from a single alert to the candidate ring behind it.")
 pdf.bullet("Honest headline: PR-AUC 0.81-0.89 (repeated CV). We removed the data leakage that fakes a perfect "
            "1.0 and report a number we can defend.")
 pdf.bullet("Why you can trust it: an automated Data Integrity Auditor caught ~585 leak features; every alert "
@@ -252,10 +268,17 @@ pdf.body("The score maps to a tiered ACTION, so the output is a decision, not ju
          "outbound + same-day analyst review; 90-100 CRITICAL -> freeze + escalate to L2 + SAR. Thresholds are "
          "configurable to the bank's risk appetite and analyst capacity.")
 pdf.h2("How we compare")
+table(["Capability", "Rule engine", "Generic ML", "SENTINEL"],
+      [["Leakage audit (provable)", "No", "No", "Yes"],
+       ["Explainable per-alert reasons", "Limited", "Partial", "Yes"],
+       ["Mule-RING discovery", "No", "No", "Yes (prototype)"],
+       ["Containment actions (hold/escalate)", "No", "No", "Yes"],
+       ["Calibrated rupee impact", "No", "Rare", "Yes"]],
+      [70, 26, 28, 40])
 pdf.body("vs RBI MuleHunter.AI / NPCI pilots: same regulatory target, but we add explainable alerts and "
-         "PROVABLE leakage-free scoring (not publicly documented for those). vs traditional rule engines: we "
-         "catch the non-monotonic, networked patterns rules miss. vs black-box ML: every "
-         "score is explained and every number is leakage-audited - we trade a fake 1.0 for a defensible 0.885.")
+         "PROVABLE leakage-free scoring (not publicly documented for those). vs rule engines: we catch the "
+         "non-monotonic, networked patterns rules miss. vs black-box ML: every score is explained and every "
+         "number is leakage-audited.")
 
 # ---------- 3. RESULTS ----------
 pdf.add_page(); pdf.h1("5. Results (honest, measured, leakage-removed)")
@@ -313,20 +336,28 @@ pdf.figure("11_mule_network.png", 150,
            "Working prototype on the provided data: 67 of 81 mules share a tight behavioral twin, forming 5 "
            "candidate rings - incl. one dominant 50-account cluster a desk would investigate as a batch.")
 pdf.body("Result (real, on this dataset): 67/81 mules cluster into 5 candidate rings; the largest is 50 "
-         "near-identical accounts. This is the SAME engine that, fed real shared-device / beneficiary / "
-         "transaction edges (Phase-2), becomes production mule-NETWORK detection - we show the capability "
-         "today rather than only promising it.")
+         "behaviourally near-identical accounts. This is the SAME engine that, fed real shared-device / "
+         "beneficiary / transaction edges (Phase-2), becomes production mule-NETWORK detection - we show the "
+         "capability today rather than only promising it.")
+pdf.h2("Is it a real ring? What we can and cannot claim (honest)")
+pdf.body("We CANNOT claim these are confirmed criminal rings - that needs transaction / device-link data we "
+         "do not have. What we CAN show, measured on this data: (1) candidate Ring #1's members are ~30x more "
+         "similar to each other than a random legit group (mean pairwise similarity 0.43 vs 0.01, well above "
+         "the 95th-percentile chance ceiling of 0.04); (2) the cluster is STABLE - it recurs at 82% overlap "
+         "(Jaccard) when 20% of features are randomly dropped, so it is not an artefact of one feature; "
+         "(3) it is a PROXY for real links. We show the capability today; confirmation needs bank link data.")
 pdf.ln(1)
 pdf.set_draw_color(*NAVY); pdf.set_fill_color(245, 246, 250)
 pdf.set_font("Helvetica", "B", 10.5); pdf.set_text_color(*NAVY)
-pdf.mc(0, 6, san("Case study: how SENTINEL stops a ring (real account from this data)"),
+pdf.mc(0, 6, san("Case study: how SENTINEL works a candidate ring (real account from this data)"),
        border="LTR", fill=True)
 pdf.set_font("Helvetica", "", 9.5); pdf.set_text_color(20, 20, 20)
 pdf.mc(0, 5.0, san("Account #9003 is flagged -> risk score 100 / CRITICAL (Section 6 shows its live scoring "
-       "card & SHAP reasons). SENTINEL then asks the network question: #9003 is the hub of candidate Ring #1 "
-       "- 50 behaviourally near-identical accounts. Estimated exposure ~Rs 1.25 crore (50 x Rs 2.5L avg mule "
-       "loss). Analyst action: don't chase one account - freeze + investigate the batch, with the auto-built "
-       "report as evidence. One alert -> a whole ring contained."),
+       "card & SHAP reasons). SENTINEL then asks the network question: #9003 is a central node in candidate "
+       "Ring #1 - 50 behaviourally near-identical accounts. Potential exposure (estimate, configurable bank "
+       "assumption): ~Rs 1.25 crore at Rs 2.5L average mule loss. Analyst action: don't chase one account - "
+       "investigate the candidate ring as a batch, with the auto-built report as evidence. One alert -> a "
+       "whole candidate ring surfaced for review."),
        border="LBR", fill=True)
 pdf.set_text_color(0, 0, 0); pdf.ln(1)
 
@@ -339,6 +370,19 @@ pdf.body("Translating the threshold into money (assumptions, configurable: avg m
          "across thresholds, so the operating point is analyst-capacity-bound - the bank chooses the "
          "recall/alert-volume trade-off it can staff.")
 pdf.figure("09_cost_curve.png", 135, "Fig 5. Net Rs-savings and recall vs alert threshold.")
+pdf.h2("Analyst workload reduction (the value a fraud desk feels first)")
+pdf.body("Banks don't buy a model - they buy back analyst hours and caught fraud. SENTINEL turns an "
+         "un-triageable book into a short, ranked, explained queue:")
+table(["Stage", "Accounts", "What the analyst does"],
+      [["Whole book", "9,082", "impossible to review manually"],
+       ["True mules hidden inside", "81 (0.89%)", "the needles to find"],
+       ["SENTINEL top-50 watchlist", "50", "review THIS, ranked + explained"],
+       ["True mules in that watchlist", "50 / 50", "every reviewed account was a real mule (OOF)"]],
+      [56, 30, 78])
+pdf.body("Effect: the analyst reviews ~50 explained accounts instead of 9,082 - a >99% triage reduction on "
+         "this data - and each comes with plain-English reasons and a recommended action, so a decision takes "
+         "minutes. That operational lift (hours saved + fraud caught) is the primary purchase driver; the "
+         "rupee and market figures below quantify it.")
 pdf.h2("Intelligent, explainable alerts (PS2's 'intelligent alert generation')")
 pdf.body("Every alert carries: a 0-100 risk score + severity band (LOW/MEDIUM/HIGH/CRITICAL), the top "
          "SHAP-driven reasons in plain English, the account's deviation vs its peer cohort, a recommended "
@@ -357,20 +401,6 @@ pdf.body("Revenue & sustainability: per-bank annual licence + a per-account-scor
          "regulator credibility and a measurable ROI, with a low-friction pilot on the bank's existing data.")
 
 # ---------- 8. MARKET / BUSINESS / TRACTION ----------
-def table(headers, rows, widths, hh=7, rh=6):
-    pdf.set_x(pdf.l_margin); pdf.set_font("Helvetica", "B", 8.5)
-    pdf.set_fill_color(*NAVY); pdf.set_text_color(255, 255, 255)
-    for h, w in zip(headers, widths):
-        pdf.cell(w, hh, " " + san(h), border=1, fill=True)
-    pdf.ln(hh)
-    pdf.set_font("Helvetica", "", 8.5); pdf.set_text_color(20, 20, 20)
-    for r in rows:
-        pdf.set_x(pdf.l_margin)
-        for c, w in zip(r, widths):
-            pdf.cell(w, rh, " " + san(str(c)), border=1)
-        pdf.ln(rh)
-    pdf.ln(2)
-
 pdf.add_page(); pdf.h1("9. Market, Business Model & Traction")
 pdf.h2("Market opportunity (illustrative, bottom-up)")
 pdf.body("Bottom-up estimates with explicit assumptions; exact market value to be finalised from RBI Annual "

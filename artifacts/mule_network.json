@@ -126,6 +126,12 @@
       "exposure_rupees": 750000
     }
   ],
+  "validation": {
+    "ring1_intra_sim": 0.43069860339164734,
+    "legit_subset_sim_mean": 0.013661758042871952,
+    "legit_subset_sim_p95": 0.042493466287851334,
+    "ring1_subsample_stability_jaccard": 0.8205559805190386
+  },
   "top_features_used": [
     "F1921",
     "F3811",
