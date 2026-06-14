@@ -33,7 +33,7 @@ SENTINEL is the **leakage-proof detection & containment core** of a real-time mu
 - **Business impact:** ≈ **₹1.7 crore saved** per 9,082-account population at **85–89% mules caught** (analyst-capacity-bound).
 - **Calibration:** CV Brier 0.0022. **Latency:** score + SHAP ≈ 35 ms (p95). **Recall:** ≈72% of mules (58/81) score ≥70/100.
 
-Full leaderboard, sensitivity sweep, threshold dial, and every caveat: **[`RESULTS.md`](RESULTS.md)**. Model card: **[`MODEL_CARD.md`](MODEL_CARD.md)**.
+Full leaderboard, sensitivity sweep, threshold dial, and every caveat: **[`docs/RESULTS.md`](docs/RESULTS.md)**. Model card: **[`docs/MODEL_CARD.md`](docs/MODEL_CARD.md)**.
 
 ## Repository structure
 
@@ -41,9 +41,13 @@ Full leaderboard, sensitivity sweep, threshold dial, and every caveat: **[`RESUL
 .
 ├── app.py                          Streamlit demo dashboard (deploy entry point)
 ├── requirements.txt · packages.txt Pinned deps (+ libgomp1 for LightGBM)
-├── SOLUTION_APPROACH_PS2.pdf       Hackathon submission deck
-├── RESULTS.md · MODEL_CARD.md · PRD_PS2_Mule_Account_Detection.md
-├── DATA_INTEGRITY_AUDIT.md · DEPLOY.md
+├── docs/                           submission PDF + all write-ups
+│   ├── SOLUTION_APPROACH_PS2.pdf   hackathon submission deck
+│   ├── RESULTS.md · MODEL_CARD.md · PRD_PS2_Mule_Account_Detection.md
+│   └── DATA_INTEGRITY_AUDIT.md · DEPLOY.md
+├── scripts/                        deliverable generators
+│   ├── make_solution_pdf.py        builds docs/SOLUTION_APPROACH_PS2.pdf
+│   └── make_colab_notebook.py      builds colab/ notebook
 ├── src/
 │   ├── preprocess.py               hygiene, encode, missingness flags, auto leak removal
 │   ├── data_integrity_auditor.py   4-signature leakage audit (the differentiator)
@@ -72,7 +76,7 @@ Full leaderboard, sensitivity sweep, threshold dial, and every caveat: **[`RESUL
 ```bash
 pip install -r requirements.txt
 python src/preprocess.py              # cache clean, leak-removed matrix  (needs DataSet.csv)
-python src/data_integrity_auditor.py  # leakage audit  → DATA_INTEGRITY_AUDIT.md
+python src/data_integrity_auditor.py  # leakage audit  → docs/DATA_INTEGRITY_AUDIT.md
 python src/honest_eval.py             # honest leaderboard + bands + latency
 python src/finalize.py LightGBM       # train + calibrate winner → artifacts/
 python src/insights.py                # ₹-cost curve, error analysis, typology
@@ -85,7 +89,7 @@ uvicorn src.api:app                   # real-time scoring API
 
 ## Deploy
 
-The demo deploys free on **Streamlit Community Cloud** in ~10 min — see **[`DEPLOY.md`](DEPLOY.md)**. Live demo: `[demo URL]`.
+The demo deploys free on **Streamlit Community Cloud** in ~10 min — see **[`docs/DEPLOY.md`](docs/DEPLOY.md)**. Live demo: `[demo URL]`.
 
 ## Honest limitations (stated, not hidden)
 

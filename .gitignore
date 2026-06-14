@@ -13,3 +13,6 @@ __pycache__/
 memory.md
 Topic.pdf
 BOI hackathon manual.pdf
+# agent / editor internals (not part of the solution)
+.claude/
+.vscode/

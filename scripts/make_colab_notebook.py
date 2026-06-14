@@ -196,6 +196,6 @@ nb = {"cells": cells,
                    "language_info": {"name": "python"}, "colab": {"provenance": []}},
       "nbformat": 4, "nbformat_minor": 0}
 
-out = Path("colab"); out.mkdir(exist_ok=True)
+out = Path(__file__).resolve().parent.parent / "colab"; out.mkdir(exist_ok=True)
 (out / "SENTINEL_PS2_Colab.ipynb").write_text(json.dumps(nb, indent=1))
 print("wrote colab/SENTINEL_PS2_Colab.ipynb with", len(cells), "cells")

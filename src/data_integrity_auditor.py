@@ -139,7 +139,8 @@ def _write_markdown(res, counts, base, n_block):
         lines.append(f"| {r.feature} | {r.severity} | {r.univariate_auc} | "
                      f"{r.best_bucket_fraud_rate:.0%} | {r.lift_vs_base}× | "
                      f"{'yes' if r.bank_listed else 'no'} |")
-    (ROOT / "DATA_INTEGRITY_AUDIT.md").write_text("\n".join(lines), encoding="utf-8")
+    (ROOT / "docs").mkdir(exist_ok=True)
+    (ROOT / "docs" / "DATA_INTEGRITY_AUDIT.md").write_text("\n".join(lines), encoding="utf-8")
 
 
 if __name__ == "__main__":

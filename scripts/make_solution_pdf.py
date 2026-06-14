@@ -10,7 +10,7 @@ from pathlib import Path
 from fpdf import FPDF
 from fpdf.enums import XPos, YPos
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent   # scripts/ -> repo root
 FIG = ROOT / "figures"
 NAVY, RED, GREY = (31, 59, 110), (200, 30, 45), (90, 90, 90)
 
@@ -103,6 +103,12 @@ pdf.mc(0, 6.5, san("One line: SENTINEL is the leakage-proof DETECTION & CONTAINM
 
 # ---------- 1. PROBLEM ----------
 pdf.add_page(); pdf.h1("1. Problem Understanding")
+pdf.set_font("Helvetica", "BI", 10.5); pdf.set_text_color(*RED)
+pdf.mc(0, 5.6, san("Mule accounts are the conduit for nearly all cyber-enabled financial fraud in India - "
+    "fraud that runs into thousands of crores a year - which is why RBI made it a national priority and "
+    "launched MuleHunter.AI. The bottleneck is no longer 'can we detect it' but 'can we detect it FAST, "
+    "explain it, and stop the money before it disperses'."))
+pdf.ln(2); pdf.set_text_color(0, 0, 0)
 pdf.body("Mule accounts receive, move and launder fraudulent funds across banking channels. "
          "Rule-based monitoring is reactive, brittle, and drowns analysts in false positives. "
          "PS2 asks us to learn behavioural / transactional patterns from the provided data to "
@@ -254,6 +260,11 @@ pdf.figure("08_leakage_sensitivity.png", 140,
 pdf.add_page(); pdf.h1("6. See It Work - Live System Output")
 pdf.body("These are REAL outputs from our running engine for mule account #9003 (not mockups) - the exact "
          "score, SHAP reasons, investigation report and API response an analyst/system receives.")
+pdf.h2("Analyst workflow (how it is used)")
+pdf.body("Open the dashboard -> accounts ranked by risk -> click a flagged account -> read its score, the "
+         "plain-English SHAP reasons and peer-deviation -> trigger the recommended containment action "
+         "(hold / escalate) with the auto-generated report attached as evidence. The screens below are the "
+         "exact steps in that flow.")
 pdf.figure("shot_scoring_card.png", 165,
            "Fig 5. Real-time scoring card: a calibrated risk score, severity band, the SHAP drivers behind it, "
            "and a recommended action.")
@@ -277,6 +288,18 @@ pdf.h2("Intelligent, explainable alerts (PS2's 'intelligent alert generation')")
 pdf.body("Every alert carries: a 0-100 risk score + severity band (LOW/MEDIUM/HIGH/CRITICAL), the top "
          "SHAP-driven reasons in plain English, the account's deviation vs its peer cohort, a recommended "
          "action, and an auto-generated investigation report - so an analyst acts in minutes, not hours.")
+pdf.h2("Go-to-market & sustainability (B2B / regulated)")
+pdf.body("Users & buyers: PSU & private banks' fraud, AML and transaction-monitoring desks (buyer: CRO / "
+         "Head of Fraud), plus payment bodies (NPCI) and regulator programmes (RBIH).")
+pdf.body("Deployment: on-prem / bank-VPC - data never leaves the bank - integrating with core banking and "
+         "the existing transaction-monitoring + case-management systems; scoring on-demand via the REST API.")
+pdf.body("Adoption path: single-bank pilot on the bank's own book (prove precision@50) -> production scoring "
+         "-> multi-bank consortium / federated intelligence - the same distribution model RBIH uses for "
+         "MuleHunter.AI.")
+pdf.body("Revenue & sustainability: per-bank annual licence + a per-account-scored usage tier; the shared "
+         "cross-bank intelligence layer is regulator / consortium-funded. The cost to a bank is a small "
+         "fraction of the fraud prevented (~Rs 1.7 cr per 9,082 accounts above). Acquisition is pulled by "
+         "regulator credibility and a measurable ROI, with a low-friction pilot on the bank's existing data.")
 
 # ---------- 5. FEASIBILITY / ROADMAP ----------
 pdf.add_page(); pdf.h1("8. Feasibility, Prototype Roadmap & Honesty")
@@ -310,6 +333,7 @@ pdf.ln(2); pdf.set_font("Helvetica", "B", 10.5); pdf.set_text_color(*NAVY)
 pdf.mc(0, 5.5, san("Bottom line: most teams will present a fake 1.000. We present a defensible 0.885, a "
     "100%-precision watchlist, a rupee impact, and the leakage audit that proves we earned it."))
 
-out = ROOT / "SOLUTION_APPROACH_PS2.pdf"
+(ROOT / "docs").mkdir(exist_ok=True)
+out = ROOT / "docs" / "SOLUTION_APPROACH_PS2.pdf"
 pdf.output(str(out))
 print(f"Wrote {out} ({out.stat().st_size//1024} KB, {pdf.page_no()} pages)")
