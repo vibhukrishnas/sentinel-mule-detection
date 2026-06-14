@@ -30,6 +30,7 @@ SENTINEL is the **leakage-proof detection & containment core** of a real-time mu
 | LogReg (L2) | 0.404 ± 0.059 | 0.936 | 0.0103 |
 
 - **🎯 precision@50 = 100%** — the 50 highest-risk accounts are *all 50 real mules*, zero false positives (in a 0.89%-mule population). → `outputs/top_suspicious_accounts.csv`
+- **Mule-ring prototype:** a behavioral-similarity graph groups **67 of 81 mules into 5 candidate rings** (largest = 50 near-identical accounts) — network output today, production link-analysis in Phase-2 (`src/mule_network.py`).
 - **Business impact:** ≈ **₹1.7 crore saved** per 9,082-account population at **85–89% mules caught** (analyst-capacity-bound).
 - **Calibration:** CV Brier 0.0022. **Latency:** score + SHAP ≈ 35 ms (p95). **Recall:** ≈72% of mules (58/81) score ≥70/100.
 
@@ -62,7 +63,8 @@ Full leaderboard, sensitivity sweep, threshold dial, and every caveat: **[`docs/
 │   ├── sentinel.py                 real-time scoring + SHAP + investigation reports
 │   ├── feature_meanings.py         honest, hedged feature semantics
 │   ├── api.py                      FastAPI /score + /report service
-│   ├── arch_diagram.py             architecture diagram (for the deck)
+│   ├── mule_network.py             mule-RING prototype (behavioral-similarity graph)
+│   ├── arch_diagram.py · leak_story_fig.py   deck visuals
 │   └── demo_shots.py               live product screenshots (for the deck)
 ├── artifacts/                      trained model + stats + metrics (deployable, ~13 MB)
 ├── figures/                        generated plots + product screenshots
@@ -81,6 +83,7 @@ python src/honest_eval.py             # honest leaderboard + bands + latency
 python src/finalize.py LightGBM       # train + calibrate winner → artifacts/
 python src/insights.py                # ₹-cost curve, error analysis, typology
 python src/results_pack.py            # figures/ + outputs/ (predictions + watchlist)
+python src/mule_network.py            # mule-ring prototype → figures/11_mule_network.png
 python -m pytest tests/ -q            # smoke tests
 streamlit run app.py                  # live demo dashboard
 uvicorn src.api:app                   # real-time scoring API

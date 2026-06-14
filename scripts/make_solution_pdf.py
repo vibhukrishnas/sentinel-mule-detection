@@ -112,9 +112,11 @@ pdf.bullet("Honest headline: PR-AUC 0.81-0.89 (repeated CV). We removed the data
            "1.0 and report a number we can defend.")
 pdf.bullet("Why you can trust it: an automated Data Integrity Auditor caught ~585 leak features; every alert "
            "carries a plain-English reason.")
-pdf.bullet("Built today vs next: the detection core + API + dashboard + scored watchlist are built on the "
-           "PROVIDED SNAPSHOT. Live feeds + graph mule-ring detection are Phase-2 (marked solid vs dashed in "
-           "the architecture).")
+pdf.bullet("Beyond single accounts: a working mule-RING prototype groups 67 of 81 mules into 5 candidate "
+           "rings (behavioral-similarity graph) - real network output today; production link-analysis is Phase-2.")
+pdf.bullet("Built today vs next: detection core + API + dashboard + scored watchlist + ring prototype are "
+           "built on the PROVIDED SNAPSHOT. Live feeds + link-based graph analysis are Phase-2 (solid vs "
+           "dashed in the architecture).")
 pdf.bullet("'Real-time' = on-demand low-latency account scoring (~35 ms), NOT stream processing - the "
            "provided data is an account snapshot.")
 pdf.bullet("The ask: a design-partner bank pilot to validate on real labels.")
@@ -298,8 +300,22 @@ pdf.figure("shot_investigation.png", 175,
            "Fig 7. The one-click, auto-generated investigation report - analyst-ready, with confidence caveats "
            "and the leakage note built in.")
 
-# ---------- 4. IMPACT + ALERTS ----------
-pdf.add_page(); pdf.h1("7. Business Impact & Intelligent Alerts")
+# ---------- 7. MULE-RING DETECTION ----------
+pdf.add_page(); pdf.h1("7. Mule-Ring Detection - from accounts to networks (prototype)")
+pdf.body("Banks don't just want one flagged account - they want the RING. The provided data has NO explicit "
+         "link data (shared device / IP / beneficiary / transactions), so we build a BEHAVIORAL-SIMILARITY "
+         "graph: an edge joins two mules that are near-identical on the genuine (leak-removed) features - a "
+         "data-grounded proxy for those links. Connected components = candidate rings to investigate together.")
+pdf.figure("11_mule_network.png", 150,
+           "Working prototype on the provided data: 67 of 81 mules share a tight behavioral twin, forming 5 "
+           "candidate rings - incl. one dominant 50-account cluster a desk would investigate as a batch.")
+pdf.body("Result (real, on this dataset): 67/81 mules cluster into 5 candidate rings; the largest is 50 "
+         "near-identical accounts. This is the SAME engine that, fed real shared-device / beneficiary / "
+         "transaction edges (Phase-2), becomes production mule-NETWORK detection - we show the capability "
+         "today rather than only promising it.")
+
+# ---------- 8. IMPACT + ALERTS ----------
+pdf.add_page(); pdf.h1("8. Business Impact & Intelligent Alerts")
 pdf.h2("Rupee-cost decision engine (banks act on money, not PR-AUC)")
 pdf.body("Translating the threshold into money (assumptions, configurable: avg mule loss Rs 2,50,000; "
          "analyst review Rs 400; false-positive harm Rs 5,000): at a practical operating point we catch "
@@ -339,7 +355,7 @@ def table(headers, rows, widths, hh=7, rh=6):
         pdf.ln(rh)
     pdf.ln(2)
 
-pdf.add_page(); pdf.h1("8. Market, Business Model & Traction")
+pdf.add_page(); pdf.h1("9. Market, Business Model & Traction")
 pdf.h2("Market opportunity (illustrative, bottom-up)")
 pdf.body("Bottom-up estimates with explicit assumptions; exact market value to be finalised from RBI Annual "
          "Report fraud statistics, I4C / NCRP and industry AML-tech reports.")
@@ -382,7 +398,7 @@ pdf.body("Why this is winnable, not wishful: a hard regulatory mandate (RBI Mule
          "shorten enterprise-bank sales cycles.")
 
 # ---------- 9. FEASIBILITY / ROADMAP ----------
-pdf.add_page(); pdf.h1("9. Feasibility, Prototype Roadmap & Honesty")
+pdf.add_page(); pdf.h1("10. Feasibility, Prototype Roadmap & Honesty")
 pdf.h2("Already working (reproducible)")
 for b in ["End-to-end pipeline (preprocess -> auditor -> model -> finalize -> insights -> scoring).",
           "Real-time FastAPI /score + /report service (~35 ms) and a Streamlit analyst dashboard.",
@@ -394,8 +410,8 @@ pdf.mc(0, 5.2, san("Reproducible end-to-end - run it yourself.   Repo: [GitHub l
                    "Live demo: [demo URL]   |   demo video: [link]"))
 pdf.set_text_color(0, 0, 0)
 pdf.h2("Phase-2 prototype plan (1 Jul - 17 Aug)")
-for b in ["GRAPH mule-RING detection (the standout upgrade): ingest shared device / IP / beneficiary links + "
-          "circular fund-flow to catch networks, not just isolated accounts.",
+for b in ["GRAPH mule-RING detection: PROTOTYPE already built (behavioral-similarity graph, see Section 7); "
+          "production version ingests real shared device / IP / beneficiary + circular-flow edges.",
           "Multi-feed fusion: live transaction streams + fraud / txn-monitoring alerts + govt cyber-fraud "
           "tickets + RBI/regulatory feeds, scored in real time to PREVENT CIRCULATION.",
           "Confirm with the bank which near-label features are pre- vs post-event (locks the exact number); "
