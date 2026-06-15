@@ -2,6 +2,10 @@
 DataSet.csv
 artifacts/X_clean.parquet
 artifacts/y.parquet
+# Full account matrix — bank data, NOT for the public repo. Upload it live in the
+# app to demo all 9,082 accounts; the committed samples/sample_accounts.csv suffices otherwise.
+artifacts/all_accounts.parquet
+artifacts/all_targets.parquet
 # Python caches
 __pycache__/
 *.pyc

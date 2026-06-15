@@ -1,8 +1,11 @@
 # Deploying the SENTINEL demo (free, ~10 minutes)
 
 The Streamlit dashboard (`app.py`) needs only the small artifacts in `artifacts/`,
-`outputs/`, `figures/` — **not** the 112 MB `DataSet.csv` or 18 MB `X_clean.parquet`
-(both git-ignored). Total deploy footprint ≈ 13 MB.
+`outputs/`, `figures/` plus `samples/sample_accounts.csv` — **not** the 112 MB
+`DataSet.csv`, 18 MB `X_clean.parquet`, or the full `artifacts/all_accounts.parquet`
+(all git-ignored). Total deploy footprint ≈ 18 MB. The demo runs on the committed
+sample out-of-box; use the in-app **CSV uploader** to score the full `DataSet.csv`
+(or a cleaned export) live without publishing it.
 
 ---
 

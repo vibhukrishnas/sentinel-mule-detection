@@ -90,6 +90,12 @@ uvicorn src.api:app                   # real-time scoring API
 ```
 > Place the provided `DataSet.csv` in the repo root before running the pipeline (it is git-ignored). The Streamlit demo runs on the committed `artifacts/` alone — no raw data needed.
 
+### Data handling (why the full dataset isn't in this repo)
+The bank-provided dataset is **not redistributed** in this public repo (the hackathon grants no redistribution right — it's "data provided in this portal" for building the solution). So:
+- The demo ships a small **`samples/sample_accounts.csv`** (all known mules + a legit sample) so every flagged/watchlist account is verifiable out-of-box.
+- The dashboard has a **CSV uploader** — drop in the raw `DataSet.csv` (or a cleaned export) and the *entire* dashboard re-scores on it live (`src/preprocess.py::prepare_frame` re-applies the exact, saved, target-free cleaning). Uploaded data stays in-session; it is not stored.
+- The full 9,082-account matrix (`artifacts/all_accounts.parquet`) is **git-ignored** — generate it locally and upload it in the app to demo the whole population without publishing it.
+
 ## Deploy
 
 The demo deploys free on **Streamlit Community Cloud** in ~10 min — see **[`docs/DEPLOY.md`](docs/DEPLOY.md)**. Live demo: `[demo URL]`.

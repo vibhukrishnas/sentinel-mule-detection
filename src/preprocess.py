@@ -187,6 +187,49 @@ def load_and_clean(verbose: bool = True, apply_bucket_leaks: bool = True):
     return X, y, report, cat_maps
 
 
+def transform_raw(df_raw, columns, cat_maps):
+    """Map a RAW DataSet.csv-style frame (F1..F3923 [, F3924]) into the model's
+    cleaned feature matrix — same columns/order the model was trained on — using the
+    SAVED categorical maps + column list. Re-applies the exact deterministic, target-free
+    steps from load_and_clean (encode categoricals, rebuild missingness flags, align).
+    Returns (X_model_aligned, y_or_None). Lets the app score newly-uploaded raw data."""
+    df = df_raw.copy()
+    y = None
+    if TARGET in df.columns:
+        y = df[TARGET]
+        df = df.drop(columns=[TARGET])
+    raw_na = df.isna()                                   # flags use pre-encoding NA
+    for c, mapping in cat_maps.items():                  # ordinal-encode per saved map
+        if c in df.columns:
+            df[c] = df[c].map(lambda v: mapping.get(str(v), np.nan) if pd.notna(v) else np.nan)
+    suffix = "__ismissing"
+    data = {}
+    for col in columns:
+        if col.endswith(suffix):
+            base = col[:-len(suffix)]
+            data[col] = raw_na[base].astype("float32") if base in raw_na.columns else np.float32(1.0)
+        elif col in df.columns:
+            data[col] = pd.to_numeric(df[col], errors="coerce").astype("float32")
+        else:
+            data[col] = np.float32(np.nan)
+    X = pd.DataFrame(data, index=df.index, columns=columns).astype("float32")
+    return X, (y.astype(int) if y is not None else None)
+
+
+def prepare_frame(df, columns, cat_maps):
+    """Accept EITHER a raw DataSet.csv frame or an already-cleaned matrix and return
+    (X_model_aligned, y_or_None). Cleaned frames carry the `__ismissing` flag columns;
+    raw frames don't — that's the discriminator."""
+    has_flags = any(str(c).endswith("__ismissing") for c in df.columns)
+    if has_flags:                                        # already cleaned
+        y = None
+        if "target" in df.columns:
+            y = df["target"].astype(int)
+            df = df.drop(columns=["target"])
+        return df.reindex(columns=columns).astype("float32"), y
+    return transform_raw(df, columns, cat_maps)          # raw → transform
+
+
 def cache():
     X, y, report, cat_maps = load_and_clean()
     X.to_parquet(ART / "X_clean.parquet")
