@@ -265,6 +265,14 @@ if has_labels:
     cA.metric("Mules caught", f"{_tp}/{_tp+_fn}", help=f"recall {_recall:.0%}")
     cB.metric("False alarms", f"{_fp}", help=f"precision {_prec:.0%}")
 
+# editable cost assumptions — don't trust ours, plug in YOUR numbers (the ₹ impact recomputes)
+st.sidebar.divider()
+with st.sidebar.expander("💰 Cost assumptions (edit me)"):
+    st.caption("The ₹ impact on the Analytics tab uses these — set your own.")
+    mule_loss = st.number_input("Avg loss per missed mule (₹)", 0, 10_000_000, MULE_LOSS, 50_000)
+    review_cost = st.number_input("Analyst review cost / alert (₹)", 0, 100_000, REVIEW_COST, 100)
+    fp_harm = st.number_input("Cost of freezing a legit customer (₹)", 0, 1_000_000, FP_HARM, 1_000)
+
 # ================================== HEADER + SCORECARD ==================================
 st.title("🛡️ SENTINEL — Suspicious / Mule Account Risk Engine")
 st.caption("BOI Hackathon · PS2 · Calibrated risk scoring with explainable, "
@@ -470,14 +478,15 @@ with tab_an:
         alerts = tp + fp
         recall = tp / (tp + fn) if (tp + fn) else 0.0
         prec = tp / alerts if alerts else 0.0
-        net = tp * MULE_LOSS - alerts * REVIEW_COST - fp * FP_HARM
+        net = tp * mule_loss - alerts * review_cost - fp * fp_harm
         k1, k2, k3, k4, k5 = st.columns(5)
         k1.metric("Alerts raised", f"{alerts:,}")
         k2.metric("Mules caught", f"{tp}/{tp+fn}", help=f"recall {recall:.0%}")
         k3.metric("Precision", f"{prec:.0%}")
         k4.metric("False alarms", f"{fp:,}")
-        k5.metric("Net ₹ impact", f"₹{net/1e5:.2f} L", help="illustrative: mule loss ₹2.5L, "
-                  "review ₹400, false-freeze ₹5,000 — all configurable")
+        k5.metric("Net ₹ impact", f"₹{net/1e5:.2f} L",
+                  help=f"YOUR assumptions (sidebar): mule loss ₹{mule_loss:,}, review ₹{review_cost:,}, "
+                       f"false-freeze ₹{fp_harm:,}. Edit them — this recomputes live.")
         cm = pd.DataFrame([[tp, fn], [fp, tn]],
                           index=["Actual MULE", "Actual legit"],
                           columns=["Flagged", "Not flagged"])
