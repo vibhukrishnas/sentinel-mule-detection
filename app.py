@@ -2,24 +2,29 @@
 SENTINEL — live demo dashboard for PS2 mule-account detection.
 Run:  streamlit run app.py
 
-Pick a real account -> instant calibrated risk score, plain-English SHAP reasons, an
-analyst-ready investigation report, and a precision/recall dial the risk officer controls.
-Data source is dynamic: upload a CSV (raw DataSet.csv format or a cleaned export) and the
-WHOLE dashboard re-scores on it; otherwise it runs on a committed sample, or the built-in
-demo. The full bank dataset is NOT shipped in this public repo by design.
+Four tabs: Investigate (per-account scoring + SHAP + downloadable report), Analytics
+(dataset + session analytics, live threshold impact), Activity log (audit trail), and
+Model & validation (the fixed, validated metrics). Data source is dynamic — upload a CSV
+(raw DataSet.csv or a cleaned export) and the WHOLE dashboard re-scores on it. The full
+bank dataset is NOT shipped in this public repo by design.
 """
-import sys, json, datetime
+import sys, json, datetime, random
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 import joblib
+import numpy as np
 import pandas as pd
 import streamlit as st
 from sentinel import SentinelEngine, ART, ACTION, band_for
 from preprocess import prepare_frame
 
 st.set_page_config(page_title="SENTINEL · Mule Account Risk Engine", layout="wide")
+
+# illustrative, configurable INR assumptions (mirror src/insights.py)
+MULE_LOSS, REVIEW_COST, FP_HARM = 250_000, 400, 5_000
+BAND_EMOJI = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}
 
 
 @st.cache_resource
@@ -65,10 +70,10 @@ eng = load_engine()
 cols, cat_maps = load_cols_maps()
 metrics = load_metrics()
 
-# ---- dynamic data source (sidebar): upload > sample > demo ----
+# ============================ SIDEBAR: data + global dial ============================
 st.sidebar.header("📥 Data source")
 st.sidebar.caption("Upload the provided **DataSet.csv** (raw) or a cleaned export. The full "
-                   "dataset is not shipped in this public repo; the demo runs on a small "
+                   "dataset isn't shipped in this public repo; the demo runs on a small "
                    "committed sample. Uploaded data stays in this session — it is not stored.")
 up = st.sidebar.file_uploader("Upload account CSV", type=["csv"])
 if up is not None:
@@ -90,14 +95,6 @@ if "src" not in st.session_state:
 X_all, y_all, src_label = st.session_state.src
 st.sidebar.success(f"Active: {src_label}")
 
-
-def gt(i):
-    """Ground-truth label if the data carries one, else None."""
-    if y_all is None:
-        return None
-    return "MULE" if int(y_all.loc[i]) == 1 else "legit"
-
-
 # score the whole active dataset once (deployed model); recompute only on source change
 if st.session_state.get("scores") is None:
     with st.spinner(f"Scoring {len(X_all):,} accounts…"):
@@ -107,12 +104,38 @@ if st.session_state.get("scores") is None:
             {"risk_score": s, "probability": proba, "band": [band_for(v) for v in s]},
             index=X_all.index)
 allscores = st.session_state.scores
+has_labels = y_all is not None
+ym = (y_all.reindex(allscores.index).fillna(0).astype(int) if has_labels else None)
 
+
+def gt(i):
+    return None if not has_labels else ("MULE" if int(y_all.loc[i]) == 1 else "legit")
+
+
+# global risk-officer dial — drives BOTH the per-account alert and the analytics
+st.sidebar.divider()
+st.sidebar.header("🎚️ Alert threshold")
+threshold = st.sidebar.slider(
+    "Flag an account when its mule-probability ≥", 0.01, 0.99, 0.50, 0.01,
+    help="The risk officer's dial. Lower = catch more mules but raise more false alarms. "
+         "Watch the live impact below and on the Analytics tab.")
+_flagged = allscores["probability"] >= threshold
+_alerts = int(_flagged.sum())
+st.sidebar.metric("Accounts flagged at this threshold", f"{_alerts:,} / {len(allscores):,}")
+if has_labels:
+    _tp = int((_flagged & (ym == 1)).sum())
+    _fn = int((~_flagged & (ym == 1)).sum())
+    _fp = int((_flagged & (ym == 0)).sum())
+    _recall = _tp / (_tp + _fn) if (_tp + _fn) else 0.0
+    _prec = _tp / _alerts if _alerts else 0.0
+    cA, cB = st.sidebar.columns(2)
+    cA.metric("Mules caught", f"{_tp}/{_tp+_fn}", help=f"recall {_recall:.0%}")
+    cB.metric("False alarms", f"{_fp}", help=f"precision {_prec:.0%}")
+
+# ================================== HEADER + SCORECARD ==================================
 st.title("🛡️ SENTINEL — Suspicious / Mule Account Risk Engine")
 st.caption("BOI Hackathon · PS2 · Calibrated risk scoring with explainable, "
            "investigation-ready alerts. F3912 (leakage) excluded — these are honest numbers.")
-
-# ---- model scorecard (validated model — fixed, not per-account) ----
 if metrics:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("CV PR-AUC (5×2)", f"{metrics.get('cv_pr_auc', 0):.3f}",
@@ -123,142 +146,212 @@ if metrics:
     c4.metric("Score+explain latency", f"{metrics.get('latency_p95', 0):.0f} ms",
               help="p95, predict_proba + SHAP — real-time ready")
 
-st.divider()
-left, right = st.columns([1, 1.4])
+tab_inv, tab_an, tab_log, tab_model = st.tabs(
+    ["🔍 Investigate", "📊 Analytics", "🧾 Activity log", "📈 Model & validation"])
 
-with left:
-    st.subheader("Select an account")
-    order = list(allscores.sort_values("risk_score", ascending=False).index)
+# ===================================== INVESTIGATE =====================================
+with tab_inv:
+    left, right = st.columns([1, 1.4])
+    with left:
+        st.subheader("Select an account")
+        # neutral picker (ID only) — the score is REVEALED after you pick, not spoiled in the list
+        order = sorted(allscores.index.tolist())
+        if "pick_id" not in st.session_state or st.session_state.pick_id not in order:
+            st.session_state.pick_id = order[0]
+        if st.button("🎲 Random account", help="Jump to a random account — could be a mule or legit."):
+            st.session_state.pick_id = random.choice(order)
+        pick = st.selectbox(f"Account ({len(order):,} loaded · pick one, then see what the model says):",
+                            options=order, index=order.index(st.session_state.pick_id),
+                            format_func=lambda i: f"Account #{i}")
+        st.session_state.pick_id = pick
 
-    def acct_label(i):
-        r = allscores.loc[i]
-        g = gt(i)
-        tag = f" · {g}" if g else ""
-        return f"#{i} · {int(r['risk_score'])}/100 {r['band']}{tag}"
+        account = X_all.loc[pick]
+        sc = eng.score(account)
+        st.markdown(f"### {BAND_EMOJI[sc['band']]} Risk Score: **{sc['risk_score']}/100** ({sc['band']})")
+        st.progress(min(sc["risk_score"], 100) / 100)
+        st.write(f"Calibrated probability of mule activity: **{sc['probability']:.1%}**")
+        g = gt(pick)
+        if g:
+            ok = (g == "MULE") == (sc["probability"] >= threshold)
+            st.write(f"Ground-truth label: **{'MULE' if g=='MULE' else 'LEGITIMATE'}**  "
+                     f"{'✅ model agrees' if ok else '⚠️ model disagrees at current threshold'}")
+        else:
+            st.write("Ground-truth label: **unknown (no label in uploaded data)**")
+        raised = sc["probability"] >= threshold
+        if raised:
+            st.error(f"🚨 ALERT at threshold {threshold:.2f} — {ACTION[sc['band']]}")
+        else:
+            st.success(f"No alert at threshold {threshold:.2f} (probability below the dial).")
 
-    only_flagged = st.checkbox(
-        f"Show only flagged accounts (band ≥ HIGH)  ·  loaded = {len(order):,}",
-        value=False, help="Tick to focus the picker on the high-risk shortlist.")
-    if only_flagged:
-        order = [i for i in order if allscores.loc[i, "band"] in ("HIGH", "CRITICAL")]
-    pick = st.selectbox(f"Account ({len(order):,} shown · sorted by risk, most critical first):",
-                        options=order, format_func=acct_label)
-    st.caption("Scores here are the **deployed model** on the loaded data. If you load the "
-               "full training population they separate cleanly (the model has seen it); the "
-               "*honest* generalization number is the out-of-fold CV in the scorecard above.")
-    threshold = st.slider("Alert threshold (risk officer's dial)", 0.05, 0.99, 0.50, 0.01,
-                          help="Lower = catch more mules but more false alarms.")
+        # rolling audit trail: log each distinct review (account or threshold change)
+        if "audit" not in st.session_state:
+            st.session_state.audit, st.session_state.last_sig = [], None
+        sig = (pick, round(threshold, 2))
+        if sig != st.session_state.last_sig:
+            st.session_state.last_sig = sig
+            st.session_state.audit.append({
+                "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+                "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
+                "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
+                "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
+            })
 
-    account = X_all.loc[pick]
-    sc = eng.score(account)                 # fast: no SHAP, always renders
-    band_color = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}[sc["band"]]
-    st.markdown(f"### {band_color} Risk Score: **{sc['risk_score']}/100** ({sc['band']})")
-    st.progress(min(sc["risk_score"], 100) / 100)
-    st.write(f"Calibrated probability of mule activity: **{sc['probability']:.1%}**")
-    g = gt(pick)
-    st.write(f"Ground-truth label: **{('MULE' if g=='MULE' else 'LEGITIMATE') if g else 'unknown (no label in data)'}**")
-    raised = sc["probability"] >= threshold
-    if raised:
-        st.error(f"🚨 ALERT raised — {ACTION[sc['band']]}")
-    else:
-        st.success("No alert at current threshold.")
-
-    # ---- rolling audit trail: log each distinct review (traceability) ----
-    if "audit" not in st.session_state:
-        st.session_state.audit = []
-        st.session_state.last_sig = None
-    sig = (pick, round(threshold, 2))          # new account or new threshold = new review
-    if sig != st.session_state.last_sig:
-        st.session_state.last_sig = sig
-        st.session_state.audit.append({
-            "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
-            "account": int(pick),
-            "score": sc["risk_score"],
-            "band": sc["band"],
-            "probability": round(sc["probability"], 4),
-            "threshold": round(threshold, 2),
-            "decision": "ALERT" if raised else "clear",
-            "ground_truth": g or "unknown",
-        })
-
-with right:
-    st.subheader("Why — top risk drivers (SHAP)")
-    # SHAP is lazy-loaded on click so the dashboard renders instantly on first
-    # load (and on memory-constrained cloud hosts) — also a live latency demo.
-    if st.button("🔍 Explain this account (SHAP) + investigation report", type="primary"):
-        try:
-            drivers = eng.explain(account, top_k=6)
+    with right:
+        st.subheader("Why — top risk drivers (SHAP) + investigation report")
+        if "expl" not in st.session_state:
+            st.session_state.expl = {}
+        if st.button("🔍 Explain this account + build report", type="primary"):
+            try:
+                drivers = eng.explain(account, top_k=6)
+                report = eng.report(account, account_id=pick)
+                st.session_state.expl[pick] = {"drivers": drivers, "report": report}
+            except Exception as e:
+                st.session_state.expl[pick] = {"error": type(e).__name__}
+        data = st.session_state.expl.get(pick)
+        if not data:
+            st.caption("Click to compute the per-account SHAP attribution and the "
+                       "analyst-ready report (≈35 ms once the explainer warms up).")
+        elif "error" in data:
+            st.warning(f"SHAP unavailable here ({data['error']}). Score and alert are unaffected.")
+        else:
             dd = pd.DataFrame([{
                 "Factor": d["label"], "Value": d["value_readable"],
                 "Effect": ("▲ raises" if d["shap"] > 0 else "▼ lowers"),
                 "Impact": round(abs(d["shap"]), 3), "Context": d["context"],
-            } for d in drivers])
+            } for d in data["drivers"]])
             st.dataframe(dd, hide_index=True, use_container_width=True)
-            st.subheader("📄 Auto-generated investigation report")
-            st.code(eng.report(account, account_id=pick), language="text")
-        except Exception as e:                # never let explainability hang the app
-            st.warning(f"SHAP explanation unavailable in this environment ({type(e).__name__}). "
-                       "Risk score and alert above are unaffected.")
-    else:
-        st.caption("Click to compute the per-account SHAP attribution and the "
-                   "analyst-ready report (≈35 ms once the explainer warms up).")
+            st.subheader("📄 Investigation report")
+            st.code(data["report"], language="text")
+            st.download_button("⬇ Download investigation report (.txt)", data["report"],
+                               file_name=f"SENTINEL_investigation_account_{pick}.txt",
+                               mime="text/plain", key=f"dl_{pick}")
 
-# ---- rolling investigation log (dynamic, per-session, exportable) ----
-st.divider()
-st.subheader("🧾 Investigation activity — this session (live audit trail)")
-audit = st.session_state.get("audit", [])
-if audit:
-    log_df = pd.DataFrame(audit)[::-1].reset_index(drop=True)   # newest first
-    a, b, c = st.columns(3)
-    a.metric("Reviews logged", len(audit))
-    b.metric("Alerts raised", int((log_df["decision"] == "ALERT").sum()))
-    caught = int(((log_df["decision"] == "ALERT") & (log_df["ground_truth"] == "MULE")).sum())
-    c.metric("Mules caught in trail", caught)
-    st.dataframe(log_df, hide_index=True, use_container_width=True)
-    d1, d2 = st.columns([1, 4])
-    d1.download_button("⬇ Export audit log (CSV)",
-                       log_df.to_csv(index=False).encode(),
-                       file_name="sentinel_audit_log.csv", mime="text/csv")
-    if d2.button("Clear log"):
-        st.session_state.audit = []
-        st.session_state.last_sig = None
-        st.rerun()
-    st.caption("Every account you review (and each threshold change) is timestamped and "
-               "appended here — an analyst-ready, exportable audit trail.")
-else:
-    st.caption("Select accounts and adjust the threshold above — each review is logged here "
-               "with a timestamp, the decision, and ground truth, then exportable as CSV.")
+# ====================================== ANALYTICS ======================================
+with tab_an:
+    st.subheader("Population analytics — current dataset")
+    n = len(allscores)
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Accounts loaded", f"{n:,}")
+    if has_labels:
+        m2.metric("Known mules", f"{int((ym==1).sum()):,}")
+        m3.metric("Known legit", f"{int((ym==0).sum()):,}")
+    m4.metric("Flagged (band ≥ HIGH)", f"{int(allscores['band'].isin(['HIGH','CRITICAL']).sum()):,}")
 
-# ---- ranked watchlist (DYNAMIC: recomputed from the loaded data) ----
-st.divider()
-st.subheader("🚨 Watchlist — highest-risk accounts (current dataset)")
-topn = allscores.sort_values("risk_score", ascending=False).head(20).copy()
-topn.insert(0, "account_id", topn.index)
-if y_all is not None:
-    topn["ground_truth"] = [gt(i) for i in topn.index]
-    k = min(50, len(allscores))
-    topk_idx = allscores.sort_values("risk_score", ascending=False).head(k).index
-    hits = int((y_all.loc[topk_idx] == 1).sum())
-    st.caption(f"Top {k} highest-risk accounts contain {hits} confirmed mules "
-               f"(precision@{k} = {hits/k:.0%}). Every account is selectable in the picker — "
-               "drill into any of them live. (Headline validation: precision@50 = 100% "
-               "out-of-fold on the full population — see the performance section below.)")
-else:
-    st.caption("Ranked by deployed-model risk. Upload data with the target column to see "
-               "precision@k against ground truth. Every account is selectable in the picker above.")
-st.dataframe(topn[["account_id", "risk_score", "band", "probability"]
-                  + (["ground_truth"] if y_all is not None else [])],
-             hide_index=True, use_container_width=True)
+    cL, cR = st.columns(2)
+    with cL:
+        st.markdown("**Risk-score distribution**")
+        buckets = (allscores["risk_score"] // 10 * 10).astype(int)
+        if has_labels:
+            dist = pd.DataFrame({"score_bucket": buckets,
+                                 "class": np.where(ym.values == 1, "mule", "legit")})
+            chart = dist.groupby(["score_bucket", "class"]).size().unstack(fill_value=0)
+        else:
+            chart = buckets.value_counts().sort_index().to_frame("accounts")
+        st.bar_chart(chart)
+        st.caption("Legit pile up near 0; mules near 100 — the separation the model exploits.")
+    with cR:
+        st.markdown("**Severity-band breakdown**")
+        if has_labels:
+            bdf = pd.DataFrame({"band": allscores["band"],
+                                "class": np.where(ym.values == 1, "mule", "legit")})
+            bchart = (bdf.groupby(["band", "class"]).size().unstack(fill_value=0)
+                      .reindex(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).fillna(0))
+        else:
+            bchart = (allscores["band"].value_counts()
+                      .reindex(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).fillna(0).to_frame("accounts"))
+        st.bar_chart(bchart)
 
-# ---- model performance gallery (validated model — fixed by design) ----
-_fig = ROOT / "figures"
-if _fig.exists():
     st.divider()
-    st.subheader("📊 Model performance (out-of-fold, validated — fixed, not per-account)")
-    figs = ["03_score_distribution.png", "01_pr_curve.png", "04_confusion_matrix.png",
-            "05_calibration.png", "08_leakage_sensitivity.png", "09_cost_curve.png"]
-    gcols = st.columns(3)
-    for i, f in enumerate(figs):
-        p = _fig / f
-        if p.exists():
-            gcols[i % 3].image(str(p), use_container_width=True)
+    st.subheader(f"🎚️ Live impact at threshold = {threshold:.2f}")
+    st.caption("Drag the **Alert threshold** in the sidebar — every number below moves with it.")
+    if has_labels:
+        flagged = allscores["probability"] >= threshold
+        tp = int((flagged & (ym == 1)).sum()); fp = int((flagged & (ym == 0)).sum())
+        fn = int((~flagged & (ym == 1)).sum()); tn = int((~flagged & (ym == 0)).sum())
+        alerts = tp + fp
+        recall = tp / (tp + fn) if (tp + fn) else 0.0
+        prec = tp / alerts if alerts else 0.0
+        net = tp * MULE_LOSS - alerts * REVIEW_COST - fp * FP_HARM
+        k1, k2, k3, k4, k5 = st.columns(5)
+        k1.metric("Alerts raised", f"{alerts:,}")
+        k2.metric("Mules caught", f"{tp}/{tp+fn}", help=f"recall {recall:.0%}")
+        k3.metric("Precision", f"{prec:.0%}")
+        k4.metric("False alarms", f"{fp:,}")
+        k5.metric("Net ₹ impact", f"₹{net/1e5:.2f} L", help="illustrative: mule loss ₹2.5L, "
+                  "review ₹400, false-freeze ₹5,000 — all configurable")
+        cm = pd.DataFrame([[tp, fn], [fp, tn]],
+                          index=["Actual MULE", "Actual legit"],
+                          columns=["Flagged", "Not flagged"])
+        st.markdown("**Confusion matrix at this threshold**")
+        st.dataframe(cm, use_container_width=False)
+    else:
+        alerts = int((allscores["probability"] >= threshold).sum())
+        st.metric("Alerts raised", f"{alerts:,} / {len(allscores):,}")
+        st.caption("Upload data with the target column (F3924) to see recall / precision / ₹ impact.")
+
+    st.divider()
+    st.subheader("🚨 Watchlist — highest-risk accounts (current dataset)")
+    topn = allscores.sort_values("risk_score", ascending=False).head(20).copy()
+    topn.insert(0, "account_id", topn.index)
+    show_cols = ["account_id", "risk_score", "band", "probability"]
+    if has_labels:
+        topn["ground_truth"] = [gt(i) for i in topn.index]; show_cols.append("ground_truth")
+    st.dataframe(topn[show_cols], hide_index=True, use_container_width=True)
+
+    st.divider()
+    st.subheader("📋 This session's activity")
+    audit = st.session_state.get("audit", [])
+    if audit:
+        adf = pd.DataFrame(audit)
+        s1, s2, s3, s4 = st.columns(4)
+        s1.metric("Reviews", len(adf))
+        s2.metric("Distinct accounts", adf["account"].nunique())
+        s3.metric("Alerts raised", int((adf["decision"] == "ALERT").sum()))
+        s4.metric("Mules caught", int(((adf["decision"] == "ALERT") & (adf["ground_truth"] == "MULE")).sum()))
+        st.markdown("**Risk score of accounts you reviewed (in order)**")
+        st.line_chart(adf.reset_index()[["score"]])
+    else:
+        st.caption("No activity yet — investigate a few accounts and this fills in live.")
+
+# ===================================== ACTIVITY LOG =====================================
+with tab_log:
+    st.subheader("🧾 Investigation activity — this session (live audit trail)")
+    audit = st.session_state.get("audit", [])
+    if audit:
+        log_df = pd.DataFrame(audit)[::-1].reset_index(drop=True)   # newest first
+        a, b, c = st.columns(3)
+        a.metric("Reviews logged", len(audit))
+        b.metric("Alerts raised", int((log_df["decision"] == "ALERT").sum()))
+        c.metric("Mules caught in trail",
+                 int(((log_df["decision"] == "ALERT") & (log_df["ground_truth"] == "MULE")).sum()))
+        st.dataframe(log_df, hide_index=True, use_container_width=True)
+        d1, d2 = st.columns([1, 4])
+        d1.download_button("⬇ Export audit log (CSV)", log_df.to_csv(index=False).encode(),
+                           file_name="sentinel_audit_log.csv", mime="text/csv")
+        if d2.button("Clear log"):
+            st.session_state.audit, st.session_state.last_sig = [], None
+            st.rerun()
+        st.caption("Every account you review (and each threshold change) is timestamped and "
+                   "appended here — an analyst-ready, exportable audit trail.")
+    else:
+        st.caption("Select accounts and adjust the threshold — each review is logged here "
+                   "with a timestamp, the decision, and ground truth, then exportable as CSV.")
+
+# =================================== MODEL & VALIDATION ===================================
+with tab_model:
+    st.caption("These are the **validated, fixed** properties of the model — they do not change "
+               "per account or per threshold. The honest generalization numbers, not in-sample.")
+    if metrics.get("threshold_table"):
+        st.subheader("Precision / recall trade-off (held-out)")
+        st.dataframe(pd.DataFrame(metrics["threshold_table"]), hide_index=True,
+                     use_container_width=True)
+    _fig = ROOT / "figures"
+    if _fig.exists():
+        st.subheader("📊 Model performance (out-of-fold)")
+        figs = ["03_score_distribution.png", "01_pr_curve.png", "04_confusion_matrix.png",
+                "05_calibration.png", "08_leakage_sensitivity.png", "09_cost_curve.png"]
+        gcols = st.columns(3)
+        for i, f in enumerate(figs):
+            p = _fig / f
+            if p.exists():
+                gcols[i % 3].image(str(p), use_container_width=True)
