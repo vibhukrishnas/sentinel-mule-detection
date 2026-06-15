@@ -2,7 +2,9 @@
 
 **CyberShield Hackathon 2026 · Bank of India × IIT Hyderabad · Problem Statement 2 (AI/ML Classification of Suspicious Mule Accounts)**
 
-SENTINEL is the **leakage-proof detection & containment core** of a real-time mule-account engine. It turns 3,924 raw, anonymized, half-empty account features into a **calibrated 0–100 risk score** in ~35 ms, attaches a **plain-English reason to every alert**, recommends a **containment action** (monitor / hold / escalate), and **detects & removes the data leakage that fakes a perfect score** — so we report a number we can defend.
+SENTINEL is the **leakage-proof detection & containment core** of a mule-account engine. It turns 3,924 raw, anonymized, half-empty account features into a **calibrated 0–100 risk score** with **on-demand (real-time-grade, ~35 ms) scoring**, attaches a **plain-English reason to every alert**, recommends a **containment action** (monitor / hold / escalate), and **detects & removes the data leakage that fakes a perfect score** — so we report a number we can defend.
+
+*On "real-time": scoring is **on-demand at ~33 ms p95** (real-time-grade latency) over an account **snapshot** — not a transaction stream. We say "on-demand" consistently; stream processing is Phase-2.*
 
 > **Honest headline: PR-AUC 0.81–0.89, ROC-AUC ~0.98** (repeated 5×2 CV; ~91–99× the 0.0089 random baseline) — best estimate **0.885 ± 0.055**, leak-paranoid floor ~0.81.
 >

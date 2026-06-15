@@ -1,0 +1,7 @@
+# Cap uploads so a giant CSV can't OOM the free-tier instance. 150 MB still admits the
+# provided ~116 MB DataSet.csv; the app also row-caps on read as a second guard.
+[server]
+maxUploadSize = 150
+
+[theme]
+base = "light"

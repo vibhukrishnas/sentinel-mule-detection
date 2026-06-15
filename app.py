@@ -114,7 +114,7 @@ def audit_actions():
 def audit_row(i, sc_row, g, ring_id, action):
     """Build one audit-trail record (used for single reviews and batch ring escalation)."""
     return {
-        "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+        "time (UTC)": datetime.datetime.now(datetime.timezone.utc).strftime("%H:%M:%S"),
         "account": int(i), "score": int(sc_row["risk_score"]), "band": sc_row["band"],
         "probability": round(float(sc_row["probability"]), 4), "threshold": round(threshold, 2),
         "decision": "ALERT" if sc_row["probability"] >= threshold else "clear",
@@ -130,7 +130,7 @@ def build_shift_report():
     clr = [a for a, v in actions.items() if v == "CLEARED"]
     mon = [a for a, v in actions.items() if v == "MONITORED"]
     L = ["SENTINEL — Analyst shift report", "=" * 44,
-         f"Generated (UTC): {datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}",
+         f"Generated (UTC): {datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}",
          f"Data source    : {src_label}", "",
          f"Reviews logged    : {len(audit)}",
          f"Distinct accounts : {len({r['account'] for r in audit})}",
@@ -161,14 +161,20 @@ st.sidebar.header("📥 Data source")
 st.sidebar.caption("Upload the provided **DataSet.csv** (raw) or a cleaned export. The full "
                    "dataset isn't shipped in this public repo; the demo runs on a small "
                    "committed sample. Uploaded data stays in this session — it is not stored.")
-up = st.sidebar.file_uploader("Upload account CSV", type=["csv"])
+MAX_UPLOAD_MB, MAX_ROWS = 150, 20_000
+up = st.sidebar.file_uploader(f"Upload account CSV (≤ {MAX_UPLOAD_MB} MB)", type=["csv"])
 if up is not None:
     key = (up.name, up.size)
-    if st.session_state.get("src_key") != key:
+    if up.size > MAX_UPLOAD_MB * 1024 * 1024:
+        st.sidebar.error(f"That file is {up.size/1e6:.0f} MB — please keep it under "
+                         f"{MAX_UPLOAD_MB} MB for this shared demo host.")
+    elif st.session_state.get("src_key") != key:
         try:
-            df = pd.read_csv(up, index_col=0, low_memory=False)
+            # nrows cap bounds memory regardless of file size (second guard vs OOM)
+            df = pd.read_csv(up, index_col=0, low_memory=False, nrows=MAX_ROWS)
+            capped = f" (capped to first {MAX_ROWS:,} rows)" if len(df) >= MAX_ROWS else ""
             X, y = prepare_frame(df, cols, cat_maps)
-            st.session_state.src = (X, y, f"📤 {up.name} — {len(X):,} accounts")
+            st.session_state.src = (X, y, f"📤 {up.name} — {len(X):,} accounts{capped}")
             st.session_state.src_key = key
             st.session_state.scores = None
         except Exception as e:
@@ -230,7 +236,9 @@ with st.expander("👋 Judges — try this in 30 seconds"):
         "3. If the account is in a **candidate mule-ring**, hit **🚩 Escalate entire ring** — "
         "then open **📊 Analytics** and watch that ring flip to **🟢 Contained**.\n"
         "4. Drag the sidebar **🎚️ alert threshold** — recall / false-alarms / ₹ impact move live.\n"
-        "5. **🧾 Activity log** → download the **shift report** of everything you did.")
+        "5. **🧾 Activity log** → download the **shift report** of everything you did.\n\n"
+        "_First load after the app has been idle can take ~20s to wake (free host) — that's "
+        "the hosting tier, not the model, which scores in ~33 ms._")
 if metrics:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("CV PR-AUC (5×2)", f"{metrics.get('cv_pr_auc', 0):.3f}",
@@ -264,6 +272,7 @@ with tab_inv:
         # genuine flow: nothing is shown until the analyst runs the model on this account
         if st.button("🔍 Check risk score", type="primary", key="check_score"):
             st.session_state.checked = pick
+            st.session_state.pending_log = pick      # log exactly one review per check
         revealed = st.session_state.get("checked") == pick
         sc = None
         if not revealed:
@@ -290,7 +299,7 @@ with tab_inv:
             st.markdown(verdict_line(sc))
 
             if "audit" not in st.session_state:
-                st.session_state.audit, st.session_state.last_sig = [], None
+                st.session_state.audit = []
             reviewed, actions = audit_actions()
             r = ring_of(pick)
             ring_id = f"#{r['ring_id']}" if r else "—"
@@ -320,14 +329,13 @@ with tab_inv:
                     st.success(f"Escalated {added} member(s) of Ring #{r['ring_id']} — see the activity log & rings.")
                     st.rerun()
 
-            # rolling audit trail: log each distinct review (account or threshold change)
-            sig = (pick, round(threshold, 2))
-            if sig != st.session_state.last_sig:
-                st.session_state.last_sig = sig
+            # log exactly one "review" per Check click (threshold nudges don't inflate it)
+            if st.session_state.get("pending_log") == pick:
+                st.session_state.pending_log = None
                 st.session_state.audit.append(audit_row(pick, sc, g, ring_id, "reviewed"))
 
             # ---- analyst case decision (accountability) ----
-            st.markdown("**Analyst decision** (logged to the audit trail):")
+            st.markdown("**Analyst decision** (logged to the session log):")
             d1, d2, d3 = st.columns(3)
             decided = (d1.button("✅ Clear", key="act_clear") and "CLEARED") or \
                       (d2.button("👁 Monitor", key="act_mon") and "MONITORED") or \
@@ -508,7 +516,7 @@ with tab_an:
 
 # ===================================== ACTIVITY LOG =====================================
 with tab_log:
-    st.subheader("🧾 Investigation activity — this session (live audit trail)")
+    st.subheader("🧾 Investigation activity — session log (live, in-memory)")
     audit = st.session_state.get("audit", [])
     if audit:
         log_df = pd.DataFrame(audit)[::-1].reset_index(drop=True)   # newest first
@@ -525,15 +533,16 @@ with tab_log:
                            file_name="sentinel_shift_report.txt", mime="text/plain",
                            help="A close-of-shift summary: reviews, escalations, rings contained, ₹ exposure addressed.")
         if d3.button("Clear log"):
-            st.session_state.audit, st.session_state.last_sig = [], None
+            st.session_state.audit = []
             st.rerun()
         with st.expander("📄 Preview shift report"):
             st.code(build_shift_report(), language="text")
-        st.caption("Every account you review (and each threshold change) is timestamped and "
-                   "appended here — an analyst-ready, exportable audit trail.")
+        st.caption("Each review/decision is timestamped and appended here — an exportable "
+                   "**session log** (held in-memory for this session; a production deployment "
+                   "would persist it to a durable, tamper-evident audit store).")
     else:
-        st.caption("Select accounts and adjust the threshold — each review is logged here "
-                   "with a timestamp, the decision, and ground truth, then exportable as CSV.")
+        st.caption("Select an account and click **Check risk score** — each review is logged "
+                   "here with a timestamp, the decision, and ground truth, exportable as CSV.")
 
 # =================================== MODEL & VALIDATION ===================================
 with tab_model:
