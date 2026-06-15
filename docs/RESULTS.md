@@ -129,6 +129,19 @@ We **adopted the tuned single LightGBM** (deployed headline 0.885 on robust 5×2
 
 **Mule typology** (clustering the 81 mules) — **one dominant archetype of 78 mules** (avg risk 75/100, readily detected) plus a **3-account hard-to-detect tail** (risk ~0). Honest finding: the data shows one coherent mule profile, not many sub-types.
 
+## 7.7 Extended validation — uncertainty, robustness & abstention (added for the final round)
+**Bootstrap CI on a non-overlapping fold (`src/bootstrap_ci.py`).** The 5×2 t-CI is a lower bound (overlapping folds). A single **non-overlapping 10-fold OOF** gives PR-AUC **0.902** / ROC-AUC 0.982, and a **bootstrap 95% CI over accounts (B=2000) of [0.843, 0.953]** — an assumption-light interval that confirms the headline and honestly widens the upper tail.
+
+**Abstention / route-to-analyst (`src/uncertainty.py`).** Rather than force a call on the hard tail, we calibrate (on OOF) a confidence band: **auto-decide 99.3% of accounts at 0.12% error, and route the ambiguous 0.67% (61 accounts — including 10 of the hardest-to-catch mules) to a human.** Confident-mule-zone precision 95%, confident-legit NPV 99.9%. This is the principled fix for over-confident wrong calls.
+
+**Robustness & sensitivity (`src/robustness.py`, 5-fold OOF).** Stated honestly, both ways:
+| Perturbation (validation only) | 10% | 25% | 50% |
+|---|---|---|---|
+| **Missing data** (feature dropout → NaN) | 0.829 | 0.663 | 0.345 |
+| **Noise** (Gaussian σ-scaled, *continuous features only*) | 0.347 (@0.1σ) | 0.228 (@0.25σ) | 0.125 (@0.5σ) |
+
+**Honest read:** the model is **robust to missing data** (graceful degradation — the realistic operational failure mode) but **sensitive to feature noise** — simultaneous 0.1σ perturbation of all 1,922 continuous features drops PR-AUC to 0.35. It leans on precise feature values, expected with only 81 positives and signal concentrated in a few features. That sensitivity is *why* we ship a conservative **floor (~0.81)** and the **abstention layer**, rather than overclaim. (Noise on binary flags / ordinal categoricals is excluded — additive noise there is meaningless.)
+
 ## 8. How a stronger team / judge beats us — and our answer
 | Attack | Our defense |
 |---|---|

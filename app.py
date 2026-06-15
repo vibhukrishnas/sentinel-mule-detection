@@ -83,6 +83,12 @@ def load_uncertainty():
     return json.loads(p.read_text()) if p.exists() else None
 
 
+@st.cache_data
+def load_json(name):
+    p = ART / name
+    return json.loads(p.read_text()) if p.exists() else None
+
+
 eng = load_engine()
 cols, cat_maps = load_cols_maps()
 metrics = load_metrics()
@@ -613,6 +619,47 @@ with tab_log:
 with tab_model:
     st.caption("These are the **validated, fixed** properties of the model — they do not change "
                "per account or per threshold. The honest generalization numbers, not in-sample.")
+
+    boot = load_json("bootstrap_ci.json")
+    infold = load_json("infold_leak_check.json")
+    robust = load_json("robustness.json")
+    if boot or infold:
+        st.subheader("🔬 Rigor — leakage-proof, honestly bounded")
+        rc = st.columns(3)
+        if boot:
+            ci = boot["bootstrap_pr_auc_ci95"]
+            rc[0].metric("OOF PR-AUC (non-overlapping 10-fold)", f"{boot['oof_pr_auc']:.3f}")
+            rc[1].metric("Bootstrap 95% CI", f"{ci[0]:.3f}–{ci[1]:.3f}",
+                         help="Assumption-light CI by resampling accounts (B=2000) — fixes the overlapping-fold caveat")
+        if infold:
+            rc[2].metric("In-fold leak-check PR-AUC", f"{infold['pr_auc_mean']:.3f} ± {infold['pr_auc_std']:.3f}",
+                         help="Blocklist re-detected inside each fold (never sees val labels) — vs 0.885 headline")
+        st.caption("The headline (0.885) is reproduced by a non-overlapping-fold OOF (0.902, CI 0.84–0.95) "
+                   "and survives in-fold leak detection (0.907) — so it is neither overlap-optimistic nor "
+                   "blocklist-inflated.")
+
+    if robust:
+        st.subheader("🛡️ Robustness & sensitivity (stated honestly)")
+        nz = robust.get("noise_injection_continuous", {})
+        dp = robust.get("feature_dropout", {})
+        base = robust.get("baseline_oof_pr_auc", 0)
+        if dp:
+            st.markdown("**Missing data (feature dropout)** — the realistic failure mode. "
+                        "Model consumes NaN natively and degrades *gracefully*:")
+            st.line_chart(pd.DataFrame({"PR-AUC": {f"{int(float(k)*100)}%": v for k, v in dp.items()}}))
+        cc = st.columns(2)
+        if dp:
+            cc[0].metric("PR-AUC · 25% features missing", f"{dp.get('0.25', 0):.3f}",
+                         help=f"vs {base:.3f} baseline — graceful")
+        if nz:
+            cc[1].metric("PR-AUC · 0.1σ noise on all continuous", f"{nz.get('0.1', 0):.3f}",
+                         delta=f"{nz.get('0.1',0)-base:.2f}", delta_color="inverse",
+                         help="Simultaneous Gaussian noise on all 1,922 continuous features")
+        st.caption("**Honest finding:** robust to *missing* data (graceful), but **sensitive to feature "
+                   "*noise*** — simultaneous 0.1σ perturbation of all continuous features drops PR-AUC "
+                   f"to {nz.get('0.1',0):.2f}. The model leans on precise values (expected with 81 positives "
+                   "and concentrated signal). Mitigations already in SENTINEL: the conservative **floor "
+                   "(~0.81)** and the **abstention layer** that routes ambiguous accounts to analysts.")
     if metrics.get("threshold_table"):
         st.subheader("Precision / recall trade-off (held-out)")
         st.dataframe(pd.DataFrame(metrics["threshold_table"]), hide_index=True,

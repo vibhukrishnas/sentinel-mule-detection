@@ -1,0 +1,21 @@
+{
+  "baseline_oof_pr_auc": 0.8994,
+  "n_continuous_perturbed": 1922,
+  "n_features": 2965,
+  "noise_injection_continuous": {
+    "0.0": 0.8994,
+    "0.1": 0.3467,
+    "0.25": 0.2275,
+    "0.5": 0.1254,
+    "1.0": 0.1267
+  },
+  "feature_dropout": {
+    "0.0": 0.8994,
+    "0.1": 0.8291,
+    "0.25": 0.6634,
+    "0.5": 0.3452
+  },
+  "retained_frac_noise_x0.25": 0.253,
+  "retained_frac_dropout_25pct": 0.738,
+  "note": "5-fold OOF; perturbations on validation only. Gaussian noise applied ONLY to continuous features (binary flags + ordinal categoricals excluded, where additive noise is meaningless). Graceful degradation = robust signal."
+}

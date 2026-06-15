@@ -1,0 +1,11 @@
+{
+  "method": "single non-overlapping 10-fold OOF, bootstrap CI over accounts (B=2000)",
+  "oof_pr_auc": 0.9023,
+  "oof_roc_auc": 0.9822,
+  "bootstrap_pr_auc_ci95": [
+    0.8429,
+    0.9532
+  ],
+  "bootstrap_pr_auc_mean": 0.9028,
+  "headline_5x2_pr_auc": 0.885
+}
