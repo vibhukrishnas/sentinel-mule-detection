@@ -107,7 +107,11 @@ pdf.set_font("Helvetica", "", 11); pdf.set_text_color(*GREY)
 pdf.mc(0, 6, san("Team: Probe Rockerz  (individual participation)\n"
     "Participant: Vibhu Krishna S\n"
     "Institute: SRM Easwari Engineering College   |   Date: 14/06/2026"), align="C")
-pdf.ln(12)
+pdf.ln(5)
+pdf.set_font("Helvetica", "B", 9.5); pdf.set_text_color(*NAVY)
+pdf.mc(0, 5.5, san("Code (GitHub): https://github.com/vibhukrishnas/sentinel-mule-detection\n"
+    "Live demo: https://sentinel-mule-detection-hvymcown8cyerjjes48cka.streamlit.app"), align="C")
+pdf.ln(7)
 pdf.set_draw_color(*NAVY); pdf.set_fill_color(245, 246, 250); pdf.set_font("Helvetica", "B", 11)
 pdf.set_text_color(*NAVY)
 pdf.mc(0, 6.5, san("One line: SENTINEL is the leakage-proof DETECTION & CONTAINMENT core of a real-time "
@@ -452,8 +456,9 @@ for b in ["End-to-end pipeline (preprocess -> auditor -> model -> finalize -> in
           "Model card, smoke tests (5/5 passing), pinned requirements, and a self-contained Colab notebook."]:
     pdf.bullet(b)
 pdf.ln(1); pdf.set_font("Helvetica", "B", 9.5); pdf.set_text_color(*NAVY)
-pdf.mc(0, 5.2, san("Reproducible end-to-end - run it yourself.   Repo: [GitHub link]   |   "
-                   "Live demo: [demo URL]   |   demo video: [link]"))
+pdf.mc(0, 5.2, san("Reproducible end-to-end - run it yourself.\n"
+                   "Repo: https://github.com/vibhukrishnas/sentinel-mule-detection\n"
+                   "Live demo: https://sentinel-mule-detection-hvymcown8cyerjjes48cka.streamlit.app"))
 pdf.set_text_color(0, 0, 0)
 pdf.h2("Phase-2 prototype plan (1 Jul - 17 Aug)")
 for b in ["GRAPH mule-RING detection: PROTOTYPE already built (behavioral-similarity graph, see Section 7); "

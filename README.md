@@ -2,6 +2,8 @@
 
 **CyberShield Hackathon 2026 · Bank of India × IIT Hyderabad · Problem Statement 2 (AI/ML Classification of Suspicious Mule Accounts)**
 
+**🔗 [Live demo](https://sentinel-mule-detection-hvymcown8cyerjjes48cka.streamlit.app) · [GitHub repo](https://github.com/vibhukrishnas/sentinel-mule-detection)**
+
 SENTINEL is the **leakage-proof detection & containment core** of a mule-account engine. It turns 3,924 raw, anonymized, half-empty account features into a **calibrated 0–100 risk score** with **on-demand (real-time-grade, ~35 ms) scoring**, attaches a **plain-English reason to every alert**, recommends a **containment action** (monitor / hold / escalate), and **detects & removes the data leakage that fakes a perfect score** — so we report a number we can defend.
 
 *On "real-time": scoring is **on-demand at ~33 ms p95** (real-time-grade latency) over an account **snapshot** — not a transaction stream. We say "on-demand" consistently; stream processing is Phase-2.*
@@ -102,7 +104,7 @@ The bank-provided dataset is **not redistributed** in this public repo (the hack
 
 ## Deploy
 
-The demo deploys free on **Streamlit Community Cloud** in ~10 min — see **[`docs/DEPLOY.md`](docs/DEPLOY.md)**. Live demo: `[demo URL]`.
+The demo deploys free on **Streamlit Community Cloud** in ~10 min — see **[`docs/DEPLOY.md`](docs/DEPLOY.md)**. Live demo: **<https://sentinel-mule-detection-hvymcown8cyerjjes48cka.streamlit.app>**.
 
 ## Honest limitations (stated, not hidden)
 
