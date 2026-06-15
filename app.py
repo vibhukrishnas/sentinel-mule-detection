@@ -99,6 +99,28 @@ def verdict_line(sc):
         return f"🧭 **Verdict:** Mixed signals ({p:.0%}) — add to enhanced monitoring, not an immediate alert."
     return f"🧭 **Verdict:** Low risk ({p:.0%}) — behaves like a legitimate account; routine monitoring."
 
+
+def audit_actions():
+    """Derive live investigation state from the session activity log:
+    set of reviewed account ids, and {account: latest explicit analyst action}."""
+    reviewed, actions = set(), {}
+    for row in st.session_state.get("audit", []):
+        reviewed.add(row["account"])
+        if row.get("action") in ("ESCALATED", "CLEARED", "MONITORED"):
+            actions[row["account"]] = row["action"]
+    return reviewed, actions
+
+
+def audit_row(i, sc_row, g, ring_id, action):
+    """Build one audit-trail record (used for single reviews and batch ring escalation)."""
+    return {
+        "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+        "account": int(i), "score": int(sc_row["risk_score"]), "band": sc_row["band"],
+        "probability": round(float(sc_row["probability"]), 4), "threshold": round(threshold, 2),
+        "decision": "ALERT" if sc_row["probability"] >= threshold else "clear",
+        "ground_truth": g or "unknown", "ring": ring_id, "action": action,
+    }
+
 # ============================ SIDEBAR: data + global dial ============================
 st.sidebar.header("📥 Data source")
 st.sidebar.caption("Upload the provided **DataSet.csv** (raw) or a cleaned export. The full "
@@ -223,27 +245,37 @@ with tab_inv:
 
             st.markdown(verdict_line(sc))
 
-            # mule-ring callout (the differentiator) — candidate, not confirmed
-            r = ring_of(pick)
-            if r:
-                st.warning(f"🕸️ **Candidate Ring #{r['ring_id']}** — this account clusters with "
-                           f"**{r['size']} near-identical accounts** (~₹{r['exposure_rupees']:,} "
-                           f"potential exposure). Investigate the ring as a batch. *Candidate "
-                           f"behavioral grouping; confirmation needs bank link data.*")
-
-            # rolling audit trail: log each distinct review (account or threshold change)
             if "audit" not in st.session_state:
                 st.session_state.audit, st.session_state.last_sig = [], None
+            reviewed, actions = audit_actions()
+            r = ring_of(pick)
+            ring_id = f"#{r['ring_id']}" if r else "—"
+
+            # mule-ring callout (the differentiator) — candidate, with LIVE progress from the log
+            if r:
+                members = r["members"]
+                revd = sum(1 for m in members if m in reviewed)
+                esc = sum(1 for m in members if actions.get(m) == "ESCALATED")
+                st.warning(f"🕸️ **Candidate Ring #{r['ring_id']}** — clusters with **{r['size']} "
+                           f"near-identical accounts** (~₹{r['exposure_rupees']:,} potential exposure). "
+                           "Investigate as a batch. *Candidate grouping; confirmation needs bank link data.*")
+                st.progress(revd / r["size"],
+                            text=f"Ring progress this session: {revd}/{r['size']} reviewed · {esc} escalated")
+                if st.button(f"🚩 Escalate entire Ring #{r['ring_id']} ({r['size']} accounts)", key="esc_ring"):
+                    added = 0
+                    for m in members:
+                        if actions.get(m) != "ESCALATED":
+                            st.session_state.audit.append(
+                                audit_row(m, allscores.loc[m], gt(m), f"#{r['ring_id']}", "ESCALATED"))
+                            added += 1
+                    st.success(f"Escalated {added} member(s) of Ring #{r['ring_id']} — see the activity log & rings.")
+                    st.rerun()
+
+            # rolling audit trail: log each distinct review (account or threshold change)
             sig = (pick, round(threshold, 2))
             if sig != st.session_state.last_sig:
                 st.session_state.last_sig = sig
-                st.session_state.audit.append({
-                    "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
-                    "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
-                    "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
-                    "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
-                    "ring": f"#{r['ring_id']}" if r else "—", "action": "reviewed",
-                })
+                st.session_state.audit.append(audit_row(pick, sc, g, ring_id, "reviewed"))
 
             # ---- analyst case decision (accountability) ----
             st.markdown("**Analyst decision** (logged to the audit trail):")
@@ -252,14 +284,9 @@ with tab_inv:
                       (d2.button("👁 Monitor", key="act_mon") and "MONITORED") or \
                       (d3.button("🚩 Escalate to L2", key="act_esc") and "ESCALATED")
             if decided:
-                st.session_state.audit.append({
-                    "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
-                    "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
-                    "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
-                    "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
-                    "ring": f"#{r['ring_id']}" if r else "—", "action": decided,
-                })
+                st.session_state.audit.append(audit_row(pick, sc, g, ring_id, decided))
                 st.success(f"Logged **{decided}** for account #{pick}.")
+                st.rerun()
 
     with right:
         st.subheader("Why — top risk drivers (SHAP) + investigation report")
@@ -377,27 +404,39 @@ with tab_an:
                        alert_tbl.to_csv(index=False).encode(),
                        file_name=f"sentinel_alerts_thr{threshold:.2f}.csv", mime="text/csv")
 
-    # ---- mule-ring detection (the differentiator) ----
+    # ---- mule-ring detection (the differentiator) — progress is LIVE from the activity log ----
     if rings:
         st.divider()
         st.subheader("🕸️ Mule-ring detection (candidate behavioral rings)")
         v = rings.get("validation", {})
+        reviewed, actions = audit_actions()
+        ring_rows, total_esc = [], 0
+        for r in rings["rings"]:
+            mem = r["members"]
+            revd = sum(1 for m in mem if m in reviewed)
+            esc = sum(1 for m in mem if actions.get(m) == "ESCALATED")
+            total_esc += esc
+            status = ("🟢 Contained" if esc == r["size"]
+                      else "🟡 In progress" if revd else "⚪ Open")
+            ring_rows.append({
+                "ring": f"#{r['ring_id']}", "accounts": r["size"],
+                "reviewed": f"{revd}/{r['size']}", "escalated": esc, "status": status,
+                "lead_account": r["rep_account"], "potential_exposure": f"₹{r['exposure_rupees']:,}",
+            })
+        contained = sum(1 for row in ring_rows if row["status"].startswith("🟢"))
         r1, r2, r3, r4 = st.columns(4)
         r1.metric("Candidate rings", rings["n_candidate_rings"])
         r2.metric("Mules grouped", f"{rings['mules_in_rings']}/{rings['n_mules']}")
-        r3.metric("Largest ring", max(rings["ring_sizes"]))
-        r4.metric("Ring #1 stability", f"{v.get('ring1_subsample_stability_jaccard', 0):.2f}",
-                  help="Jaccard overlap of Ring #1 under feature subsampling — closer to 1 = more stable")
-        ring_df = pd.DataFrame([{
-            "ring": f"#{r['ring_id']}", "accounts": r["size"],
-            "lead_account": r["rep_account"], "lead_score": r["rep_score"],
-            "potential_exposure": f"₹{r['exposure_rupees']:,}",
-        } for r in rings["rings"]])
-        st.dataframe(ring_df, hide_index=True, use_container_width=True)
-        st.caption(f"Candidate Ring #1 is **~{v.get('ring1_intra_sim',0)/max(v.get('legit_subset_sim_mean',1e-9),1e-9):.0f}× "
-                   f"tighter** than a random legit group (similarity {v.get('ring1_intra_sim',0):.2f} vs "
-                   f"{v.get('legit_subset_sim_mean',0):.2f}) and stable under subsampling — a real, validated "
-                   "proxy, **not** confirmed rings. Confirmation needs bank link/device data (Phase-2).")
+        r3.metric("Ring members escalated", total_esc, help="live — from your activity this session")
+        r4.metric("Rings contained", f"{contained}/{rings['n_candidate_rings']}",
+                  help="all members escalated this session")
+        st.dataframe(pd.DataFrame(ring_rows), hide_index=True, use_container_width=True)
+        st.caption(f"Status columns are **live** from your activity log — escalate a ring's members "
+                   f"(Investigate tab) and it moves Open → In progress → Contained. Candidate Ring #1 is "
+                   f"**~{v.get('ring1_intra_sim',0)/max(v.get('legit_subset_sim_mean',1e-9),1e-9):.0f}× tighter** "
+                   f"than a random legit group ({v.get('ring1_intra_sim',0):.2f} vs {v.get('legit_subset_sim_mean',0):.2f}), "
+                   f"stable under subsampling (Jaccard {v.get('ring1_subsample_stability_jaccard',0):.2f}) — a validated "
+                   "proxy, **not** confirmed rings (needs bank link/device data, Phase-2).")
         fig = ROOT / "figures" / "11_mule_network.png"
         if fig.exists():
             st.image(str(fig), use_container_width=True,
