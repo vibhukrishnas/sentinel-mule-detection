@@ -166,65 +166,77 @@ with tab_inv:
         st.session_state.pick_id = pick
 
         account = X_all.loc[pick]
-        sc = eng.score(account)
-        st.markdown(f"### {BAND_EMOJI[sc['band']]} Risk Score: **{sc['risk_score']}/100** ({sc['band']})")
-        st.progress(min(sc["risk_score"], 100) / 100)
-        st.write(f"Calibrated probability of mule activity: **{sc['probability']:.1%}**")
-        g = gt(pick)
-        if g:
-            ok = (g == "MULE") == (sc["probability"] >= threshold)
-            st.write(f"Ground-truth label: **{'MULE' if g=='MULE' else 'LEGITIMATE'}**  "
-                     f"{'✅ model agrees' if ok else '⚠️ model disagrees at current threshold'}")
+        # genuine flow: nothing is shown until the analyst runs the model on this account
+        if st.button("🔍 Check risk score", type="primary", key="check_score"):
+            st.session_state.checked = pick
+        revealed = st.session_state.get("checked") == pick
+        sc = None
+        if not revealed:
+            st.info("Pick an account, then click **Check risk score** to run the model on it.")
         else:
-            st.write("Ground-truth label: **unknown (no label in uploaded data)**")
-        raised = sc["probability"] >= threshold
-        if raised:
-            st.error(f"🚨 ALERT at threshold {threshold:.2f} — {ACTION[sc['band']]}")
-        else:
-            st.success(f"No alert at threshold {threshold:.2f} (probability below the dial).")
+            with st.spinner("Scoring…"):
+                sc = eng.score(account)
+            st.markdown(f"### {BAND_EMOJI[sc['band']]} Risk Score: **{sc['risk_score']}/100** ({sc['band']})")
+            st.progress(min(sc["risk_score"], 100) / 100)
+            st.write(f"Calibrated probability of mule activity: **{sc['probability']:.1%}**")
+            g = gt(pick)
+            if g:
+                ok = (g == "MULE") == (sc["probability"] >= threshold)
+                st.write(f"Ground-truth label: **{'MULE' if g=='MULE' else 'LEGITIMATE'}**  "
+                         f"{'✅ model agrees' if ok else '⚠️ model disagrees at current threshold'}")
+            else:
+                st.write("Ground-truth label: **unknown (no label in uploaded data)**")
+            raised = sc["probability"] >= threshold
+            if raised:
+                st.error(f"🚨 ALERT at threshold {threshold:.2f} — {ACTION[sc['band']]}")
+            else:
+                st.success(f"No alert at threshold {threshold:.2f} (probability below the dial).")
 
-        # rolling audit trail: log each distinct review (account or threshold change)
-        if "audit" not in st.session_state:
-            st.session_state.audit, st.session_state.last_sig = [], None
-        sig = (pick, round(threshold, 2))
-        if sig != st.session_state.last_sig:
-            st.session_state.last_sig = sig
-            st.session_state.audit.append({
-                "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
-                "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
-                "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
-                "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
-            })
+            # rolling audit trail: log each distinct review (account or threshold change)
+            if "audit" not in st.session_state:
+                st.session_state.audit, st.session_state.last_sig = [], None
+            sig = (pick, round(threshold, 2))
+            if sig != st.session_state.last_sig:
+                st.session_state.last_sig = sig
+                st.session_state.audit.append({
+                    "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+                    "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
+                    "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
+                    "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
+                })
 
     with right:
         st.subheader("Why — top risk drivers (SHAP) + investigation report")
         if "expl" not in st.session_state:
             st.session_state.expl = {}
-        if st.button("🔍 Explain this account + build report", type="primary"):
-            try:
-                drivers = eng.explain(account, top_k=6)
-                report = eng.report(account, account_id=pick)
-                st.session_state.expl[pick] = {"drivers": drivers, "report": report}
-            except Exception as e:
-                st.session_state.expl[pick] = {"error": type(e).__name__}
-        data = st.session_state.expl.get(pick)
-        if not data:
-            st.caption("Click to compute the per-account SHAP attribution and the "
-                       "analyst-ready report (≈35 ms once the explainer warms up).")
-        elif "error" in data:
-            st.warning(f"SHAP unavailable here ({data['error']}). Score and alert are unaffected.")
+        if not revealed:
+            st.caption("Check the risk score first (left) — then explain what drove it.")
         else:
-            dd = pd.DataFrame([{
-                "Factor": d["label"], "Value": d["value_readable"],
-                "Effect": ("▲ raises" if d["shap"] > 0 else "▼ lowers"),
-                "Impact": round(abs(d["shap"]), 3), "Context": d["context"],
-            } for d in data["drivers"]])
-            st.dataframe(dd, hide_index=True, use_container_width=True)
-            st.subheader("📄 Investigation report")
-            st.code(data["report"], language="text")
-            st.download_button("⬇ Download investigation report (.txt)", data["report"],
-                               file_name=f"SENTINEL_investigation_account_{pick}.txt",
-                               mime="text/plain", key=f"dl_{pick}")
+            if st.button("🧠 Explain this account + build report", type="primary"):
+                try:
+                    drivers = eng.explain(account, top_k=6)
+                    report = eng.report(account, account_id=pick)
+                    st.session_state.expl[pick] = {"drivers": drivers, "report": report}
+                except Exception as e:
+                    st.session_state.expl[pick] = {"error": type(e).__name__}
+            data = st.session_state.expl.get(pick)
+            if not data:
+                st.caption("Click to compute the per-account SHAP attribution and the "
+                           "analyst-ready report (≈35 ms once the explainer warms up).")
+            elif "error" in data:
+                st.warning(f"SHAP unavailable here ({data['error']}). Score and alert are unaffected.")
+            else:
+                dd = pd.DataFrame([{
+                    "Factor": d["label"], "Value": d["value_readable"],
+                    "Effect": ("▲ raises" if d["shap"] > 0 else "▼ lowers"),
+                    "Impact": round(abs(d["shap"]), 3), "Context": d["context"],
+                } for d in data["drivers"]])
+                st.dataframe(dd, hide_index=True, use_container_width=True)
+                st.subheader("📄 Investigation report")
+                st.code(data["report"], language="text")
+                st.download_button("⬇ Download investigation report (.txt)", data["report"],
+                                   file_name=f"SENTINEL_investigation_account_{pick}.txt",
+                                   mime="text/plain", key=f"dl_{pick}")
 
 # ====================================== ANALYTICS ======================================
 with tab_an:
