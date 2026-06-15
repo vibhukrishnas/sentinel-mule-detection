@@ -66,9 +66,38 @@ def load_metrics():
     return m
 
 
+@st.cache_data
+def load_rings():
+    p = ART / "mule_network.json"
+    return json.loads(p.read_text()) if p.exists() else None
+
+
 eng = load_engine()
 cols, cat_maps = load_cols_maps()
 metrics = load_metrics()
+rings = load_rings()
+
+
+def ring_of(i):
+    """Return the candidate-ring dict this account belongs to, or None."""
+    if not rings:
+        return None
+    for r in rings["rings"]:
+        if int(i) in r["members"]:
+            return r
+    return None
+
+
+def verdict_line(sc):
+    """One-line, plain-English summary of the model's call."""
+    p = sc["probability"]
+    if sc["band"] in ("CRITICAL", "HIGH"):
+        conf = "High" if p >= 0.9 else "Elevated"
+        return (f"🧭 **Verdict:** {conf} confidence ({p:.0%}) this account **behaves like a mule** "
+                f"— recommend *{ 'escalate to L2' if sc['band']=='CRITICAL' else 'same-day analyst review'}*.")
+    if sc["band"] == "MEDIUM":
+        return f"🧭 **Verdict:** Mixed signals ({p:.0%}) — add to enhanced monitoring, not an immediate alert."
+    return f"🧭 **Verdict:** Low risk ({p:.0%}) — behaves like a legitimate account; routine monitoring."
 
 # ============================ SIDEBAR: data + global dial ============================
 st.sidebar.header("📥 Data source")
@@ -192,6 +221,16 @@ with tab_inv:
             else:
                 st.success(f"No alert at threshold {threshold:.2f} (probability below the dial).")
 
+            st.markdown(verdict_line(sc))
+
+            # mule-ring callout (the differentiator) — candidate, not confirmed
+            r = ring_of(pick)
+            if r:
+                st.warning(f"🕸️ **Candidate Ring #{r['ring_id']}** — this account clusters with "
+                           f"**{r['size']} near-identical accounts** (~₹{r['exposure_rupees']:,} "
+                           f"potential exposure). Investigate the ring as a batch. *Candidate "
+                           f"behavioral grouping; confirmation needs bank link data.*")
+
             # rolling audit trail: log each distinct review (account or threshold change)
             if "audit" not in st.session_state:
                 st.session_state.audit, st.session_state.last_sig = [], None
@@ -203,7 +242,24 @@ with tab_inv:
                     "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
                     "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
                     "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
+                    "ring": f"#{r['ring_id']}" if r else "—", "action": "reviewed",
                 })
+
+            # ---- analyst case decision (accountability) ----
+            st.markdown("**Analyst decision** (logged to the audit trail):")
+            d1, d2, d3 = st.columns(3)
+            decided = (d1.button("✅ Clear", key="act_clear") and "CLEARED") or \
+                      (d2.button("👁 Monitor", key="act_mon") and "MONITORED") or \
+                      (d3.button("🚩 Escalate to L2", key="act_esc") and "ESCALATED")
+            if decided:
+                st.session_state.audit.append({
+                    "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+                    "account": int(pick), "score": sc["risk_score"], "band": sc["band"],
+                    "probability": round(sc["probability"], 4), "threshold": round(threshold, 2),
+                    "decision": "ALERT" if raised else "clear", "ground_truth": g or "unknown",
+                    "ring": f"#{r['ring_id']}" if r else "—", "action": decided,
+                })
+                st.success(f"Logged **{decided}** for account #{pick}.")
 
     with right:
         st.subheader("Why — top risk drivers (SHAP) + investigation report")
@@ -305,10 +361,47 @@ with tab_an:
     st.subheader("🚨 Watchlist — highest-risk accounts (current dataset)")
     topn = allscores.sort_values("risk_score", ascending=False).head(20).copy()
     topn.insert(0, "account_id", topn.index)
-    show_cols = ["account_id", "risk_score", "band", "probability"]
+    topn["ring"] = [f"#{r['ring_id']}" if (r := ring_of(i)) else "—" for i in topn.index]
+    show_cols = ["account_id", "risk_score", "band", "probability", "ring"]
     if has_labels:
         topn["ground_truth"] = [gt(i) for i in topn.index]; show_cols.append("ground_truth")
     st.dataframe(topn[show_cols], hide_index=True, use_container_width=True)
+    # export the full current alert list (everything flagged at the threshold) for the fraud team
+    alert_tbl = allscores[allscores["probability"] >= threshold].sort_values(
+        "risk_score", ascending=False).copy()
+    alert_tbl.insert(0, "account_id", alert_tbl.index)
+    alert_tbl["ring"] = [f"#{r['ring_id']}" if (r := ring_of(i)) else "—" for i in alert_tbl.index]
+    if has_labels:
+        alert_tbl["ground_truth"] = [gt(i) for i in alert_tbl.index]
+    st.download_button(f"⬇ Export alert list at threshold {threshold:.2f} ({len(alert_tbl):,} accounts, CSV)",
+                       alert_tbl.to_csv(index=False).encode(),
+                       file_name=f"sentinel_alerts_thr{threshold:.2f}.csv", mime="text/csv")
+
+    # ---- mule-ring detection (the differentiator) ----
+    if rings:
+        st.divider()
+        st.subheader("🕸️ Mule-ring detection (candidate behavioral rings)")
+        v = rings.get("validation", {})
+        r1, r2, r3, r4 = st.columns(4)
+        r1.metric("Candidate rings", rings["n_candidate_rings"])
+        r2.metric("Mules grouped", f"{rings['mules_in_rings']}/{rings['n_mules']}")
+        r3.metric("Largest ring", max(rings["ring_sizes"]))
+        r4.metric("Ring #1 stability", f"{v.get('ring1_subsample_stability_jaccard', 0):.2f}",
+                  help="Jaccard overlap of Ring #1 under feature subsampling — closer to 1 = more stable")
+        ring_df = pd.DataFrame([{
+            "ring": f"#{r['ring_id']}", "accounts": r["size"],
+            "lead_account": r["rep_account"], "lead_score": r["rep_score"],
+            "potential_exposure": f"₹{r['exposure_rupees']:,}",
+        } for r in rings["rings"]])
+        st.dataframe(ring_df, hide_index=True, use_container_width=True)
+        st.caption(f"Candidate Ring #1 is **~{v.get('ring1_intra_sim',0)/max(v.get('legit_subset_sim_mean',1e-9),1e-9):.0f}× "
+                   f"tighter** than a random legit group (similarity {v.get('ring1_intra_sim',0):.2f} vs "
+                   f"{v.get('legit_subset_sim_mean',0):.2f}) and stable under subsampling — a real, validated "
+                   "proxy, **not** confirmed rings. Confirmation needs bank link/device data (Phase-2).")
+        fig = ROOT / "figures" / "11_mule_network.png"
+        if fig.exists():
+            st.image(str(fig), use_container_width=True,
+                     caption="Behavioral-similarity graph of the 81 mules — candidate rings.")
 
     st.divider()
     st.subheader("📋 This session's activity")
