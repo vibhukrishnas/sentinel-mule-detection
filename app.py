@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 import pandas as pd
 import streamlit as st
-from sentinel import SentinelEngine, ART
+from sentinel import SentinelEngine, ART, ACTION
 
 st.set_page_config(page_title="SENTINEL · Mule Account Risk Engine", layout="wide")
 
@@ -75,31 +75,38 @@ with left:
                           help="Lower = catch more mules but more false alarms.")
 
     account = demoX.loc[pick]
-    sc = eng.score(account)
+    sc = eng.score(account)                 # fast: no SHAP, always renders
     band_color = {"CRITICAL": "🔴", "HIGH": "🟠", "MEDIUM": "🟡", "LOW": "🟢"}[sc["band"]]
     st.markdown(f"### {band_color} Risk Score: **{sc['risk_score']}/100** ({sc['band']})")
     st.progress(min(sc["risk_score"], 100) / 100)
     st.write(f"Calibrated probability of mule activity: **{sc['probability']:.1%}**")
     st.write(f"Ground-truth label: **{'MULE' if demoY.loc[pick]==1 else 'LEGITIMATE'}**")
-    alert = eng.alert(account, threshold=threshold, account_id=pick)
-    if alert:
-        st.error(f"🚨 ALERT raised — {alert['recommended_action']}")
+    if sc["probability"] >= threshold:
+        st.error(f"🚨 ALERT raised — {ACTION[sc['band']]}")
     else:
         st.success("No alert at current threshold.")
 
 with right:
     st.subheader("Why — top risk drivers (SHAP)")
-    drivers = eng.explain(account, top_k=6)
-    dd = pd.DataFrame([{
-        "Factor": d["label"], "Value": d["value_readable"],
-        "Effect": ("▲ raises" if d["shap"] > 0 else "▼ lowers"),
-        "Impact": round(abs(d["shap"]), 3), "Context": d["context"],
-    } for d in drivers])
-    st.dataframe(dd, hide_index=True, use_container_width=True)
-
-st.divider()
-st.subheader("📄 Auto-generated investigation report")
-st.code(eng.report(account, account_id=pick), language="text")
+    # SHAP is lazy-loaded on click so the dashboard renders instantly on first
+    # load (and on memory-constrained cloud hosts) — also a live latency demo.
+    if st.button("🔍 Explain this account (SHAP) + investigation report", type="primary"):
+        try:
+            drivers = eng.explain(account, top_k=6)
+            dd = pd.DataFrame([{
+                "Factor": d["label"], "Value": d["value_readable"],
+                "Effect": ("▲ raises" if d["shap"] > 0 else "▼ lowers"),
+                "Impact": round(abs(d["shap"]), 3), "Context": d["context"],
+            } for d in drivers])
+            st.dataframe(dd, hide_index=True, use_container_width=True)
+            st.subheader("📄 Auto-generated investigation report")
+            st.code(eng.report(account, account_id=pick), language="text")
+        except Exception as e:                # never let explainability hang the app
+            st.warning(f"SHAP explanation unavailable in this environment ({type(e).__name__}). "
+                       "Risk score and alert above are unaffected.")
+    else:
+        st.caption("Click to compute the per-account SHAP attribution and the "
+                   "analyst-ready report (≈35 ms once the explainer warms up).")
 
 if metrics.get("threshold_table"):
     st.divider()

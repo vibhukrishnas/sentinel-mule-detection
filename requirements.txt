@@ -1,15 +1,15 @@
-# SENTINEL — PS2 mule-account detection. Python 3.11+.
-# Pinned to the versions this project was built & validated on (2026-06-10).
+# SENTINEL — DEPLOY requirements (Streamlit demo only). Python 3.11–3.13.
+# Slim on purpose: only what app.py + src/sentinel.py import at runtime, so the
+# cloud build is fast and can't OOM. Full-pipeline deps live in requirements-dev.txt.
+# Pinned to the versions the saved model was built on (2026-06-10) so it unpickles.
+streamlit==1.53.1
 pandas==2.3.2
 numpy==2.2.6
-scikit-learn==1.7.1
-lightgbm==4.6.0
-xgboost==3.2.0
-shap==0.52.0
+scikit-learn==1.7.1     # MUST match: the model is unpickled against this version
+lightgbm==4.6.0         # the deployed model family
+shap==0.51.0            # SHAP explanations (lazy-loaded). 0.51 = last release that
+                        # supports Python 3.11 (Streamlit Cloud's default); 0.52 needs 3.12+.
+                        # Verified to give identical scores/attributions to 0.52.
 scipy>=1.13
-pyarrow>=15.0          # parquet cache
-joblib>=1.4
-streamlit==1.53.1      # demo dashboard (app.py)
-fastapi>=0.110         # scoring API (src/api.py)
-uvicorn>=0.29          # ASGI server for the API
-pytest>=8.0            # tests
+pyarrow>=15.0           # reads the parquet demo artifacts
+joblib>=1.4             # loads the .joblib model artifacts

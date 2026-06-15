@@ -1,0 +1,7 @@
+# SENTINEL — FULL pipeline / dev requirements (training, tuning, API, tests).
+# NOT needed by the deployed Streamlit demo — keep these out of the cloud build.
+-r requirements.txt
+xgboost==3.2.0          # only for the tune.py ensemble exploration
+fastapi>=0.110          # scoring API (src/api.py) — deploys separately
+uvicorn>=0.29           # ASGI server for the API
+pytest>=8.0             # tests/

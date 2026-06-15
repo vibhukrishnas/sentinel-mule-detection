@@ -49,7 +49,24 @@ streamlit run app.py     # opens http://localhost:8501
 ## Notes / gotchas
 - **Versions are pinned** in `requirements.txt` so the saved model unpickles correctly
   (scikit-learn 1.7.1, lightgbm 4.6.0) — do not loosen these or the model load may fail.
+- **`requirements.txt` is slim on purpose** — only the 9 packages the demo actually
+  imports. Heavy deps the demo never uses (`xgboost`, `fastapi`, `uvicorn`, `pytest`)
+  moved to `requirements-dev.txt`, so the cloud build is fast and can't OOM on them.
+  Run the full pipeline/tests locally with `pip install -r requirements-dev.txt`.
+- **SHAP is lazy** — the dashboard (score, alert, metrics, figures) renders instantly;
+  the SHAP explanation + investigation report compute only when you click the button.
+  So even a memory-constrained host comes up cleanly instead of hanging on "loading".
 - The FastAPI scoring service (`src/api.py`) deploys separately on Render/Railway
   (`uvicorn src.api:app`); for the hackathon, the Streamlit app is the demo to show.
-- If a cloud build OOMs (rare), it's the SHAP explainer — it lazy-loads on first
-  "explain" click, so the dashboard still starts.
+
+## If the app is stuck on "loading" (troubleshooting)
+1. **Set the Python version.** In Streamlit Cloud → *New app → Advanced settings →
+   Python version → 3.11* (matches the pinned wheels; avoids a slow/failed source build).
+2. **Read the logs.** On the deployed app: *Manage app* (bottom-right) → the log panel
+   shows the real error (almost always a pip/install failure or an `OOM` kill) — that
+   tells you the true cause instead of guessing.
+3. **Confirm the repo is public and `artifacts/` was pushed** (`git ls-files artifacts/`
+   should list the `.joblib`/`.parquet` files — they are NOT git-ignored; only
+   `DataSet.csv`, `X_clean.parquet`, `y.parquet` are).
+4. **Reboot the app** after pushing new commits (*Manage app → Reboot*) — Cloud caches
+   the old build and old `requirements.txt`.
