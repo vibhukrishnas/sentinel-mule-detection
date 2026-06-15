@@ -6,7 +6,7 @@ Pick a real account (or paste raw feature JSON) -> instant calibrated risk score
 plain-English reasons, an analyst-ready investigation report, and a precision/recall
 dial the risk officer controls. This is the "feel it work" surface for judges.
 """
-import sys, json
+import sys, json, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
@@ -81,10 +81,29 @@ with left:
     st.progress(min(sc["risk_score"], 100) / 100)
     st.write(f"Calibrated probability of mule activity: **{sc['probability']:.1%}**")
     st.write(f"Ground-truth label: **{'MULE' if demoY.loc[pick]==1 else 'LEGITIMATE'}**")
-    if sc["probability"] >= threshold:
+    raised = sc["probability"] >= threshold
+    if raised:
         st.error(f"🚨 ALERT raised — {ACTION[sc['band']]}")
     else:
         st.success("No alert at current threshold.")
+
+    # ---- rolling audit trail: log each distinct review (traceability) ----
+    if "audit" not in st.session_state:
+        st.session_state.audit = []
+        st.session_state.last_sig = None
+    sig = (pick, round(threshold, 2))          # new account or new threshold = new review
+    if sig != st.session_state.last_sig:
+        st.session_state.last_sig = sig
+        st.session_state.audit.append({
+            "time (UTC)": datetime.datetime.utcnow().strftime("%H:%M:%S"),
+            "account": int(pick),
+            "score": sc["risk_score"],
+            "band": sc["band"],
+            "probability": round(sc["probability"], 4),
+            "threshold": round(threshold, 2),
+            "decision": "ALERT" if raised else "clear",
+            "ground_truth": "MULE" if demoY.loc[pick] == 1 else "legit",
+        })
 
 with right:
     st.subheader("Why — top risk drivers (SHAP)")
@@ -107,6 +126,33 @@ with right:
     else:
         st.caption("Click to compute the per-account SHAP attribution and the "
                    "analyst-ready report (≈35 ms once the explainer warms up).")
+
+# ---- rolling investigation log (dynamic, per-session, exportable) ----
+st.divider()
+st.subheader("🧾 Investigation activity — this session (live audit trail)")
+audit = st.session_state.get("audit", [])
+if audit:
+    log_df = pd.DataFrame(audit)[::-1].reset_index(drop=True)   # newest first
+    a, b, c = st.columns(3)
+    a.metric("Reviews logged", len(audit))
+    b.metric("Alerts raised", int((log_df["decision"] == "ALERT").sum()))
+    b_caught = int(((log_df["decision"] == "ALERT") & (log_df["ground_truth"] == "MULE")).sum())
+    c.metric("Mules caught in trail", b_caught)
+    st.dataframe(log_df, hide_index=True, use_container_width=True)
+    d1, d2 = st.columns([1, 4])
+    d1.download_button("⬇ Export audit log (CSV)",
+                       log_df.to_csv(index=False).encode(),
+                       file_name="sentinel_audit_log.csv", mime="text/csv")
+    if d2.button("Clear log"):
+        st.session_state.audit = []
+        st.session_state.last_sig = None
+        st.rerun()
+    st.caption("Every account you review (and each threshold change) is timestamped and "
+               "appended here — an analyst-ready, exportable audit trail. Model performance "
+               "below is fixed by design: it's the validated model, not a per-account number.")
+else:
+    st.caption("Select accounts and adjust the threshold above — each review is logged here "
+               "with a timestamp, the decision, and ground truth, then exportable as CSV.")
 
 if metrics.get("threshold_table"):
     st.divider()
