@@ -9,6 +9,8 @@ SENTINEL is the **leakage-proof detection & containment core** of a mule-account
 > **Honest headline: PR-AUC 0.81–0.89, ROC-AUC ~0.98** (repeated 5×2 CV; ~91–99× the 0.0089 random baseline) — best estimate **0.885 ± 0.055**, leak-paranoid floor ~0.81.
 >
 > **Why a range, not 1.0?** This dataset is **riddled with target leakage**. A naive XGBoost scores **PR-AUC 1.000** — impossible for real fraud detection; it's reading the answer. Our automated **Data Integrity Auditor** found and removed `F3912` (a 96%-aligned label proxy) **plus ~584 non-monotonic bucket/range leaks** (e.g. `F2230`, a month-stamp that is 100% fraud for 3 of 4 values). We report the defensible number, with the audit to prove it.
+>
+> **Is the honest number itself leakage-inflated?** No — proven. Re-detecting the leak blocklist **strictly inside each CV training fold** (never touching validation labels) gives **PR-AUC 0.907 ± 0.037**, statistically indistinguishable from the 0.885 headline (`src/infold_leak_check.py`). The blocklist being fit on full-data labels does **not** inflate the result.
 
 ---
 

@@ -1,0 +1,31 @@
+{
+  "method": "in-fold bucket-leak detection (train-only) inside repeated 5x2 CV",
+  "pr_auc_mean": 0.9069182926938539,
+  "pr_auc_std": 0.03707371483804288,
+  "pr_auc_folds": [
+    0.9044,
+    0.9634,
+    0.8596,
+    0.9332,
+    0.8927,
+    0.9422,
+    0.8796,
+    0.9564,
+    0.8625,
+    0.8752
+  ],
+  "leaks_removed_per_fold": [
+    580,
+    568,
+    549,
+    582,
+    534,
+    527,
+    591,
+    525,
+    558,
+    570
+  ],
+  "headline_pr_auc": 0.885,
+  "runtime_s": 717.1
+}
