@@ -19,6 +19,11 @@ import pandas as pd
 import streamlit as st
 from sentinel import SentinelEngine, ART, ACTION, band_for
 from preprocess import prepare_frame
+try:
+    import casestore                      # durable SQLite case store (best-effort)
+    _PERSIST = True
+except Exception:
+    _PERSIST = False
 
 st.set_page_config(page_title="SENTINEL · Mule Account Risk Engine", layout="wide")
 
@@ -72,10 +77,17 @@ def load_rings():
     return json.loads(p.read_text()) if p.exists() else None
 
 
+@st.cache_data
+def load_uncertainty():
+    p = ART / "uncertainty.json"
+    return json.loads(p.read_text()) if p.exists() else None
+
+
 eng = load_engine()
 cols, cat_maps = load_cols_maps()
 metrics = load_metrics()
 rings = load_rings()
+unc = load_uncertainty()
 
 
 def ring_of(i):
@@ -120,6 +132,16 @@ def audit_row(i, sc_row, g, ring_id, action):
         "decision": "ALERT" if sc_row["probability"] >= threshold else "clear",
         "ground_truth": g or "unknown", "ring": ring_id, "action": action,
     }
+
+
+def log_audit(row):
+    """Append to the in-session log AND best-effort persist to the durable case store."""
+    st.session_state.audit.append(row)
+    if _PERSIST:
+        try:
+            casestore.log_event(row, st.session_state.get("session_id", "?"))
+        except Exception:
+            pass
 
 
 def build_shift_report():
@@ -196,6 +218,11 @@ if st.session_state.get("scores") is None:
             {"risk_score": s, "probability": proba, "band": [band_for(v) for v in s]},
             index=X_all.index)
 allscores = st.session_state.scores
+if "audit" not in st.session_state:
+    st.session_state.audit = []
+if "session_id" not in st.session_state:
+    import uuid
+    st.session_state.session_id = uuid.uuid4().hex[:8]
 has_labels = y_all is not None
 ym = (y_all.reindex(allscores.index).fillna(0).astype(int) if has_labels else None)
 
@@ -297,9 +324,16 @@ with tab_inv:
                 st.success(f"No alert at threshold {threshold:.2f} (probability below the dial).")
 
             st.markdown(verdict_line(sc))
+            # abstention: decline to auto-decide the ambiguous middle (see src/uncertainty.py)
+            tier = eng.confidence_tier(sc["probability"])
+            if tier == "UNCERTAIN":
+                st.info("🤔 **UNCERTAIN — route to analyst.** The model declines to auto-decide "
+                        "this account (probability in the ambiguous band) rather than make an "
+                        "overconfident call. This is where the hardest mules hide.")
+            else:
+                st.caption(f"Model confidence tier: **{tier.replace('-', ' ').title()}** "
+                           "(auto-decided; outside the abstention band).")
 
-            if "audit" not in st.session_state:
-                st.session_state.audit = []
             reviewed, actions = audit_actions()
             r = ring_of(pick)
             ring_id = f"#{r['ring_id']}" if r else "—"
@@ -323,8 +357,7 @@ with tab_inv:
                     added = 0
                     for m in members:
                         if actions.get(m) != "ESCALATED":
-                            st.session_state.audit.append(
-                                audit_row(m, allscores.loc[m], gt(m), f"#{r['ring_id']}", "ESCALATED"))
+                            log_audit(audit_row(m, allscores.loc[m], gt(m), f"#{r['ring_id']}", "ESCALATED"))
                             added += 1
                     st.success(f"Escalated {added} member(s) of Ring #{r['ring_id']} — see the activity log & rings.")
                     st.rerun()
@@ -332,7 +365,7 @@ with tab_inv:
             # log exactly one "review" per Check click (threshold nudges don't inflate it)
             if st.session_state.get("pending_log") == pick:
                 st.session_state.pending_log = None
-                st.session_state.audit.append(audit_row(pick, sc, g, ring_id, "reviewed"))
+                log_audit(audit_row(pick, sc, g, ring_id, "reviewed"))
 
             # ---- analyst case decision (accountability) ----
             st.markdown("**Analyst decision** (logged to the session log):")
@@ -341,7 +374,7 @@ with tab_inv:
                       (d2.button("👁 Monitor", key="act_mon") and "MONITORED") or \
                       (d3.button("🚩 Escalate to L2", key="act_esc") and "ESCALATED")
             if decided:
-                st.session_state.audit.append(audit_row(pick, sc, g, ring_id, decided))
+                log_audit(audit_row(pick, sc, g, ring_id, decided))
                 st.success(f"Logged **{decided}** for account #{pick}.")
                 st.rerun()
 
@@ -441,6 +474,22 @@ with tab_an:
         st.metric("Alerts raised", f"{alerts:,} / {len(allscores):,}")
         st.caption("Upload data with the target column (F3924) to see recall / precision / ₹ impact.")
 
+    if unc:
+        st.divider()
+        st.subheader("🤔 Abstention policy — decline, don't guess (validated out-of-fold)")
+        u1, u2, u3, u4 = st.columns(4)
+        u1.metric("Auto-decided", f"{unc['coverage_auto_decided']:.1%}")
+        u2.metric("Auto-zone error", f"{unc['auto_zone_error_rate']:.2%}")
+        u3.metric("Routed to analyst", f"{unc['review_rate']:.1%}",
+                  help=f"{unc['n_uncertain']} of {unc['n']} accounts land in the ambiguous band")
+        u4.metric("Hard mules caught by review", unc["mules_routed_to_review"],
+                  help="real mules that score ambiguously — sent to a human instead of mis-cleared")
+        st.caption(f"On out-of-fold data the model **auto-decides {unc['coverage_auto_decided']:.0%}** of "
+                   f"accounts at **{unc['auto_zone_error_rate']:.2%}** error and **routes the ambiguous "
+                   f"{unc['review_rate']:.0%}** (probability {unc['t_lo']:.2f}–{unc['t_hi']:.2f}) to an analyst "
+                   f"— rather than make overconfident calls on the hard tail. Confident-mule zone precision "
+                   f"{unc['confident_mule_precision']:.0%}; confident-legit NPV {unc['confident_legit_npv']:.1%}.")
+
     st.divider()
     st.subheader("🚨 Watchlist — highest-risk accounts (current dataset)")
     topn = allscores.sort_values("risk_score", ascending=False).head(20).copy()
@@ -532,14 +581,30 @@ with tab_log:
         d2.download_button("📄 Download shift report", build_shift_report(),
                            file_name="sentinel_shift_report.txt", mime="text/plain",
                            help="A close-of-shift summary: reviews, escalations, rings contained, ₹ exposure addressed.")
-        if d3.button("Clear log"):
+        if d3.button("Clear session log"):
             st.session_state.audit = []
             st.rerun()
         with st.expander("📄 Preview shift report"):
             st.code(build_shift_report(), language="text")
         st.caption("Each review/decision is timestamped and appended here — an exportable "
-                   "**session log** (held in-memory for this session; a production deployment "
-                   "would persist it to a durable, tamper-evident audit store).")
+                   "**session log**, also persisted to a durable case store (below).")
+    # durable case store — survives refresh / other sessions (this deployment)
+    if _PERSIST:
+        try:
+            persisted = casestore.load_all()
+            with st.expander(f"🗄️ Durable case store — {len(persisted):,} persisted events "
+                             "(across sessions on this deployment)"):
+                st.caption(f"SQLite at `{casestore.DB_PATH}` — durable on a real/local deployment. "
+                           "On Streamlit Community Cloud the filesystem is ephemeral, so this survives "
+                           "refreshes and other sessions but resets on app reboot; production would point "
+                           "`SENTINEL_DB` at a managed SQL store.")
+                if len(persisted):
+                    st.dataframe(persisted, hide_index=True, use_container_width=True)
+                    st.download_button("⬇ Export full case store (CSV)",
+                                       persisted.to_csv(index=False).encode(),
+                                       file_name="sentinel_case_store.csv", mime="text/csv")
+        except Exception as e:
+            st.caption(f"(Case store unavailable here: {type(e).__name__})")
     else:
         st.caption("Select an account and click **Check risk score** — each review is logged "
                    "here with a timestamp, the decision, and ground truth, exportable as CSV.")

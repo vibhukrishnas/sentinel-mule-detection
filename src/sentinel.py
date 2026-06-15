@@ -55,6 +55,19 @@ class SentinelEngine:
         assert getattr(self.base, "n_features_in_", len(self.columns)) == len(self.columns), \
             "base model feature count != population_stats columns"
         self._explainer = None
+        # abstention thresholds (calibrated on OOF predictions; see src/uncertainty.py)
+        import json
+        up = art / "uncertainty.json"
+        u = json.loads(up.read_text()) if up.exists() else {"t_lo": 0.10, "t_hi": 0.90}
+        self.t_lo, self.t_hi = float(u["t_lo"]), float(u["t_hi"])
+
+    def confidence_tier(self, probability: float) -> str:
+        """Abstain on the ambiguous middle instead of making an overconfident call."""
+        if probability >= self.t_hi:
+            return "CONFIDENT-MULE"
+        if probability <= self.t_lo:
+            return "CONFIDENT-LEGIT"
+        return "UNCERTAIN"
 
     # ---- input alignment ------------------------------------------------
     def _align(self, account) -> pd.DataFrame:
