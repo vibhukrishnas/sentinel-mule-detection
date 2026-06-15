@@ -121,6 +121,41 @@ def audit_row(i, sc_row, g, ring_id, action):
         "ground_truth": g or "unknown", "ring": ring_id, "action": action,
     }
 
+
+def build_shift_report():
+    """A close-of-shift summary of this session — the analyst hand-off artifact."""
+    audit = st.session_state.get("audit", [])
+    reviewed, actions = audit_actions()
+    esc = sorted(a for a, v in actions.items() if v == "ESCALATED")
+    clr = [a for a, v in actions.items() if v == "CLEARED"]
+    mon = [a for a, v in actions.items() if v == "MONITORED"]
+    L = ["SENTINEL — Analyst shift report", "=" * 44,
+         f"Generated (UTC): {datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')}",
+         f"Data source    : {src_label}", "",
+         f"Reviews logged    : {len(audit)}",
+         f"Distinct accounts : {len({r['account'] for r in audit})}",
+         f"Escalated to L2   : {len(esc)}",
+         f"Cleared           : {len(clr)}",
+         f"Under monitoring  : {len(mon)}"]
+    if rings:
+        contained, exposure = 0, 0.0
+        ring_lines = []
+        for r in rings["rings"]:
+            e = sum(1 for m in r["members"] if actions.get(m) == "ESCALATED")
+            if e:
+                frac = e / r["size"]
+                exposure += r["exposure_rupees"] * frac
+                contained += (e == r["size"])
+                ring_lines.append(f"  - Ring #{r['ring_id']}: {e}/{r['size']} escalated "
+                                  f"(~₹{int(r['exposure_rupees']*frac):,} of ₹{r['exposure_rupees']:,})")
+        L += ["", f"Rings contained             : {contained}/{rings['n_candidate_rings']}",
+              f"Potential exposure addressed : ₹{int(exposure):,}"]
+        if ring_lines:
+            L += ["", "Ring actions:"] + ring_lines
+    if esc:
+        L += ["", f"Escalated accounts ({len(esc)}): " + ", ".join(f"#{a}" for a in esc[:60])]
+    return "\n".join(L)
+
 # ============================ SIDEBAR: data + global dial ============================
 st.sidebar.header("📥 Data source")
 st.sidebar.caption("Upload the provided **DataSet.csv** (raw) or a cleaned export. The full "
@@ -187,6 +222,15 @@ if has_labels:
 st.title("🛡️ SENTINEL — Suspicious / Mule Account Risk Engine")
 st.caption("BOI Hackathon · PS2 · Calibrated risk scoring with explainable, "
            "investigation-ready alerts. F3912 (leakage) excluded — these are honest numbers.")
+with st.expander("👋 Judges — try this in 30 seconds"):
+    st.markdown(
+        "1. **Investigate** → click **🎲 Random account**, then **🔍 Check risk score** "
+        "(the model scores on demand — score, band, and ground-truth are revealed).\n"
+        "2. Click **🧠 Explain** for the SHAP reasons + a downloadable investigation report.\n"
+        "3. If the account is in a **candidate mule-ring**, hit **🚩 Escalate entire ring** — "
+        "then open **📊 Analytics** and watch that ring flip to **🟢 Contained**.\n"
+        "4. Drag the sidebar **🎚️ alert threshold** — recall / false-alarms / ₹ impact move live.\n"
+        "5. **🧾 Activity log** → download the **shift report** of everything you did.")
 if metrics:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("CV PR-AUC (5×2)", f"{metrics.get('cv_pr_auc', 0):.3f}",
@@ -261,6 +305,11 @@ with tab_inv:
                            "Investigate as a batch. *Candidate grouping; confirmation needs bank link data.*")
                 st.progress(revd / r["size"],
                             text=f"Ring progress this session: {revd}/{r['size']} reviewed · {esc} escalated")
+                esc_peers = [m for m in members if m != pick and actions.get(m) == "ESCALATED"]
+                if esc_peers:
+                    shown = ", ".join(f"#{m}" for m in esc_peers[:5])
+                    st.info(f"🔗 Shares Ring #{r['ring_id']} with **{len(esc_peers)}** account(s) you already "
+                            f"escalated this session: {shown}{'…' if len(esc_peers) > 5 else ''}.")
                 if st.button(f"🚩 Escalate entire Ring #{r['ring_id']} ({r['size']} accounts)", key="esc_ring"):
                     added = 0
                     for m in members:
@@ -469,12 +518,17 @@ with tab_log:
         c.metric("Mules caught in trail",
                  int(((log_df["decision"] == "ALERT") & (log_df["ground_truth"] == "MULE")).sum()))
         st.dataframe(log_df, hide_index=True, use_container_width=True)
-        d1, d2 = st.columns([1, 4])
+        d1, d2, d3 = st.columns([1.4, 1.4, 3])
         d1.download_button("⬇ Export audit log (CSV)", log_df.to_csv(index=False).encode(),
                            file_name="sentinel_audit_log.csv", mime="text/csv")
-        if d2.button("Clear log"):
+        d2.download_button("📄 Download shift report", build_shift_report(),
+                           file_name="sentinel_shift_report.txt", mime="text/plain",
+                           help="A close-of-shift summary: reviews, escalations, rings contained, ₹ exposure addressed.")
+        if d3.button("Clear log"):
             st.session_state.audit, st.session_state.last_sig = [], None
             st.rerun()
+        with st.expander("📄 Preview shift report"):
+            st.code(build_shift_report(), language="text")
         st.caption("Every account you review (and each threshold change) is timestamped and "
                    "appended here — an analyst-ready, exportable audit trail.")
     else:
