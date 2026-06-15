@@ -215,6 +215,14 @@ if "src" not in st.session_state:
 X_all, y_all, src_label = st.session_state.src
 st.sidebar.success(f"Active: {src_label}")
 
+
+def tier_of(p):
+    """Confidence tier from the abstention thresholds — computed app-side so it never
+    depends on a cached engine instance (avoids stale @st.cache_resource crashes)."""
+    lo = unc["t_lo"] if unc else 0.10
+    hi = unc["t_hi"] if unc else 0.90
+    return "CONFIDENT-MULE" if p >= hi else "CONFIDENT-LEGIT" if p <= lo else "UNCERTAIN"
+
 # score the whole active dataset once (deployed model); recompute only on source change
 if st.session_state.get("scores") is None:
     with st.spinner(f"Scoring {len(X_all):,} accounts…"):
@@ -331,7 +339,7 @@ with tab_inv:
 
             st.markdown(verdict_line(sc))
             # abstention: decline to auto-decide the ambiguous middle (see src/uncertainty.py)
-            tier = eng.confidence_tier(sc["probability"])
+            tier = tier_of(sc["probability"])
             if tier == "UNCERTAIN":
                 st.info("🤔 **UNCERTAIN — route to analyst.** The model declines to auto-decide "
                         "this account (probability in the ambiguous band) rather than make an "
