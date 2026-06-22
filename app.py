@@ -563,9 +563,6 @@ with tab_net:
                "BOI is an account *snapshot* with no transaction edges, so this is a behavioural-"
                "**similarity** graph: a data-grounded *proxy* for the link data a bank holds. "
                "Confirmation needs bank link/device data (Phase-2).")
-    st.markdown("**Colour legend:**  🔴 Critical (risk ≥ 90)  ·  🟠 High (70–89)  ·  🔵 Medium (40–69)  ·  "
-                "🟢 Low (< 40)  ·  🟣 selected / escalated this session  ·  node size ∝ risk.")
-
     # ----------------------------- BOI candidate-ring network -----------------------------
     st.subheader("🕸️ Candidate rings (behavioral-similarity graph)")
     st.caption("**Honest framing:** the BOI dataset is an account *snapshot* with **no transaction "
@@ -837,6 +834,10 @@ with tab_an:
                    f"than a random legit group ({v.get('ring1_intra_sim',0):.2f} vs {v.get('legit_subset_sim_mean',0):.2f}), "
                    f"stable under subsampling (Jaccard {v.get('ring1_subsample_stability_jaccard',0):.2f}) — a validated "
                    "proxy, **not** confirmed rings (needs bank link/device data, Phase-2).")
+        st.markdown("**What the colours mean:** each colour is a **distinct candidate ring** — "
+                    "Ring #1 🔴 red, #2 🔵 blue, #3 🟢 green, #4 🟣 purple, #5 🟠 orange; "
+                    "**grey** nodes are the 14 mules not grouped into any ring. Edges connect "
+                    "behaviourally near-identical accounts.")
         fig = ROOT / "figures" / "11_mule_network.png"
         if fig.exists():
             st.image(str(fig), use_container_width=True,
