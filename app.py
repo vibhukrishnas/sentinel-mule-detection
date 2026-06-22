@@ -613,54 +613,70 @@ with tab_net:
 # =================================== ALERT MANAGEMENT ===================================
 with tab_alerts:
     st.subheader("🚨 Alert management — accountable case workflow")
-    st.caption("Every account at/above the **alert threshold** (sidebar) becomes a case with a "
-               "status and an owner. Works on the committed sample **or any uploaded dataset**. "
-               "Drag the threshold to trade recall for analyst workload.")
-    if "alert_status" not in st.session_state:
-        st.session_state.alert_status = {}
-    stt = st.session_state.alert_status
+    st.caption("This is the **post-detection workflow** — what a fraud desk actually operates after the model "
+               "flags an account. Every account at/above the **alert threshold** (sidebar) becomes a case with a "
+               "**status** and an **owner**, turning a score into accountable action. Works on the committed "
+               "sample **or any uploaded dataset**.")
+    STATUSES = ["NEW", "INVESTIGATING", "ESCALATED", "CLEARED"]
+    stt = st.session_state.setdefault("alert_status", {})
+    own = st.session_state.setdefault("alert_owner", {})
+    logged = st.session_state.setdefault("alert_logged", {})
     alerts = allscores[allscores["probability"] >= threshold].sort_values("risk_score", ascending=False)
+
+    # sync analyst edits (widgets write to session_state) BEFORE counting/logging -> live metrics
+    for i in alerts.index:
+        sk, ok = f"ast_{int(i)}", f"own_{int(i)}"
+        if sk in st.session_state:
+            stt[int(i)] = st.session_state[sk]
+        if ok in st.session_state:
+            own[int(i)] = st.session_state[ok]
+    # log every NEW status change or owner assignment to the durable audit trail (real accountability)
+    for i in alerts.index:
+        ii = int(i); cs = stt.get(ii, "NEW"); ow = own.get(ii, "")
+        if (cs != "NEW" or ow) and logged.get(ii) != (cs, ow):
+            rg = ring_of(i)
+            act = cs + (f" · owner {ow}" if ow else "")
+            log_audit(audit_row(i, allscores.loc[i], gt(i), f"#{rg['ring_id']}" if rg else "—", act))
+            logged[ii] = (cs, ow)
 
     def _ast(i):
         return stt.get(int(i), "NEW")
-    counts = {"NEW": 0, "INVESTIGATING": 0, "ESCALATED": 0, "CLEARED": 0}
+    counts = {s: 0 for s in STATUSES}
     for i in alerts.index:
-        counts[_ast(i)] = counts.get(_ast(i), 0) + 1
+        counts[_ast(i)] += 1
+    assigned = sum(1 for i in alerts.index if own.get(int(i)))
     a1, a2, a3, a4 = st.columns(4)
     a1.metric(f"🚨 Open alerts @ {threshold:.2f}", f"{len(alerts):,}")
     a2.metric("🟡 New / untouched", counts["NEW"])
     a3.metric("🔵 Investigating + 🔴 Escalated", counts["INVESTIGATING"] + counts["ESCALATED"])
     a4.metric("✅ Cleared", counts["CLEARED"])
     handled = counts["INVESTIGATING"] + counts["ESCALATED"] + counts["CLEARED"]
-    st.caption(f"Handled **{handled}/{len(alerts)}** this session · SLA: Critical (≥90) same-day, "
-               "High (70–89) 48h. Status + owner are logged to the activity trail for auditability.")
+    st.caption(f"Handled **{handled}/{len(alerts)}** · **{assigned}** assigned to an owner this session · "
+               "SLA: Critical (≥90) same-day, High (70–89) 48h.")
+    st.info("**Where ‘assign’ enacts:** setting an owner + status writes a timestamped, **named** record to the "
+            "**🧾 Activity log** and the **durable SQLite case store** — e.g. `ESCALATED · owner priya`. So every "
+            "action taken on a customer account is attributable to a specific analyst — the audit accountability a "
+            "bank (and an RBI / SAR review) requires. Change a status below, then open the **Activity log** tab.")
 
     if not len(alerts):
         st.info("No alerts at this threshold — lower the sidebar dial to surface more.")
     else:
-        STATUSES = ["NEW", "INVESTIGATING", "ESCALATED", "CLEARED"]
         hdr = st.columns([0.8, 1, 1, 1.4, 1.6, 1.4])
-        for c, t in zip(hdr, ["Account", "Risk", "Truth", "Owner", "Status", ""]):
+        for c, t in zip(hdr, ["Account", "Risk", "Truth", "Owner", "Status", "Logged as"]):
             c.markdown(f"**{t}**")
         for i in alerts.head(25).index:
-            r = allscores.loc[i]; cur = _ast(i)
+            r = allscores.loc[i]
             c = st.columns([0.8, 1, 1, 1.4, 1.6, 1.4])
             c[0].markdown(f"#{int(i)}")
             c[1].markdown(f"{int(r['risk_score'])} · {r['band']}")
             c[2].markdown(gt(i) or "—")
-            owner = c[3].text_input("owner", value=stt.get(f"owner_{int(i)}", ""), key=f"own_{i}",
-                                    label_visibility="collapsed", placeholder="assign…")
-            if owner:
-                stt[f"owner_{int(i)}"] = owner
-            new = c[4].selectbox("status", STATUSES, index=STATUSES.index(cur), key=f"ast_{i}",
-                                 label_visibility="collapsed")
-            if new != cur:
-                stt[int(i)] = new
-                rg = ring_of(i)
-                log_audit(audit_row(i, allscores.loc[i], gt(i), f"#{rg['ring_id']}" if rg else "—", new))
-            c[5].markdown(f"_{new.title()}_")
+            c[3].text_input("owner", key=f"own_{int(i)}", label_visibility="collapsed", placeholder="assign…")
+            c[4].selectbox("status", STATUSES, index=STATUSES.index(_ast(i)), key=f"ast_{int(i)}",
+                           label_visibility="collapsed")
+            ow = own.get(int(i), "")
+            c[5].markdown(f"_{_ast(i).title()}{(' · ' + ow) if ow else ''}_")
         if len(alerts) > 25:
-            st.caption(f"Showing top 25 of {len(alerts):,} alerts by risk. Export the full list on the Analytics tab.")
+            st.caption(f"Showing top 25 of {len(alerts):,} alerts by risk.")
 
 # ====================================== ANALYTICS ======================================
 with tab_an:
