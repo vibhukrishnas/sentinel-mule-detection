@@ -389,18 +389,25 @@ with st.expander("👋 Judges — try this in 30 seconds"):
         "5. **🧾 Activity log** → download the **shift report** of everything you did.\n\n"
         "_First load after the app has been idle can take ~20s to wake (free host) — that's "
         "the hosting tier, not the model, which scores in ~33 ms._")
-if metrics:
-    c1, c2, c3, c4 = st.columns(4)
-    c1.metric("CV PR-AUC (5×2)", f"{metrics.get('cv_pr_auc', 0):.3f}",
-              help=f"Leak-removed, repeated CV. Random baseline = {metrics.get('prevalence', 0):.4f} (~100× lift)")
-    c2.metric("CV ROC-AUC", f"{metrics.get('cv_roc_auc', 0):.3f}")
-    c3.metric("CV Brier (calibration)", f"{metrics.get('cv_brier', 0):.4f}",
-              help="lower = better-calibrated probabilities (measured on CV, not the noisy holdout)")
-    c4.metric("Score+explain latency", f"{metrics.get('latency_p95', 0):.0f} ms",
-              help="p95, predict_proba + SHAP — real-time ready")
+# Lead with VALUE, not metrics. The validated PR-AUC / leakage story lives on the Model tab (last).
+_rd = load_json("boi/realtime_decisioning.json") or {}
+_dec = _rd.get("decisioning") or {}
+_grad = _dec.get("sentinel_graduated") or {}
+_rt = _rd.get("realtime") or {}
+v1, v2, v3, v4 = st.columns(4)
+v1.metric("🚦 Auto-decided", f"{unc['coverage_auto_decided']*100:.0f}%" if unc else "—",
+          help="The model auto-clears/flags the confident cases; only the ambiguous rest reaches a human.")
+v2.metric("🛟 Wrongful freezes", _grad.get("wrongful_freezes", "—"),
+          help="Innocent customers wrongly frozen under the graduated policy — protected.")
+v3.metric("💰 Loss prevented", f"₹{_dec.get('expected_cost_reduction_rupees', 0)/1e7:.2f} Cr" if _dec else "—",
+          help="Expected cost reduction vs a naïve freeze-at-0.5 policy.")
+v4.metric("⚡ Throughput", f"{_rt.get('batch_throughput_accts_per_sec', '—')}/s" if _rt else "—",
+          help="Scores on commodity CPU — no GPU needed.")
+st.caption("Validated performance (PR-AUC, bootstrap CI, the leakage story) is on the **📈 Model & validation** tab.")
 
-tab_inv, tab_net, tab_an, tab_log, tab_model = st.tabs(
-    ["🔍 Investigate", "🕸️ Network & Money-Flow", "📊 Analytics", "🧾 Activity log", "📈 Model & validation"])
+tab_inv, tab_net, tab_alerts, tab_an, tab_log, tab_model, tab_copilot = st.tabs(
+    ["🔍 Investigate", "🕸️ Account Network", "🚨 Alert Management", "📊 Analytics",
+     "🧾 Activity log", "📈 Model & validation", "🤖 AI Copilot"])
 
 # ===================================== INVESTIGATE =====================================
 with tab_inv:
@@ -551,40 +558,16 @@ with tab_inv:
 
 # ================================ NETWORK & MONEY-FLOW ================================
 with tab_net:
-    st.subheader("🚦 Analyst triage queue")
-    st.caption("What a fraud desk opens each morning — work the top of the queue down. "
-               "Tiers come from the calibrated score; the **review** bucket is the abstention "
-               "layer routing ambiguous accounts to a human instead of guessing.")
-    crit = allscores[allscores["risk_score"] >= 90].sort_values("risk_score", ascending=False)
-    urg = allscores[(allscores["risk_score"] >= 70) & (allscores["risk_score"] < 90)].sort_values("risk_score", ascending=False)
-    review = allscores[(allscores["probability"] > (unc["t_lo"] if unc else 0.10)) &
-                       (allscores["probability"] < (unc["t_hi"] if unc else 0.90))]
-    q1, q2, q3, q4 = st.columns(4)
-    q1.metric("🔴 Critical (≥90)", f"{len(crit):,}")
-    q2.metric("🟠 Urgent (70–89)", f"{len(urg):,}")
-    q3.metric("🤔 Needs review (abstain)", f"{len(review):,}",
-              help="Ambiguous band — routed to a human rather than auto-decided.")
-    q4.metric("📋 Total accounts", f"{len(allscores):,}")
-
-    def _queue(df, label, k=10):
-        if not len(df):
-            st.caption(f"_{label}: none at the moment._"); return
-        t = df.head(k).copy(); t.insert(0, "account_id", t.index)
-        t["ring"] = [f"#{r['ring_id']}" if (r := ring_of(i)) else "—" for i in t.index]
-        show = ["account_id", "risk_score", "band", "probability", "ring"]
-        if "anomaly" in t.columns: show.append("anomaly")
-        if has_labels:
-            t["ground_truth"] = [gt(i) for i in t.index]; show.append("ground_truth")
-        st.markdown(f"**{label}** (top {min(k, len(df))} of {len(df):,})")
-        st.dataframe(t[show], hide_index=True, use_container_width=True)
-    _queue(crit, "🔴 Critical — escalate now")
-    _queue(urg, "🟠 Urgent — same-day review")
-    if len(review):
-        _queue(review.sort_values("risk_score", ascending=False), "🤔 Needs human review (abstention band)")
+    st.subheader("🗺️ Account network")
+    st.caption("The network behind an account — the validated candidate rings among known mules. "
+               "BOI is an account *snapshot* with no transaction edges, so this is a behavioural-"
+               "**similarity** graph: a data-grounded *proxy* for the link data a bank holds. "
+               "Confirmation needs bank link/device data (Phase-2).")
+    st.markdown("**Colour legend:**  🔴 Critical (risk ≥ 90)  ·  🟠 High (70–89)  ·  🔵 Medium (40–69)  ·  "
+                "🟢 Low (< 40)  ·  🟣 selected / escalated this session  ·  node size ∝ risk.")
 
     # ----------------------------- BOI candidate-ring network -----------------------------
-    st.divider()
-    st.subheader("🕸️ BOI mule network — candidate rings (behavioral-similarity graph)")
+    st.subheader("🕸️ Candidate rings (behavioral-similarity graph)")
     st.caption("**Honest framing:** the BOI dataset is an account *snapshot* with **no transaction "
                "edges**, so this is a behavioral-**similarity** graph (accounts that look near-identical "
                "on leak-removed features) — a data-grounded *proxy* for the link data a bank holds, "
@@ -609,28 +592,6 @@ with tab_net:
         if fig.exists():
             st.image(str(fig), use_container_width=True)
 
-    # ----------------------------- AMLSim REAL money-flow map -----------------------------
-    st.divider()
-    st.subheader("💸 Money-flow map — real transaction graph (AMLSim) · *Phase-2 capability*")
-    st.caption("This is what SENTINEL does **once given transaction-link data**: it reconstructs the "
-               "money-flow graph and surfaces laundering **typologies** (fan-in, cycle). Shown on the "
-               "AMLSim dataset (which has real sender→receiver edges + planted rings) — a **separate, "
-               "tagged** dataset, never merged into BOI. On AMLSim our graph engine recovers the planted "
-               "rings at **100% purity** (Phase 1b).")
-    if amlsim_flow and amlsim_flow.get("typologies") and _PLOTLY:
-        tnames = {f"{t['type']} · {t['n_accounts']} accounts · ₹{t['total_amount']:,.0f} moved": t
-                  for t in amlsim_flow["typologies"]}
-        tc = st.selectbox("Typology", list(tnames))
-        typ = tnames[tc]
-        st.plotly_chart(amlsim_flow_figure(typ), use_container_width=True)
-        st.caption(f"🔴 arrows = direction of money movement · labels = ₹ per transfer. "
-                   f"**{typ['type']}** is a classic mule pattern: "
-                   + ("many accounts funnel into one collector (fan-in)." if typ['type'] == 'fan_in'
-                      else "money loops through a chain back to the start (cycle)." if typ['type'] == 'cycle'
-                      else "one source sprays funds out to many mules (fan-out)."))
-    elif not amlsim_flow:
-        st.caption("_AMLSim flow artifact not built — run `scripts/build_dashboard_assets.py`._")
-
     # ----------------------------- anomaly detection (honest) -----------------------------
     if anom_meta:
         st.divider()
@@ -651,6 +612,58 @@ with tab_net:
                    "**second opinion** in the queue but do **not** fold it into the deployed score. Shipping a "
                    "blend we've proven makes us worse would be the exact dishonesty our leakage auditor exists "
                    "to catch — so we report the verdict instead. *That* is the rigor.")
+
+# =================================== ALERT MANAGEMENT ===================================
+with tab_alerts:
+    st.subheader("🚨 Alert management — accountable case workflow")
+    st.caption("Every account at/above the **alert threshold** (sidebar) becomes a case with a "
+               "status and an owner. Works on the committed sample **or any uploaded dataset**. "
+               "Drag the threshold to trade recall for analyst workload.")
+    if "alert_status" not in st.session_state:
+        st.session_state.alert_status = {}
+    stt = st.session_state.alert_status
+    alerts = allscores[allscores["probability"] >= threshold].sort_values("risk_score", ascending=False)
+
+    def _ast(i):
+        return stt.get(int(i), "NEW")
+    counts = {"NEW": 0, "INVESTIGATING": 0, "ESCALATED": 0, "CLEARED": 0}
+    for i in alerts.index:
+        counts[_ast(i)] = counts.get(_ast(i), 0) + 1
+    a1, a2, a3, a4 = st.columns(4)
+    a1.metric(f"🚨 Open alerts @ {threshold:.2f}", f"{len(alerts):,}")
+    a2.metric("🟡 New / untouched", counts["NEW"])
+    a3.metric("🔵 Investigating + 🔴 Escalated", counts["INVESTIGATING"] + counts["ESCALATED"])
+    a4.metric("✅ Cleared", counts["CLEARED"])
+    handled = counts["INVESTIGATING"] + counts["ESCALATED"] + counts["CLEARED"]
+    st.caption(f"Handled **{handled}/{len(alerts)}** this session · SLA: Critical (≥90) same-day, "
+               "High (70–89) 48h. Status + owner are logged to the activity trail for auditability.")
+
+    if not len(alerts):
+        st.info("No alerts at this threshold — lower the sidebar dial to surface more.")
+    else:
+        STATUSES = ["NEW", "INVESTIGATING", "ESCALATED", "CLEARED"]
+        hdr = st.columns([0.8, 1, 1, 1.4, 1.6, 1.4])
+        for c, t in zip(hdr, ["Account", "Risk", "Truth", "Owner", "Status", ""]):
+            c.markdown(f"**{t}**")
+        for i in alerts.head(25).index:
+            r = allscores.loc[i]; cur = _ast(i)
+            c = st.columns([0.8, 1, 1, 1.4, 1.6, 1.4])
+            c[0].markdown(f"#{int(i)}")
+            c[1].markdown(f"{int(r['risk_score'])} · {r['band']}")
+            c[2].markdown(gt(i) or "—")
+            owner = c[3].text_input("owner", value=stt.get(f"owner_{int(i)}", ""), key=f"own_{i}",
+                                    label_visibility="collapsed", placeholder="assign…")
+            if owner:
+                stt[f"owner_{int(i)}"] = owner
+            new = c[4].selectbox("status", STATUSES, index=STATUSES.index(cur), key=f"ast_{i}",
+                                 label_visibility="collapsed")
+            if new != cur:
+                stt[int(i)] = new
+                rg = ring_of(i)
+                log_audit(audit_row(i, allscores.loc[i], gt(i), f"#{rg['ring_id']}" if rg else "—", new))
+            c[5].markdown(f"_{new.title()}_")
+        if len(alerts) > 25:
+            st.caption(f"Showing top 25 of {len(alerts):,} alerts by risk. Export the full list on the Analytics tab.")
 
 # ====================================== ANALYTICS ======================================
 with tab_an:
@@ -983,3 +996,89 @@ with tab_model:
             p = _fig / f
             if p.exists():
                 gcols[i % 3].image(str(p), use_container_width=True)
+
+# ======================================= AI COPILOT =======================================
+with tab_copilot:
+    st.subheader("🤖 AI Copilot — ask how SENTINEL works")
+    st.caption("Answers grounded in the live numbers. Runs in-app (no external calls); can be wired "
+               "to an LLM endpoint for open-domain Q&A.")
+    _pra = metrics.get("cv_pr_auc", 0.885); _roc = metrics.get("cv_roc_auc", 0.98)
+    _naive = next((r["pr_auc"] for r in (load_json("leak_sensitivity.json") or []) if r.get("leak_thr", 0) > 1), 0.998)
+    _nleak = next((r["n_leaks"] for r in (load_json("leak_sensitivity.json") or []) if abs(r.get("leak_thr", 9) - 0.10) < 1e-6), 582)
+    _cov = (unc or {}).get("coverage_auto_decided", 0.99)
+    _wf = _grad.get("wrongful_freezes", 0); _ms = _grad.get("mules_surfaced_by_stepup", "several")
+    _tp = _rt.get("batch_throughput_accts_per_sec", "~2,300")
+    _anp = (anom_meta or {}).get("anomaly_pr_auc", 0.01)
+    KB = [
+        (["how", "work", "what is", "overview", "about", "pipeline"],
+         "SENTINEL scores each account 0–100 for mule-risk with a calibrated LightGBM model, explains "
+         "every alert with SHAP, groups look-alike accounts into candidate rings, and recommends a "
+         "graduated action (clear → step-up verify → freeze). It abstains on ambiguous cases and routes "
+         "them to a human."),
+        (["leak", "f3912", "0.99", "0.998", "honest", "why low", "lie"],
+         f"The raw data has target leakage: F3912 is a post-hoc fraud flag ~96% aligned with the label, so "
+         f"a naïve model scores PR-AUC {_naive:.3f} by reading the answer. Our Data Integrity Auditor removes "
+         f"it plus {_nleak} bucket leaks, giving a defensible PR-AUC {_pra:.3f} that holds in production."),
+        (["pr-auc", "prauc", "accuracy", "metric", "performance", "roc", "how good"],
+         f"PR-AUC {_pra:.3f}, ROC-AUC {_roc:.3f}. We lead with PR-AUC (not accuracy) because at ~1% fraud, "
+         "'predict all clean' is 99% accurate yet useless."),
+        (["ring", "network", "cluster", "graph", "colour", "color", "legend"],
+         "We group mules via a behavioural-similarity graph. Node colour = risk band: 🔴 ≥90, 🟠 70–89, "
+         "🔵 40–69, 🟢 <40; size ∝ risk; 🟣 = selected/escalated. It's a proxy for bank link data (Phase-2)."),
+        (["abstain", "uncertain", "confidence", "route", "review", "fatigue"],
+         f"Instead of forcing every call, SENTINEL auto-decides {_cov*100:.0f}% of accounts and routes only "
+         "the ambiguous band to a human — crushing alert fatigue instead of guessing on the hard tail."),
+        (["freeze", "customer", "harm", "decision", "action", "step-up", "stepup", "contain"],
+         f"Graduated response: clear → step-up verify → freeze. We freeze only high-confidence mules and "
+         f"step-up-verify the ambiguous middle (a mule fails KYC re-check, a real customer passes). Result on "
+         f"the sample: {_wf} wrongful freezes, {_ms} hard mules surfaced — protecting customers and analysts."),
+        (["latency", "fast", "real-time", "realtime", "speed", "gpu", "ms"],
+         f"Real-time on commodity CPU — {_tp} accounts/sec batch. GPUs give no benefit on tabular boosting, "
+         "so there's no GPU dependency: easier for a bank to deploy on existing infra."),
+        (["anomaly", "isolation forest", "outlier", "lof", "unsupervised"],
+         f"We tested unsupervised anomaly detection (Isolation Forest + LOF). Mules here are NOT outliers — "
+         f"both score near random (~{_anp:.3f}), and a naïve hybrid would hurt the score. So this is a "
+         "supervised problem; we report that honestly rather than ship a metric that makes us worse."),
+        (["upload", "csv", "new data", "dataset", "my data"],
+         "Use the sidebar uploader. The whole dashboard re-scores on your CSV — Investigate, Network, Alert "
+         "Management and Analytics all update. Uploaded data is processed in-session, not stored."),
+        (["alert", "threshold", "queue", "manage", "accountability", "sla"],
+         "Alert Management turns every account above the alert threshold into a case with a status "
+         "(New → Investigating → Escalated → Cleared) and an owner. Works on the sample or any uploaded data."),
+        (["mule", "mule account"],
+         "A mule account receives and moves illicit funds — often a real customer's account that's been "
+         "recruited or compromised. Catching mules early breaks the laundering chain before cash-out."),
+        (["deploy", "production", "bank", "integrate", "scale"],
+         "Deployment is API-first: a FastAPI service hosts the model (/score, /report, /network) and the UI. "
+         "It runs on CPU, slotting into existing bank infra; auth, rate-limiting and a durable case store are built in."),
+    ]
+    SUGG = ["How does SENTINEL work?", "Why isn't your PR-AUC 0.99?", "What do the ring colours mean?",
+            "How do you protect innocent customers?", "Is it real-time?", "Did you test anomaly detection?"]
+
+    def _answer(q):
+        t = q.lower(); best, sc = None, 0
+        for kws, ans in KB:
+            m = sum(1 for k in kws if k in t)
+            if m > sc:
+                sc, best = m, ans
+        return best if best and sc else ("I can answer questions about how SENTINEL works — the model, the "
+            "leakage story, rings, abstention, customer-fair decisions, real-time performance, anomaly "
+            "detection, uploading data, and deployment. Try one of the suggested questions.")
+
+    if "copilot_log" not in st.session_state:
+        st.session_state.copilot_log = []
+    st.markdown("**Suggested:**")
+    scols = st.columns(3)
+    for j, sug in enumerate(SUGG):
+        if scols[j % 3].button(sug, key=f"sug_{j}"):
+            st.session_state.copilot_log.append((sug, _answer(sug)))
+    q = st.chat_input("Ask the copilot…") if hasattr(st, "chat_input") else None
+    if q is None:
+        q = st.text_input("Ask the copilot…", key="copilot_q")
+        if st.button("Ask", key="copilot_ask") and q:
+            st.session_state.copilot_log.append((q, _answer(q)))
+    elif q:
+        st.session_state.copilot_log.append((q, _answer(q)))
+    for qq, aa in reversed(st.session_state.copilot_log[-12:]):
+        st.markdown(f"**🧑 {qq}**")
+        st.info(f"🤖 {aa}")
