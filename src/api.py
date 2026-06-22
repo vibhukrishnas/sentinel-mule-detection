@@ -27,7 +27,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sentinel import SentinelEngine, ART, band_for
 from preprocess import prepare_frame
-from txn_ingest import score_transactions, fuse_alerts, sample_transactions
+from txn_ingest import (score_transactions, fuse_alerts, sample_transactions,
+                        cross_channel_view, regulatory_connector, stream_score,
+                        sample_regulatory_feed, sample_cross_channel)
 
 MAX_ROWS = 20000                # cap uploaded rows (memory guard for the shared demo)
 
@@ -286,11 +288,15 @@ def _txn_response(df: pd.DataFrame) -> dict:
     out, rollup = res["transactions"], res["rollup"]
     flagged = out[out["flag"]].sort_values("suspicion_score", ascending=False).head(200)
     cols = [res["amount_col"], "suspicion_score", "reasons"] + ([res["orig_col"]] if res["orig_col"] else [])
+    rename = {res["amount_col"]: "amount"}
+    if res["orig_col"]:
+        rename[res["orig_col"]] = "account"
+    flagged_recs = flagged[cols].rename(columns=rename).fillna("").to_dict("records")
+    rollup_recs = rollup.head(50).fillna(0).to_dict("records") if len(rollup) else []
     return {
         "n_transactions": int(len(out)), "n_flagged": int(res["n_flagged"]),
         "n_accounts_implicated": int((rollup["suspicious_txns"] > 0).sum()) if len(rollup) else 0,
-        "flagged": flagged[cols].rename(columns={res["amount_col"]: "amount", res["orig_col"] or "_": "account"}).to_dict("records"),
-        "rollup": rollup.head(50).to_dict("records") if len(rollup) else [],
+        "flagged": flagged_recs, "rollup": rollup_recs,
     }
 
 
@@ -312,6 +318,83 @@ async def ingest_transactions(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=f"Couldn't read CSV — {type(e).__name__}: {e}")
 
 
+@app.get("/ingest/regulatory/sample")
+def regulatory_sample():
+    """Score a synthetic govt cyber-fraud ticket feed through the regulatory connector
+    + fuse against the deployed model — same code path as a live I4C/NCRP stream."""
+    raw = sample_regulatory_feed()
+    normalised = regulatory_connector(raw)
+    fr = fuse_alerts(normalised, _account_risk())
+    alerts = fr["alerts"].fillna("").astype({"model_risk": "object"}).where(fr["alerts"].notna(), None)
+    return {"n_alerts": fr["n_alerts"], "n_corroborated": fr["n_corroborated"],
+            "by_source": fr["by_source"], "alerts": json.loads(alerts.to_json(orient="records")),
+            "note": "Regulatory feed normalised via I4C/NCRP connector then fused with model risk."}
+
+
+@app.post("/ingest/regulatory")
+async def ingest_regulatory(file: UploadFile = File(...)):
+    """Upload a regulatory cyber-fraud ticket feed (I4C/NCRP/RBI-style CSV) -> normalise ->
+    corroborate against the deployed model risk. Same path as a live regulatory stream."""
+    try:
+        df = pd.read_csv(io.BytesIO(await file.read()), low_memory=False, nrows=MAX_ROWS)
+        normalised = regulatory_connector(df)
+        fr = fuse_alerts(normalised, _account_risk())
+        return {"n_alerts": fr["n_alerts"], "n_corroborated": fr["n_corroborated"],
+                "by_source": fr["by_source"], "alerts": json.loads(fr["alerts"].fillna("").to_json(orient="records"))}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {e}")
+
+
+@app.get("/ingest/crosschannel/sample")
+def crosschannel_sample():
+    """Score a synthetic multi-rail (UPI/IMPS/CARD/NEFT) transaction feed and return
+    the cross-channel correlation view — accounts active on >=2 rails."""
+    df = sample_cross_channel()
+    return _crosschannel_response(df)
+
+
+@app.post("/ingest/crosschannel")
+async def ingest_crosschannel(file: UploadFile = File(...)):
+    """Upload a multi-rail transaction CSV with a channel/rail column -> suspicious-txn
+    detection + cross-channel correlation (accounts active on >=2 rails = layering signal)."""
+    try:
+        df = pd.read_csv(io.BytesIO(await file.read()), low_memory=False, nrows=MAX_ROWS)
+        return _crosschannel_response(df)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"{type(e).__name__}: {e}")
+
+
+def _crosschannel_response(df: pd.DataFrame) -> dict:
+    res = score_transactions(df)
+    try:
+        cc = cross_channel_view(df)
+        cc_df = cc["accounts"].fillna(0)
+        cc_accounts = cc_df.head(50).to_dict("records")
+    except ValueError:
+        cc, cc_accounts = None, []
+    return {
+        "n_transactions": int(len(res["transactions"])), "n_flagged": int(res["n_flagged"]),
+        "cross_channel": {"n_accounts": int(cc["n_accounts"]) if cc else 0,
+                          "n_cross_channel": int(cc["n_cross_channel"]) if cc else 0,
+                          "channels_seen": cc["channels_seen"] if cc else [],
+                          "accounts": cc_accounts},
+    }
+
+
+@app.get("/ingest/stream/sample")
+def stream_sample():
+    """Replay the synthetic feed through the real-time scoring path: each transaction
+    scored as-it-arrives with containment action. Same code path as live stream ingest."""
+    events = list(stream_score(sample_transactions(50)))
+    flagged = [e for e in events if e["flag"]]
+    return {"n_total": len(events), "n_flagged": len(flagged), "events": flagged[:20],
+            "note": "Real-time path: each event scored + action assigned as it arrives."}
+
+
 @app.post("/ingest/alerts")
 async def ingest_alerts(file: UploadFile = File(...)):
     """Upload an alert-ticket CSV -> corroboration of each ticket against the model's account risk."""
@@ -319,7 +402,7 @@ async def ingest_alerts(file: UploadFile = File(...)):
         df = pd.read_csv(io.BytesIO(await file.read()), low_memory=False, nrows=MAX_ROWS)
         fr = fuse_alerts(df, _account_risk())
         return {"n_alerts": fr["n_alerts"], "n_corroborated": fr["n_corroborated"],
-                "by_source": fr["by_source"], "alerts": fr["alerts"].to_dict("records")}
+                "by_source": fr["by_source"], "alerts": json.loads(fr["alerts"].fillna("").to_json(orient="records"))}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

@@ -19,7 +19,9 @@ import pandas as pd
 import streamlit as st
 from sentinel import SentinelEngine, ART, ACTION, band_for
 from preprocess import prepare_frame
-from txn_ingest import score_transactions, fuse_alerts, sample_transactions
+from txn_ingest import (score_transactions, fuse_alerts, sample_transactions,
+                        cross_channel_view, regulatory_connector, stream_score,
+                        sample_regulatory_feed, sample_cross_channel)
 try:
     import casestore                      # durable SQLite case store (best-effort)
     _PERSIST = True
@@ -611,32 +613,28 @@ with tab_net:
                    "blend we've proven makes us worse would be the exact dishonesty our leakage auditor exists "
                    "to catch — so we report the verdict instead. *That* is the rigor.")
 
-# ============================ FEEDS & TRANSACTIONS (Phase-2) ============================
+# ============================ FEEDS & TRANSACTIONS ============================
 with tab_feeds:
-    st.subheader("🔌 Feeds & Transactions — ingest + detect + corroborate")
-    st.caption("PS2 asks the system to **ingest financial transactions and fraud/TMS/govt alert feeds** and "
-               "**prevent circulation** of fraudulent proceeds. The BOI data is an account *snapshot* (no "
-               "transactions), so this is the working **ingestion engine** that runs on any standard feed a "
-               "bank plugs in. It is **rule-based and explainable** — every flag carries its reasons (no "
-               "training, no fabricated data).")
+    st.subheader("🔌 Feeds & Transactions — real-time ingest · cross-channel · regulatory")
+    st.caption("Ingests financial transactions, fraud/TMS/govt alert feeds, and regulatory cyber-fraud tickets. "
+               "Scores suspicious transactions in real time, correlates accounts across payment rails (UPI/IMPS/card/NEFT), "
+               "and corroborates every external alert against the deployed model risk.")
 
-    sub_txn, sub_alert = st.tabs(["💳 Transaction feed", "📨 Alert / ticket feed"])
+    sub_txn, sub_cc, sub_reg, sub_alert = st.tabs([
+        "💳 Transaction feed", "🔗 Cross-channel", "🏛️ Regulatory feed", "📨 Alert / TMS feed"])
 
-    # ---- transaction ingestion → suspicious-transaction detection ----
+    # ── 1. TRANSACTION FEED ──────────────────────────────────────────────────
     with sub_txn:
         c1, c2 = st.columns([1, 1])
         up_txn = c1.file_uploader("Upload a transaction CSV", type=["csv"], key="txn_up",
-                                  help="PaySim-style or any bank export with an amount column "
-                                       "(amount/amt/txn_amount). Type, balances, sender/receiver used if present.")
-        if c2.button("▶ Load synthetic sample feed", key="txn_sample",
-                     help="A clearly-labelled synthetic feed (NOT used for any metric) so you can try the engine."):
+                                  help="Any bank export with an amount column.")
+        if c2.button("▶ Load synthetic sample", key="txn_sample"):
             st.session_state.txn_df = sample_transactions()
         if up_txn is not None:
             try:
                 st.session_state.txn_df = pd.read_csv(up_txn, low_memory=False)
             except Exception as e:
-                st.error(f"Couldn't read that CSV — {type(e).__name__}: {e}")
-
+                st.error(f"{type(e).__name__}: {e}")
         txn_df = st.session_state.get("txn_df")
         if txn_df is not None:
             try:
@@ -644,64 +642,168 @@ with tab_feeds:
                 out, rollup = res["transactions"], res["rollup"]
                 m1, m2, m3 = st.columns(3)
                 m1.metric("Transactions ingested", f"{len(out):,}")
-                m2.metric("🚩 Suspicious flagged", f"{res['n_flagged']:,}",
-                          help="Suspicion score ≥ 50 from TMS-style typology rules.")
+                m2.metric("🚩 Suspicious flagged", f"{res['n_flagged']:,}")
                 m3.metric("Accounts implicated", f"{int((rollup['suspicious_txns'] > 0).sum()):,}" if len(rollup) else "—")
-                st.markdown("**Flagged transactions** (highest suspicion first) — each with its reasons:")
+                st.markdown("**Flagged transactions — real-time scored, reason-tagged:**")
                 show = out[out["flag"]].sort_values("suspicion_score", ascending=False)
                 st.dataframe(show[[res["amount_col"], "suspicion_score", "reasons"] +
                                   ([res["orig_col"]] if res["orig_col"] else [])].head(200),
                              use_container_width=True, hide_index=True)
                 if len(rollup):
-                    st.markdown("**Account-level circulation view** — where to act to stop the money moving:")
+                    st.markdown("**Account-level circulation view:**")
                     st.dataframe(rollup.head(50), use_container_width=True, hide_index=True)
-                st.caption("Typologies scored: high-value spikes, structuring (just-under-threshold smurfing), "
-                           "account-drain, pass-through (destination not credited), cash-out/transfer channels, "
-                           "transfer→cash-out layering chains, and high velocity.")
+                st.caption("Typologies: high-value spikes · structuring · account-drain · pass-through · "
+                           "cash-out/transfer · transfer→cash-out layering · high velocity · cross-channel layering")
+                st.markdown("**⚡ Real-time stream preview** (events scored as-they-arrive):")
+                if st.button("▶ Start real-time playback", key="play_txn"):
+                    pl = st.empty()
+                    stream_rows = []
+                    import time
+                    for ev in stream_score(txn_df.head(50)):
+                        stream_rows.append(ev)
+                        pl.dataframe(pd.DataFrame(stream_rows), use_container_width=True, hide_index=True)
+                        time.sleep(0.15)
+                        if len(stream_rows) >= 15:
+                            break
+                else:
+                    stream_rows = []
+                    for ev in stream_score(txn_df.head(15)):
+                        stream_rows.append(ev)
+                    if stream_rows:
+                        st.dataframe(pd.DataFrame(stream_rows), use_container_width=True, hide_index=True)
             except ValueError as e:
-                st.warning(str(e))
+                st.warning(f"Error parsing transaction CSV: {e}")
+                if "No amount column" in str(e):
+                    st.info("💡 **Did you mean to upload the account snapshot (`DataSet.csv`)?** The main dataset goes in the **sidebar on the left ('Data source')**. This uploader is specifically for transaction logs.")
         else:
-            st.info("Upload a transaction feed or load the synthetic sample to see suspicious-transaction detection.")
+            st.info("Upload a transaction feed or load the synthetic sample.")
 
-    # ---- alert / ticket fusion → corroborate against model risk ----
-    with sub_alert:
-        st.caption("Ingest external alert tickets (TMS / fraud-monitoring / govt cyber-fraud) and **corroborate** "
-                   "them against the model's account risk. An account flagged by **both** the feed and the model "
-                   "is the highest-priority, most-defensible escalation.")
+    # ── 2. CROSS-CHANNEL CORRELATION ─────────────────────────────────────────
+    with sub_cc:
+        st.caption("Merges transactions across **UPI / IMPS / card / NEFT** rails and flags accounts "
+                   "active on ≥2 channels — a layering signal single-channel monitoring cannot see.")
         c1, c2 = st.columns([1, 1])
-        up_al = c1.file_uploader("Upload an alert-ticket CSV", type=["csv"], key="al_up",
-                                 help="Needs an account column (account/account_id/acct); optional source & severity.")
-        if c2.button("▶ Load synthetic alert tickets", key="al_sample"):
-            ids = allscores.sort_values("risk_score", ascending=False).index[:6].tolist()
-            extra = allscores.index[len(allscores) // 2] if len(allscores) else 0
+        up_cc = c1.file_uploader("Upload multi-rail transaction CSV", type=["csv"], key="cc_up",
+                                 help="Needs a channel/rail column (channel / rail / mode / payment_channel).")
+        if c2.button("▶ Load synthetic multi-rail feed", key="cc_sample"):
+            st.session_state.cc_df = sample_cross_channel()
+        if up_cc is not None:
+            try:
+                st.session_state.cc_df = pd.read_csv(up_cc, low_memory=False)
+            except Exception as e:
+                st.error(f"{type(e).__name__}: {e}")
+        cc_df = st.session_state.get("cc_df")
+        if cc_df is not None:
+            try:
+                cc = cross_channel_view(cc_df)
+                accounts_df = cc["accounts"]
+                m1, m2, m3 = st.columns(3)
+                m1.metric("Payment rails seen", len(cc["channels_seen"]),
+                          help=", ".join(cc["channels_seen"]))
+                m2.metric("Accounts analysed", cc["n_accounts"])
+                m3.metric("🔗 Cross-channel (≥2 rails)", cc["n_cross_channel"],
+                          help="These accounts move money across multiple payment rails — classic layering.")
+                st.markdown("**Cross-channel account view** (multi-rail accounts first):")
+                st.dataframe(accounts_df.head(50), use_container_width=True, hide_index=True)
+                st.caption(f"Rails detected: {', '.join(cc['channels_seen'])}. "
+                           "Accounts on ≥2 rails are flagged — corroborate with the model score for escalation.")
+            except ValueError as e:
+                st.warning(f"Error parsing cross-channel feed: {e}")
+                if "Needs an account column" in str(e) or "channel/rail column" in str(e):
+                    st.info("💡 **Did you mean to upload the account snapshot (`DataSet.csv`)?** The main dataset goes in the **sidebar on the left ('Data source')**. This uploader is for cross-channel transaction logs.")
+        else:
+            st.info("Upload a multi-rail CSV (with a channel column) or load the synthetic feed.")
+
+    # ── 3. REGULATORY FEED (I4C / NCRP / RBI-style) ─────────────────────────
+    with sub_reg:
+        st.caption("Ingests **govt cyber-fraud tickets** (I4C / NCRP / RBI format), normalises them through "
+                   "the regulatory connector, then corroborates each against the deployed model. "
+                   "An account flagged by both a regulatory ticket and the model → immediate escalation.")
+        c1, c2 = st.columns([1, 1])
+        up_reg = c1.file_uploader("Upload regulatory ticket CSV", type=["csv"], key="reg_up",
+                                  help="I4C/NCRP-style: needs a beneficiary account column.")
+        if c2.button("▶ Load synthetic I4C/NCRP tickets", key="reg_sample"):
+            st.session_state.reg_df = sample_regulatory_feed()
+        if up_reg is not None:
+            try:
+                st.session_state.reg_df = pd.read_csv(up_reg, low_memory=False)
+            except Exception as e:
+                st.error(f"{type(e).__name__}: {e}")
+        reg_df = st.session_state.get("reg_df")
+        if reg_df is not None:
+            try:
+                st.markdown("**Raw regulatory tickets:**")
+                st.dataframe(reg_df, use_container_width=True, hide_index=True)
+                normalised = regulatory_connector(reg_df)
+                fr = fuse_alerts(normalised, allscores["risk_score"])
+                m1, m2, m3 = st.columns(3)
+                m1.metric("Regulatory tickets ingested", fr["n_alerts"])
+                m2.metric("✅ Corroborated by model", fr["n_corroborated"])
+                m3.metric("Source", "Govt-I4C")
+                st.markdown("**Corroboration against deployed model:**")
+                st.markdown("**⚡ Real-time regulatory feed stream:**")
+                if st.button("▶ Start real-time playback", key="play_reg"):
+                    pl = st.empty()
+                    alert_rows = []
+                    import time
+                    for _, row in fr["alerts"].iterrows():
+                        alert_rows.append(row.to_dict())
+                        pl.dataframe(pd.DataFrame(alert_rows), use_container_width=True, hide_index=True)
+                        time.sleep(0.3)
+                else:
+                    st.dataframe(fr["alerts"], use_container_width=True, hide_index=True)
+                st.caption("Ticket normalised → model risk lookup → CORROBORATED (≥70) / elevated (≥40) / review. "
+                           "Two independent signals = defensible escalation.")
+            except ValueError as e:
+                st.warning(f"Error parsing regulatory feed: {e}")
+                if "beneficiary account column" in str(e).lower():
+                    st.info("💡 **Did you mean to upload the account snapshot (`DataSet.csv`)?** The main dataset goes in the **sidebar on the left ('Data source')**. This uploader is specifically for regulatory tickets.")
+        else:
+            st.info("Upload a regulatory ticket CSV or load the synthetic I4C/NCRP sample.")
+
+    # ── 4. FRAUD-MON / TMS ALERT FEED ────────────────────────────────────────
+    with sub_alert:
+        st.caption("Ingest external **TMS / fraud-monitoring** alert tickets and corroborate against model risk.")
+        c1, c2 = st.columns([1, 1])
+        up_al = c1.file_uploader("Upload alert-ticket CSV", type=["csv"], key="al_up",
+                                 help="Needs account column; optional source & severity.")
+        if c2.button("▶ Load synthetic TMS alerts", key="al_sample"):
+            ids = allscores.sort_values("risk_score", ascending=False).index[:4].tolist()
             st.session_state.alert_df = pd.DataFrame({
-                "account": list(ids[:3]) + [extra],
-                "source": ["TMS", "Govt-I4C", "FraudMon", "TMS"],
+                "account": ids,
+                "source": ["TMS", "FraudMon", "TMS", "FraudMon"],
                 "severity": ["HIGH", "HIGH", "MEDIUM", "LOW"],
             })
         if up_al is not None:
             try:
                 st.session_state.alert_df = pd.read_csv(up_al, low_memory=False)
             except Exception as e:
-                st.error(f"Couldn't read that CSV — {type(e).__name__}: {e}")
-
+                st.error(f"{type(e).__name__}: {e}")
         alert_df = st.session_state.get("alert_df")
         if alert_df is not None:
             try:
                 fr = fuse_alerts(alert_df, allscores["risk_score"])
                 m1, m2, m3 = st.columns(3)
                 m1.metric("Alerts ingested", fr["n_alerts"])
-                m2.metric("✅ Corroborated by model", fr["n_corroborated"],
-                          help="Account also scored HIGH-risk (≥70) by the model — escalate.")
-                m3.metric("Feed sources", len(fr["by_source"]))
-                st.dataframe(fr["alerts"], use_container_width=True, hide_index=True)
-                st.caption("Status: **CORROBORATED — escalate** (model risk ≥70) · *model also elevated* (≥40) · "
-                           "*model low / unknown — review*. Cross-referencing two independent signals cuts false "
-                           "escalations and gives an auditable reason to act.")
+                m2.metric("✅ Corroborated", fr["n_corroborated"])
+                m3.metric("Sources", len(fr["by_source"]))
+                st.markdown("**⚡ Real-time alert processing stream:**")
+                if st.button("▶ Start real-time playback", key="play_al"):
+                    pl = st.empty()
+                    alert_rows = []
+                    import time
+                    for _, row in fr["alerts"].iterrows():
+                        alert_rows.append(row.to_dict())
+                        pl.dataframe(pd.DataFrame(alert_rows), use_container_width=True, hide_index=True)
+                        time.sleep(0.3)
+                else:
+                    st.dataframe(fr["alerts"], use_container_width=True, hide_index=True)
             except ValueError as e:
-                st.warning(str(e))
+                st.warning(f"Error parsing alert feed: {e}")
+                if "needs an account" in str(e).lower():
+                    st.info("💡 **Did you mean to upload the account snapshot (`DataSet.csv`)?** The main dataset goes in the **sidebar on the left ('Data source')**. This uploader is specifically for external alert tickets.")
         else:
-            st.info("Upload an alert-ticket feed or load synthetic tickets to see corroboration against the model.")
+            st.info("Upload an alert-ticket feed or load the synthetic TMS sample.")
 
 # =================================== ALERT MANAGEMENT ===================================
 with tab_alerts:

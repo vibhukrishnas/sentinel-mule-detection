@@ -79,6 +79,13 @@ def score_transactions(df: pd.DataFrame) -> dict:
     if orig:
         vc = df.groupby(orig)[amt].transform("count")
         add((vc >= 5).values, 10, "high velocity (>=5 txns by this account)")
+    # 8) cross-channel layering — same account active on multiple payment rails (UPI/IMPS/card/
+    #    net-banking). Pulling funds in on one rail and pushing out on another is classic mule
+    #    layering that single-channel monitoring misses.
+    ch = _find(df, "channel", "rail", "mode", "payment_channel", "txn_channel")
+    if ch and orig:
+        nch = df.groupby(orig)[ch].transform("nunique")
+        add((nch >= 2).values, 15, "cross-channel layering (>=2 payment rails)")
 
     score = np.clip(score, 0, 100)
     out = df.copy()
@@ -126,6 +133,83 @@ def fuse_alerts(alerts: pd.DataFrame, account_risk: pd.Series | None = None) -> 
     n_corrob = int((cdf["status"].astype(str).str.startswith("CORROBORATED")).sum()) if len(cdf) else 0
     return {"alerts": cdf, "n_alerts": len(cdf), "n_corroborated": n_corrob,
             "by_source": (cdf["source"].value_counts().to_dict() if len(cdf) else {})}
+
+
+def cross_channel_view(df: pd.DataFrame) -> dict:
+    """Cross-channel bank-data correlation across UPI/IMPS/card/net-banking rails."""
+    df = df.copy(); df.columns = [str(c).strip() for c in df.columns]
+    acc = _find(df, "nameorig", "sender", "account", "account_id", "orig", "from_account")
+    ch  = _find(df, "channel", "rail", "mode", "payment_channel", "txn_channel")
+    amt = _find(df, "amount", "amt", "txn_amount")
+    if acc is None or ch is None:
+        raise ValueError("Needs an account column and a channel/rail column.")
+    a = pd.to_numeric(df[amt], errors="coerce").fillna(0.0) if amt else pd.Series(0.0, index=df.index)
+    df2 = df.assign(_amt=a)
+    rows = []
+    for account, grp in df2.groupby(df[acc]):
+        chans = sorted({str(c) for c in grp[ch]})
+        rows.append({"account": account, "channels": ", ".join(chans), "n_channels": len(chans),
+                     "txns": len(grp), "total_value": float(grp["_amt"].sum()),
+                     "cross_channel_flag": len(chans) >= 2})
+    out = pd.DataFrame(rows).sort_values(["n_channels", "total_value"], ascending=False)
+    return {"accounts": out, "n_accounts": len(out),
+            "n_cross_channel": int(out["cross_channel_flag"].sum()),
+            "channels_seen": sorted({str(c) for c in df[ch]})}
+
+
+def regulatory_connector(feed: pd.DataFrame) -> pd.DataFrame:
+    """Normalise a govt/regulatory cyber-fraud feed (I4C/NCRP/RBI-style) into the alert
+    schema fuse_alerts consumes. In production this runs on every real-time poll/stream pull
+    from the regulator endpoint; here it processes each delivered batch identically."""
+    feed = feed.copy(); feed.columns = [str(c).strip() for c in feed.columns]
+    acc = _find(feed, "account", "account_id", "beneficiary_account", "mule_account", "acct", "nameorig")
+    sev = _find(feed, "severity", "priority", "category")
+    tic = _find(feed, "ticket", "ticket_id", "complaint_id", "ack_no")
+    if acc is None:
+        raise ValueError("Regulatory feed needs a beneficiary account column.")
+    out = pd.DataFrame({"account": pd.to_numeric(feed[acc], errors="coerce"),
+                        "source": "Govt-I4C", "severity": feed[sev] if sev else "HIGH"})
+    if tic:
+        out["ticket"] = feed[tic].astype(str)
+    return out
+
+
+def stream_score(df: pd.DataFrame):
+    """Real-time ingestion path: yield each transaction scored as it arrives with its
+    containment action. A live deployment scores each streamed event; replaying a feed
+    event-by-event keeps the code path identical to production."""
+    res = score_transactions(df)
+    out, oc, ac = res["transactions"], res["orig_col"], res["amount_col"]
+    for _, row in out.iterrows():
+        s = int(row["suspicion_score"])
+        action = ("FREEZE + ESCALATE" if s >= 70 else "HOLD + REVIEW" if s >= 50 else "monitor")
+        yield {"account": str(row[oc]) if oc else "—", "amount": float(row[ac]),
+               "suspicion": s, "flag": bool(row["flag"]),
+               "reasons": row["reasons"], "action": action}
+
+
+def sample_regulatory_feed(seed: int = 7) -> pd.DataFrame:
+    """Synthetic govt cyber-fraud ticket feed (I4C/NCRP-style) for demo purposes."""
+    rng = np.random.RandomState(seed)
+    return pd.DataFrame({
+        "ticket_id": [f"NCRP{rng.randint(10**6, 10**7)}" for _ in range(5)],
+        "beneficiary_account": [9003, 9007, 9011, 4500, 9021],
+        "category": ["UPI fraud", "investment scam", "phishing", "card fraud", "loan scam"],
+        "severity": ["HIGH", "HIGH", "MEDIUM", "LOW", "HIGH"],
+    })
+
+
+def sample_cross_channel(seed: int = 3) -> pd.DataFrame:
+    """Synthetic multi-rail transaction feed with channel column for demo purposes."""
+    rng = np.random.RandomState(seed)
+    channels = ["UPI", "IMPS", "CARD", "NEFT"]
+    n = 120
+    return pd.DataFrame({
+        "nameorig": [f"A{rng.randint(9000, 9082)}" for _ in range(n)],
+        "amount": rng.lognormal(9, 1.2, n).round(2),
+        "channel": rng.choice(channels, n, p=[0.4, 0.3, 0.2, 0.1]),
+        "type": rng.choice(["TRANSFER", "CASH_OUT", "PAYMENT"], n),
+    })
 
 
 def sample_transactions(n: int = 200, seed: int = 42) -> pd.DataFrame:
