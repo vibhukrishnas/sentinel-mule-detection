@@ -134,9 +134,10 @@ pdf.bullet("Why you can trust it: an automated Data Integrity Auditor caught ~58
            "carries a plain-English reason.")
 pdf.bullet("Beyond single accounts: a working mule-RING prototype groups 67 of 81 mules into 5 candidate "
            "rings (behavioral-similarity graph) - real network output today; production link-analysis is Phase-2.")
-pdf.bullet("Built today vs next: detection core + API + dashboard + scored watchlist + ring prototype are "
-           "built on the PROVIDED SNAPSHOT. Live feeds + link-based graph analysis are Phase-2 (solid vs "
-           "dashed in the architecture).")
+pdf.bullet("Built today vs next: detection core + API + dashboard + scored watchlist + ring prototype + the "
+           "FEEDS ingestion engine (suspicious-transaction detection + fraud/TMS/govt alert fusion) are built. "
+           "Only the LIVE connections to real regulatory streams + cross-channel bank systems are Phase-2 - the "
+           "engine already consumes any feed plugged into it.")
 pdf.bullet("'Real-time' = on-demand low-latency account scoring (~35 ms), NOT stream processing - the "
            "provided data is an account snapshot.")
 pdf.bullet("The ask: a design-partner bank pilot to validate on real labels.")
@@ -283,6 +284,27 @@ pdf.body("vs RBI MuleHunter.AI / NPCI pilots: same regulatory target, but we add
          "PROVABLE leakage-free scoring (not publicly documented for those). vs rule engines: we catch the "
          "non-monotonic, networked patterns rules miss. vs black-box ML: every score is explained and every "
          "number is leakage-audited.")
+pdf.h2("PS2 requirement coverage (clause by clause, honest)")
+pdf.body("PS2 asks for a system that ingests financial transactions AND/OR fraud-monitoring / transaction-"
+         "monitoring / govt cyber-fraud alerts, detects suspicious transactions & mule accounts, and prevents "
+         "circulation of proceeds - consuming real-time regulatory feeds and cross-channel bank data. We map "
+         "every clause to what is BUILT vs what is a Phase-2 live connection (the provided BOI data is an "
+         "account snapshot with no transactions/alerts, so feeds are ingested by upload / plug-in - we never "
+         "fabricate a live source):")
+table(["PS2 requirement", "Status", "How SENTINEL does it"],
+      [["Detect suspicious txns + mule accounts", "Built", "Calibrated LightGBM + rule-based txn engine"],
+       ["Ingest financial transactions", "Built", "TMS typologies: structuring/drain/layering"],
+       ["Ingest fraud-monitoring + TMS alerts", "Built", "Alert fusion: tickets corroborated vs risk"],
+       ["Ingest govt cyber-fraud tickets", "Built", "Same fusion (Govt-I4C); double-flag escalates"],
+       ["Prevent circulation of proceeds", "Built", "Graduated containment + circulation rollup"],
+       ["Real-time regulatory feeds", "Interface", "On-demand scoring; live connect = Phase-2"],
+       ["Cross-channel bank data", "Interface", "Channel-agnostic ingest; correlation = Phase-2"]],
+      [62, 22, 90])
+pdf.body("Built = working in the live demo today (Feeds & Transactions tab: upload a transaction feed -> flagged "
+         "suspicious transactions with reasons + the account circulation view; upload alert tickets -> "
+         "corroboration against the model). Interface = the engine consumes any standardised feed on-demand, but "
+         "a LIVE connection to an actual regulatory stream or a bank's cross-channel systems needs that bank's "
+         "endpoints/credentials - so we ship the working ingestion engine and mark the live wiring as Phase-2.")
 
 # ---------- 3. RESULTS ----------
 pdf.add_page(); pdf.h1("5. Results (honest, measured, leakage-removed)")
@@ -334,6 +356,12 @@ pdf.h2("Platform capabilities (what we built around the model)")
 pdf.body("Detection is only useful if it turns into accountable action. SENTINEL ships the full operating "
          "layer a fraud desk needs, all on the provided data:")
 for t in [
+    "Feeds & Transactions (Phase-2 ingestion engine, BUILT): ingest a financial-transaction feed and the engine "
+    "flags suspicious transactions with explainable reasons (structuring, account-drain, pass-through, "
+    "transfer->cash-out layering, velocity) plus an account-level CIRCULATION view of where to act; ingest "
+    "fraud-monitoring / TMS / govt cyber-fraud alert tickets and it CORROBORATES each against the model's "
+    "account risk (flagged by both feed and model = highest-priority, most-defensible escalation). Rule-based "
+    "and explainable - no training, no fabricated data; it runs on any standard feed a bank plugs in.",
     "Alert Management - accountable case workflow: every account at/above the alert threshold becomes a CASE "
     "with a status (New -> Investigating -> Escalated -> Cleared) and a named OWNER. Each action writes a "
     "timestamped, named record to a durable case store - so every decision on a customer account is "
@@ -493,8 +521,9 @@ pdf.set_text_color(0, 0, 0)
 pdf.h2("Phase-2 prototype plan (1 Jul - 17 Aug)")
 for b in ["GRAPH mule-RING detection: PROTOTYPE already built (behavioral-similarity graph, see Section 7); "
           "production version ingests real shared device / IP / beneficiary + circular-flow edges.",
-          "Multi-feed fusion: live transaction streams + fraud / txn-monitoring alerts + govt cyber-fraud "
-          "tickets + RBI/regulatory feeds, scored in real time to PREVENT CIRCULATION.",
+          "Multi-feed fusion: the ingestion ENGINE is BUILT (Section 4 / Feeds tab) - suspicious-transaction "
+          "detection + fraud / txn-monitoring / govt cyber-fraud alert fusion on any uploaded feed; Phase-2 is "
+          "wiring it to LIVE transaction streams + RBI/regulatory feeds for continuous real-time containment.",
           "Confirm with the bank which near-label features are pre- vs post-event (locks the exact number); "
           "plug in real cost figures for a per-channel cost-optimal threshold.",
           "Federated, privacy-preserving cross-bank intelligence; drift monitoring + scheduled leak re-audit.",
@@ -513,8 +542,9 @@ for b in ["Why is the model so good? We removed target leakage (F3912 + ~585 lea
           "Phase-2 (live feeds + graph mule-rings).",
           "Deployment realism? Decision-support that recommends actions to an analyst - NOT an autonomous "
           "freeze authority.",
-          "Live fraud data? The prototype is trained on the PROVIDED SNAPSHOT; live transaction / alert / "
-          "regulatory feeds are Phase-2.",
+          "Live fraud data? The model is trained on the PROVIDED SNAPSHOT; the ingestion engine that detects "
+          "suspicious transactions and fuses fraud/TMS/govt alerts is BUILT and works on any uploaded feed - "
+          "only the LIVE connection to real-time regulatory/cross-channel streams is Phase-2.",
           "Why not deep learning? 81 positives, ~3,900 sparse features, 27.6% NaN, and the need for fast, "
           "interpretable scoring make LightGBM the right fit; DL would overfit."]:
     pdf.bullet(b)
