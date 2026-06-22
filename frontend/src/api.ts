@@ -47,8 +47,31 @@ export interface NetResp {
   features_used: number; note: string;
 }
 
+export interface TxnIngest {
+  n_transactions: number; n_flagged: number; n_accounts_implicated: number;
+  flagged: { amount: number; suspicion_score: number; reasons: string; account?: number | string }[];
+  rollup: { account: number | string; txns: number; max_suspicion: number; suspicious_txns: number; suspicious_value: number }[];
+}
+export interface AlertIngest {
+  n_alerts: number; n_corroborated: number; by_source: Record<string, number>;
+  alerts: { account: number | null; source: string; severity: string; model_risk: number | null; status: string }[];
+}
+
 export const api = {
   summary: () => get<Summary>("/summary"),
+  ingestSample: () => get<TxnIngest>("/ingest/sample"),
+  ingestTxns: async (f: File) => {
+    const fd = new FormData(); fd.append("file", f);
+    const r = await fetch(`${BASE}/ingest/transactions`, { method: "POST", body: fd });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail ?? `ingest -> ${r.status}`);
+    return r.json() as Promise<TxnIngest>;
+  },
+  ingestAlerts: async (f: File) => {
+    const fd = new FormData(); fd.append("file", f);
+    const r = await fetch(`${BASE}/ingest/alerts`, { method: "POST", body: fd });
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail ?? `ingest -> ${r.status}`);
+    return r.json() as Promise<AlertIngest>;
+  },
   accounts: () => get<{ accounts: AccountRow[]; source: string }>("/accounts"),
   account: (id: number) => get<AccountDetail>(`/account/${id}`),
   rings: () => get<RingsResp>("/rings"),

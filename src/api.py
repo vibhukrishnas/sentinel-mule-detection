@@ -27,6 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sentinel import SentinelEngine, ART, band_for
 from preprocess import prepare_frame
+from txn_ingest import score_transactions, fuse_alerts, sample_transactions
 
 MAX_ROWS = 20000                # cap uploaded rows (memory guard for the shared demo)
 
@@ -268,6 +269,61 @@ def network(account_id: int, k: int = 12):
         edges.append({"source": int(lo), "target": int(hi), "weight": round(float(sims[j]), 3)})
     return {"account_id": account_id, "nodes": nodes, "edges": edges, "features_used": len(feats),
             "note": "Behavioral-similarity ego-network (proxy for bank link data; BOI is a snapshot)."}
+
+
+# ============================ FEEDS & TRANSACTIONS (Phase-2) ============================
+# Ingest a transaction feed -> suspicious-transaction detection (rule-based, explainable);
+# ingest an alert-ticket feed -> corroborate against the deployed model's account risk.
+
+def _account_risk() -> pd.Series:
+    """risk_score (0-100) keyed by account_id from the active scored population."""
+    rows = _dashboard_data()["rows"]
+    return pd.Series({r["account_id"]: r["risk_score"] for r in rows})
+
+
+def _txn_response(df: pd.DataFrame) -> dict:
+    res = score_transactions(df)
+    out, rollup = res["transactions"], res["rollup"]
+    flagged = out[out["flag"]].sort_values("suspicion_score", ascending=False).head(200)
+    cols = [res["amount_col"], "suspicion_score", "reasons"] + ([res["orig_col"]] if res["orig_col"] else [])
+    return {
+        "n_transactions": int(len(out)), "n_flagged": int(res["n_flagged"]),
+        "n_accounts_implicated": int((rollup["suspicious_txns"] > 0).sum()) if len(rollup) else 0,
+        "flagged": flagged[cols].rename(columns={res["amount_col"]: "amount", res["orig_col"] or "_": "account"}).to_dict("records"),
+        "rollup": rollup.head(50).to_dict("records") if len(rollup) else [],
+    }
+
+
+@app.get("/ingest/sample")
+def ingest_sample():
+    """Score a small SYNTHETIC transaction feed so the engine can be demoed with no upload."""
+    return _txn_response(sample_transactions())
+
+
+@app.post("/ingest/transactions")
+async def ingest_transactions(file: UploadFile = File(...)):
+    """Upload a transaction CSV -> flagged suspicious transactions (with reasons) + account rollup."""
+    try:
+        df = pd.read_csv(io.BytesIO(await file.read()), low_memory=False, nrows=MAX_ROWS)
+        return _txn_response(df)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Couldn't read CSV — {type(e).__name__}: {e}")
+
+
+@app.post("/ingest/alerts")
+async def ingest_alerts(file: UploadFile = File(...)):
+    """Upload an alert-ticket CSV -> corroboration of each ticket against the model's account risk."""
+    try:
+        df = pd.read_csv(io.BytesIO(await file.read()), low_memory=False, nrows=MAX_ROWS)
+        fr = fuse_alerts(df, _account_risk())
+        return {"n_alerts": fr["n_alerts"], "n_corroborated": fr["n_corroborated"],
+                "by_source": fr["by_source"], "alerts": fr["alerts"].to_dict("records")}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Couldn't read CSV — {type(e).__name__}: {e}")
 
 
 # ---- serve the built React UI (single service): API routes above take precedence ----

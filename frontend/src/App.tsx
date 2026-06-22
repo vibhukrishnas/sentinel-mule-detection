@@ -4,6 +4,7 @@ import { Loading } from "./ui";
 import Overview from "./views/Overview";
 import Investigate from "./views/Investigate";
 import Network from "./views/Network";
+import Feeds from "./views/Feeds";
 import AlertMgmt from "./views/AlertMgmt";
 import Analytics from "./views/Analytics";
 import Copilot from "./views/Copilot";
@@ -12,6 +13,7 @@ const TABS = [
   { id: "overview", label: "📊 Overview" },
   { id: "investigate", label: "🔍 Investigate" },
   { id: "network", label: "🕸️ Account Network" },
+  { id: "feeds", label: "🔌 Feeds & Transactions" },
   { id: "alerts", label: "🚨 Alert Management" },
   { id: "analytics", label: "📈 Analytics" },
   { id: "copilot", label: "🤖 AI Copilot" },
@@ -70,6 +72,7 @@ export default function App() {
             {tab === "overview" && <Overview s={summary} />}
             {tab === "investigate" && <Investigate />}
             {tab === "network" && <Network />}
+            {tab === "feeds" && <Feeds />}
             {tab === "alerts" && <AlertMgmt s={summary} />}
             {tab === "analytics" && <Analytics s={summary} />}
             {tab === "copilot" && <Copilot s={summary} />}
