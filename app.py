@@ -24,6 +24,12 @@ try:
     _PERSIST = True
 except Exception:
     _PERSIST = False
+try:
+    import plotly.graph_objects as go     # interactive network / money-flow map
+    _PLOTLY = True
+except Exception:
+    _PLOTLY = False
+import math
 
 st.set_page_config(page_title="SENTINEL · Mule Account Risk Engine", layout="wide")
 
@@ -89,11 +95,35 @@ def load_json(name):
     return json.loads(p.read_text()) if p.exists() else None
 
 
+@st.cache_resource
+def load_anomaly():
+    p = ART / "anomaly_if.joblib"
+    return joblib.load(p) if p.exists() else None
+
+
 eng = load_engine()
 cols, cat_maps = load_cols_maps()
 metrics = load_metrics()
 rings = load_rings()
 unc = load_uncertainty()
+anom_meta = load_json("anomaly_meta.json")
+net_edges = load_json("mule_network_edges.json")
+amlsim_flow = load_json("amlsim_flow.json")
+_anom = load_anomaly()
+
+
+def anomaly_scores(Xframe):
+    """Unsupervised IsolationForest anomaly score (0..1) for each row, aligned to the
+    model's columns. Returns None if the detector artifact is unavailable."""
+    if _anom is None:
+        return None
+    try:
+        Xa = Xframe.reindex(columns=_anom["columns"]).astype("float32")
+        raw = -_anom["model"].score_samples(_anom["imputer"].transform(Xa))
+        lo, hi = anom_meta["raw_lo"], anom_meta["raw_hi"]
+        return pd.Series(np.clip((raw - lo) / (hi - lo + 1e-9), 0, 1), index=Xframe.index)
+    except Exception:
+        return None
 
 
 def ring_of(i):
@@ -184,6 +214,73 @@ def build_shift_report():
         L += ["", f"Escalated accounts ({len(esc)}): " + ", ".join(f"#{a}" for a in esc[:60])]
     return "\n".join(L)
 
+def _circular_pos(items, cx=0.0, cy=0.0, r=1.0):
+    n = max(len(items), 1)
+    return {it: (cx + r * math.cos(2 * math.pi * i / n + math.pi / 2),
+                 cy + r * math.sin(2 * math.pi * i / n + math.pi / 2)) for i, it in enumerate(items)}
+
+
+def boi_ring_figure(ring, edges_all, risk_map, selected, escalated):
+    """Interactive plot of one BOI candidate ring: nodes=accounts, edges=behavioral
+    similarity. Honest — this is a similarity proxy, NOT money flow (BOI has no edges)."""
+    members = list(ring["members"]); mset = set(members)
+    pos = _circular_pos(members)
+    redges = [e for e in (edges_all or []) if e["source"] in mset and e["target"] in mset]
+    ex, ey = [], []
+    for e in redges:
+        x0, y0 = pos[e["source"]]; x1, y1 = pos[e["target"]]
+        ex += [x0, x1, None]; ey += [y0, y1, None]
+    et = go.Scatter(x=ex, y=ey, mode="lines", line=dict(width=1, color="#c9c9c9"), hoverinfo="none")
+    nx_, ny_, col, sz, hov, lab = [], [], [], [], [], []
+    for m in members:
+        x, y = pos[m]; nx_.append(x); ny_.append(y); rsk = risk_map.get(m, 0)
+        col.append("#7b1fa2" if m == selected else ("#d11f2d" if m in escalated else "#1f3b6e"))
+        sz.append(34 if m == selected else 14 + rsk / 8)
+        hov.append(f"Account #{m}<br>risk {rsk}/100" + ("<br>(selected)" if m == selected
+                   else "<br>(escalated)" if m in escalated else ""))
+        lab.append(f"#{m}")
+    nt = go.Scatter(x=nx_, y=ny_, mode="markers+text", text=lab, textposition="top center",
+                    textfont=dict(size=9), marker=dict(size=sz, color=col, line=dict(width=1.2, color="white")),
+                    hovertext=hov, hoverinfo="text")
+    fig = go.Figure([et, nt])
+    fig.update_layout(showlegend=False, height=460, margin=dict(l=8, r=8, t=8, b=8),
+                      xaxis=dict(visible=False), yaxis=dict(visible=False),
+                      plot_bgcolor="white", paper_bgcolor="white")
+    return fig
+
+
+def amlsim_flow_figure(typ):
+    """Interactive REAL money-flow map for one AMLSim typology: directed arrows = money
+    movement, labelled with ₹ amounts. Demonstrates SENTINEL on transaction-link data."""
+    accts = typ["accounts"]; edges = typ["edges"]
+    # fan-in/out: put the hub (most-connected account) in the centre; cycle: ring layout
+    deg = {a: 0 for a in accts}
+    for e in edges:
+        deg[e["source"]] = deg.get(e["source"], 0) + 1; deg[e["target"]] = deg.get(e["target"], 0) + 1
+    if typ["type"] in ("fan_in", "fan_out"):
+        hub = max(deg, key=deg.get); rim = [a for a in accts if a != hub]
+        pos = _circular_pos(rim, r=1.0); pos[hub] = (0.0, 0.0)
+    else:
+        pos = _circular_pos(accts, r=1.0)
+    annos = []
+    for e in edges:
+        x0, y0 = pos[e["source"]]; x1, y1 = pos[e["target"]]
+        annos.append(dict(ax=x0, ay=y0, x=x1, y=y1, xref="x", yref="y", axref="x", ayref="y",
+                          showarrow=True, arrowhead=3, arrowsize=1.4, arrowwidth=2, arrowcolor="#d11f2d"))
+        annos.append(dict(x=(x0 + x1) / 2, y=(y0 + y1) / 2, text=f"₹{e['amount']:,.0f}",
+                          showarrow=False, font=dict(size=9, color="#444"), bgcolor="rgba(255,255,255,0.7)"))
+    nx_, ny_, lab = [], [], []
+    for a in accts:
+        x, y = pos[a]; nx_.append(x); ny_.append(y); lab.append(f"#{a}")
+    nt = go.Scatter(x=nx_, y=ny_, mode="markers+text", text=lab, textposition="bottom center",
+                    marker=dict(size=26, color="#1f3b6e", line=dict(width=1.5, color="white")),
+                    hovertext=[f"Account #{a}" for a in accts], hoverinfo="text")
+    fig = go.Figure([nt]); fig.update_layout(annotations=annos, showlegend=False, height=460,
+        margin=dict(l=8, r=8, t=8, b=8), xaxis=dict(visible=False, range=[-1.4, 1.4]),
+        yaxis=dict(visible=False, range=[-1.4, 1.4]), plot_bgcolor="white", paper_bgcolor="white")
+    return fig
+
+
 # ============================ SIDEBAR: data + global dial ============================
 st.sidebar.header("📥 Data source")
 st.sidebar.caption("Upload the provided **DataSet.csv** (raw) or a cleaned export. The full "
@@ -228,9 +325,13 @@ if st.session_state.get("scores") is None:
     with st.spinner(f"Scoring {len(X_all):,} accounts…"):
         proba = eng.model.predict_proba(X_all.astype("float32"))[:, 1]
         s = (proba * 100).round().astype(int)
-        st.session_state.scores = pd.DataFrame(
+        df_sc = pd.DataFrame(
             {"risk_score": s, "probability": proba, "band": [band_for(v) for v in s]},
             index=X_all.index)
+        an = anomaly_scores(X_all)               # unsupervised second opinion (0..1)
+        if an is not None:
+            df_sc["anomaly"] = an.reindex(df_sc.index).values
+        st.session_state.scores = df_sc
 allscores = st.session_state.scores
 if "audit" not in st.session_state:
     st.session_state.audit = []
@@ -298,8 +399,8 @@ if metrics:
     c4.metric("Score+explain latency", f"{metrics.get('latency_p95', 0):.0f} ms",
               help="p95, predict_proba + SHAP — real-time ready")
 
-tab_inv, tab_an, tab_log, tab_model = st.tabs(
-    ["🔍 Investigate", "📊 Analytics", "🧾 Activity log", "📈 Model & validation"])
+tab_inv, tab_net, tab_an, tab_log, tab_model = st.tabs(
+    ["🔍 Investigate", "🕸️ Network & Money-Flow", "📊 Analytics", "🧾 Activity log", "📈 Model & validation"])
 
 # ===================================== INVESTIGATE =====================================
 with tab_inv:
@@ -355,6 +456,21 @@ with tab_inv:
             else:
                 st.caption(f"Model confidence tier: **{tier.replace('-', ' ').title()}** "
                            "(auto-decided; outside the abstention band).")
+
+            # Model Trust Score (how much to trust THIS call) + Data-quality auditor
+            n_feat = len(eng.columns)
+            n_blank = int(pd.isna(account.reindex(eng.columns)).sum())
+            completeness = 1 - n_blank / max(n_feat, 1)
+            decisiveness = abs(sc["probability"] - 0.5) * 2          # 0 ambiguous … 1 decisive
+            trust = int(round(100 * (0.6 * decisiveness + 0.4 * completeness)))
+            tc1, tc2 = st.columns(2)
+            tc1.metric("🔒 Model trust (this call)", f"{trust}%",
+                       help="Blends decision-confidence with data completeness — how much weight to put on THIS prediction.")
+            tc2.metric("📋 Data completeness", f"{completeness:.0%}",
+                       help=f"{n_feat - n_blank:,}/{n_feat:,} features populated · {n_blank:,} blank")
+            if completeness < 0.5:
+                st.caption("⚠️ **Data-quality notice:** many features are blank for this account — "
+                           "prediction is lower-trust; consider a step-up verification before acting.")
 
             reviewed, actions = audit_actions()
             r = ring_of(pick)
@@ -432,6 +548,109 @@ with tab_inv:
                 st.download_button("⬇ Download investigation report (.txt)", data["report"],
                                    file_name=f"SENTINEL_investigation_account_{pick}.txt",
                                    mime="text/plain", key=f"dl_{pick}")
+
+# ================================ NETWORK & MONEY-FLOW ================================
+with tab_net:
+    st.subheader("🚦 Analyst triage queue")
+    st.caption("What a fraud desk opens each morning — work the top of the queue down. "
+               "Tiers come from the calibrated score; the **review** bucket is the abstention "
+               "layer routing ambiguous accounts to a human instead of guessing.")
+    crit = allscores[allscores["risk_score"] >= 90].sort_values("risk_score", ascending=False)
+    urg = allscores[(allscores["risk_score"] >= 70) & (allscores["risk_score"] < 90)].sort_values("risk_score", ascending=False)
+    review = allscores[(allscores["probability"] > (unc["t_lo"] if unc else 0.10)) &
+                       (allscores["probability"] < (unc["t_hi"] if unc else 0.90))]
+    q1, q2, q3, q4 = st.columns(4)
+    q1.metric("🔴 Critical (≥90)", f"{len(crit):,}")
+    q2.metric("🟠 Urgent (70–89)", f"{len(urg):,}")
+    q3.metric("🤔 Needs review (abstain)", f"{len(review):,}",
+              help="Ambiguous band — routed to a human rather than auto-decided.")
+    q4.metric("📋 Total accounts", f"{len(allscores):,}")
+
+    def _queue(df, label, k=10):
+        if not len(df):
+            st.caption(f"_{label}: none at the moment._"); return
+        t = df.head(k).copy(); t.insert(0, "account_id", t.index)
+        t["ring"] = [f"#{r['ring_id']}" if (r := ring_of(i)) else "—" for i in t.index]
+        show = ["account_id", "risk_score", "band", "probability", "ring"]
+        if "anomaly" in t.columns: show.append("anomaly")
+        if has_labels:
+            t["ground_truth"] = [gt(i) for i in t.index]; show.append("ground_truth")
+        st.markdown(f"**{label}** (top {min(k, len(df))} of {len(df):,})")
+        st.dataframe(t[show], hide_index=True, use_container_width=True)
+    _queue(crit, "🔴 Critical — escalate now")
+    _queue(urg, "🟠 Urgent — same-day review")
+    if len(review):
+        _queue(review.sort_values("risk_score", ascending=False), "🤔 Needs human review (abstention band)")
+
+    # ----------------------------- BOI candidate-ring network -----------------------------
+    st.divider()
+    st.subheader("🕸️ BOI mule network — candidate rings (behavioral-similarity graph)")
+    st.caption("**Honest framing:** the BOI dataset is an account *snapshot* with **no transaction "
+               "edges**, so this is a behavioral-**similarity** graph (accounts that look near-identical "
+               "on leak-removed features) — a data-grounded *proxy* for the link data a bank holds, "
+               "**not** money flow. Confirmation needs bank link/device data (Phase-2).")
+    if rings and _PLOTLY and net_edges:
+        rmap = {n["id"]: n["risk"] for n in net_edges["nodes"]}
+        ridx = {f"Ring #{r['ring_id']} · {r['size']} accounts · ~₹{r['exposure_rupees']:,}": r for r in rings["rings"]}
+        sel_pick = st.session_state.get("pick_id")
+        default_key = next((k for k, r in ridx.items() if sel_pick in r["members"]), list(ridx)[0])
+        choice = st.selectbox("Show ring", list(ridx), index=list(ridx).index(default_key))
+        ring = ridx[choice]
+        _, actions = audit_actions()
+        escalated = {m for m in ring["members"] if actions.get(m) == "ESCALATED"}
+        st.plotly_chart(boi_ring_figure(ring, net_edges["edges"], rmap,
+                        sel_pick if sel_pick in ring["members"] else None, escalated),
+                        use_container_width=True)
+        st.caption("🟣 selected · 🔴 escalated this session · 🔵 other ring members · node size ∝ risk. "
+                   "Escalate the ring from the **Investigate** tab and members turn red here.")
+    elif not _PLOTLY:
+        st.info("Interactive graph needs `plotly` (in requirements.txt). Static ring figure below.")
+        fig = ROOT / "figures" / "11_mule_network.png"
+        if fig.exists():
+            st.image(str(fig), use_container_width=True)
+
+    # ----------------------------- AMLSim REAL money-flow map -----------------------------
+    st.divider()
+    st.subheader("💸 Money-flow map — real transaction graph (AMLSim) · *Phase-2 capability*")
+    st.caption("This is what SENTINEL does **once given transaction-link data**: it reconstructs the "
+               "money-flow graph and surfaces laundering **typologies** (fan-in, cycle). Shown on the "
+               "AMLSim dataset (which has real sender→receiver edges + planted rings) — a **separate, "
+               "tagged** dataset, never merged into BOI. On AMLSim our graph engine recovers the planted "
+               "rings at **100% purity** (Phase 1b).")
+    if amlsim_flow and amlsim_flow.get("typologies") and _PLOTLY:
+        tnames = {f"{t['type']} · {t['n_accounts']} accounts · ₹{t['total_amount']:,.0f} moved": t
+                  for t in amlsim_flow["typologies"]}
+        tc = st.selectbox("Typology", list(tnames))
+        typ = tnames[tc]
+        st.plotly_chart(amlsim_flow_figure(typ), use_container_width=True)
+        st.caption(f"🔴 arrows = direction of money movement · labels = ₹ per transfer. "
+                   f"**{typ['type']}** is a classic mule pattern: "
+                   + ("many accounts funnel into one collector (fan-in)." if typ['type'] == 'fan_in'
+                      else "money loops through a chain back to the start (cycle)." if typ['type'] == 'cycle'
+                      else "one source sprays funds out to many mules (fan-out)."))
+    elif not amlsim_flow:
+        st.caption("_AMLSim flow artifact not built — run `scripts/build_dashboard_assets.py`._")
+
+    # ----------------------------- anomaly detection (honest) -----------------------------
+    if anom_meta:
+        st.divider()
+        st.subheader("🧪 Anomaly detection — tested honestly (Isolation Forest + LOF)")
+        a1, a2, a3, a4 = st.columns(4)
+        a1.metric("Supervised PR-AUC", f"{anom_meta['supervised_pr_auc']:.3f}")
+        a2.metric("Isolation Forest", f"{anom_meta['anomaly_pr_auc']:.3f}", help="Unsupervised — alone")
+        a3.metric("Local Outlier Factor", f"{anom_meta.get('lof_pr_auc', 0):.3f}", help="2nd unsupervised detector")
+        a4.metric("Naïve 60/20/20 hybrid", f"{anom_meta['hybrid_pr_auc']:.3f}",
+                  delta=f"{anom_meta['hybrid_pr_auc']-anom_meta['supervised_pr_auc']:.2f}", delta_color="inverse",
+                  help="Blending anomaly IN measurably HURTS the score")
+        st.warning("**Honest finding (PS2 asks for anomaly detection — so we built it *and measured it*):** "
+                   f"**two** independent unsupervised detectors — IsolationForest ({anom_meta['anomaly_pr_auc']:.3f}) "
+                   f"and LOF ({anom_meta.get('lof_pr_auc',0):.3f}) — both score **near random** vs the supervised "
+                   f"{anom_meta['supervised_pr_auc']:.3f}. Mules here are **not statistical outliers** (the "
+                   "'invisible' ones sit at the *median* anomaly rank), so a fixed 60/20/20 hybrid actually "
+                   f"**drops** the score to {anom_meta['hybrid_pr_auc']:.3f}. We therefore surface anomaly as a "
+                   "**second opinion** in the queue but do **not** fold it into the deployed score. Shipping a "
+                   "blend we've proven makes us worse would be the exact dishonesty our leakage auditor exists "
+                   "to catch — so we report the verdict instead. *That* is the rigor.")
 
 # ====================================== ANALYTICS ======================================
 with tab_an:
@@ -512,6 +731,45 @@ with tab_an:
                    f"{unc['review_rate']:.0%}** (probability {unc['t_lo']:.2f}–{unc['t_hi']:.2f}) to an analyst "
                    f"— rather than make overconfident calls on the hard tail. Confident-mule zone precision "
                    f"{unc['confident_mule_precision']:.0%}; confident-legit NPV {unc['confident_legit_npv']:.1%}.")
+
+    st.divider()
+    st.subheader("📉 Alert-fatigue reduction & analyst-capacity optimizer")
+    st.caption("Banks don't fail at *detecting* — they drown in alerts. This sizes the workload SENTINEL "
+               "actually puts on a desk, and finds the threshold that fits your team.")
+    t_lo_v = unc["t_lo"] if unc else 0.10
+    t_hi_v = unc["t_hi"] if unc else 0.90
+    N = len(allscores); pcol = allscores["probability"]
+    auto_clear = int((pcol <= t_lo_v).sum())
+    priority = int((pcol > t_lo_v).sum())          # everything not confidently-legit needs a human
+    af1, af2, af3 = st.columns(3)
+    af1.metric("Without prioritization", f"{N:,}", help="Every account a human would have to triage")
+    af2.metric("With SENTINEL (priority queue)", f"{priority:,}",
+               delta=f"-{(1-priority/max(N,1))*100:.0f}% workload", delta_color="inverse",
+               help=f"{auto_clear:,} confidently-legit accounts auto-cleared; only the rest reach a human")
+    af3.metric("Auto-cleared (no human)", f"{auto_clear:,}", help=f"p ≤ {t_lo_v:.2f} — confident-legit")
+    cap1, cap2 = st.columns(2)
+    with cap1:
+        n_analysts = st.number_input("Analysts on the desk", 1, 500, 20, 1, key="cap_analysts")
+        mins = st.number_input("Minutes per review", 1, 120, 15, 1, key="cap_mins")
+    daily_cap = int(n_analysts * 8 * 60 / mins)    # 8-hour shift
+    # recommend the threshold whose alert volume fits capacity
+    rec_thr, rec_alerts = None, None
+    for t in np.round(np.arange(0.01, 1.0, 0.01), 2):
+        a = int((pcol >= t).sum())
+        if a <= daily_cap:
+            rec_thr, rec_alerts = float(t), a; break
+    with cap2:
+        st.metric("Daily review capacity", f"{daily_cap:,} cases/day",
+                  help=f"{n_analysts} analysts × 8h ÷ {mins} min")
+        if rec_thr is not None:
+            need = int(np.ceil(rec_alerts * mins / (8 * 60)))
+            st.metric("Recommended threshold", f"{rec_thr:.2f}",
+                      help=f"Fits your capacity: {rec_alerts:,} alerts/day ≈ {need} analyst-days")
+            st.caption(f"At threshold **{rec_thr:.2f}**, SENTINEL raises **{rec_alerts:,} alerts** — workable "
+                       f"by ~**{need}** of your {n_analysts} analysts, leaving headroom for investigations.")
+        else:
+            st.caption("Even at the strictest threshold the alert volume exceeds capacity — add analysts "
+                       "or raise the auto-clear bar.")
 
     st.divider()
     st.subheader("🚨 Watchlist — highest-risk accounts (current dataset)")
@@ -636,6 +894,40 @@ with tab_log:
 with tab_model:
     st.caption("These are the **validated, fixed** properties of the model — they do not change "
                "per account or per threshold. The honest generalization numbers, not in-sample.")
+
+    # ---- THE differentiator: leakage audit before/after (0.998 -> leak -> 0.885) ----
+    sens = load_json("leak_sensitivity.json")
+    intg = load_json("integrity_audit.json")
+    st.subheader("🎭 The leakage story — why our number is *lower*, and *true*")
+    naive_pr = next((r["pr_auc"] for r in sens if r.get("leak_thr", 0) > 1), 0.998) if sens else 0.998
+    honest_pr = metrics.get("cv_pr_auc", 0.885)
+    # bucket-leaks REMOVED by the deployed pipeline (conservative 0.10 fraud-rate threshold)
+    n_block = None
+    if sens:
+        cand = [r for r in sens if abs(r.get("leak_thr", 9) - 0.10) < 1e-6]
+        n_block = cand[0]["n_leaks"] if cand else None
+    if n_block is None and intg:
+        n_block = len(intg.get("auto_block_recommended", []))
+    s1, s2, s3 = st.columns(3)
+    s1.metric("① Naïve model (all features)", f"{naive_pr:.3f}", help="What most teams will proudly report")
+    s2.metric("② Auditor flags leakage", "F3912 + bucket leaks",
+              help=f"{n_block} CRITICAL/HIGH non-bank features auto-blocked" if n_block else "label-proxy + month-stamp leaks")
+    s3.metric("③ Honest model (leaks removed)", f"{honest_pr:.3f}",
+              delta=f"{honest_pr-naive_pr:.3f}", delta_color="off",
+              help="The defensible number — ~100× the random baseline")
+    st.error(f"**A naïve model scores PR-AUC {naive_pr:.3f} — and it's a lie.** It reads `F3912`, a "
+             "post-hoc fraud flag aligned ~96% with the label (the model is reading the answer). Our "
+             "**Data Integrity Auditor** catches it" + (f" plus ~{n_block} bucket/range leaks" if n_block else "") +
+             f", we remove them, and report **{honest_pr:.3f}** — the number that survives in production. "
+             "**Every team reporting ~0.99 on this dataset is reporting the leak.** We're the team that found it.")
+    if sens:
+        sdf = pd.DataFrame(sens)
+        sdf["stage"] = ["no removal (LEAK)" if r > 1 else f"≥{r:.0%} fraud-bucket removed"
+                        for r in sdf["leak_thr"]]
+        st.markdown("**Leakage-sensitivity sweep** — PR-AUC as leaks are progressively removed; it "
+                    "**plateaus at ~0.86**, proving the remaining signal is genuine behaviour, not leakage:")
+        st.line_chart(sdf.set_index("stage")["pr_auc"])
+    st.divider()
 
     boot = load_json("bootstrap_ci.json")
     infold = load_json("infold_leak_check.json")

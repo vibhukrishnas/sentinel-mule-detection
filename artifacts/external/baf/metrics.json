@@ -1,0 +1,32 @@
+{
+  "dataset": "BAF (external)",
+  "role": "EXTERNAL GENERALISATION \u2014 NOT the BOI number",
+  "source_file": "dataset_Sentinel/extracted/baf/Base.csv",
+  "n_rows": 1000000,
+  "prevalence": 0.011029,
+  "n_features": 30,
+  "auditor_critical_high": 0,
+  "auditor_top_flags": [],
+  "cv_5fold": {
+    "pr_auc": 0.16761541900020172,
+    "roc_auc": 0.8925947164559271,
+    "brier": 0.09539440327367123,
+    "prevalence": 0.011029
+  },
+  "temporal_holdout": {
+    "split": "temporal (train months<=5, test months>=6)",
+    "n_train": 794989,
+    "n_test": 205011,
+    "test_fraud_rate": 0.014038271117159567,
+    "pr_auc": 0.18509649106130843,
+    "roc_auc": 0.8838205582631493,
+    "brier": 0.012908739799670511
+  },
+  "recall_operating_point": {
+    "target_recall": 0.97,
+    "achievable": false,
+    "max_recall": 0.943363446838082
+  },
+  "runtime_s": 4123.0,
+  "note": "Same pipeline as BOI; different dataset. PR-AUC primary. Never merged with BOI."
+}

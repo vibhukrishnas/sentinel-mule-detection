@@ -1,0 +1,85 @@
+{
+  "dataset": "BOI",
+  "source_file": "DataSet.csv",
+  "phases": {
+    "0a_baseline": {
+      "model": "LightGBM (tuned, sigmoid-calibrated)",
+      "cv": "repeated 5x2 stratified",
+      "leak_removal": {
+        "F3912_dropped": true,
+        "F2230_dropped": true,
+        "hints_kept": 18,
+        "hints_total": 18,
+        "n_features": 2965,
+        "n_positives": 81
+      },
+      "pr_auc_mean": 0.8797910545621039,
+      "pr_auc_std": 0.07109322632807927,
+      "roc_auc_mean": 0.9772192161081534,
+      "roc_auc_std": 0.023032185606348548,
+      "brier_mean": 0.0025892276315831976,
+      "random_baseline_pr_auc": 0.008918740365558247,
+      "sensitivity_sweep_ref": "artifacts/leak_sensitivity.json (plateau ~0.86 proves genuine signal)",
+      "note": "PR-AUC primary; ROC-AUC inflated by ~99% true-negative mass; accuracy intentionally not reported."
+    },
+    "0b_recall_operating_point": {
+      "basis": "leakage-free 10-fold OOF probabilities",
+      "oof_pr_auc": 0.9022552811809719,
+      "oof_roc_auc": 0.9822283120805507,
+      "selected": {
+        "target_recall": 0.97,
+        "achievable": false,
+        "max_recall": 0.9259259259259259,
+        "note": "recall>=0.97 not reachable at any threshold on leak-free OOF"
+      },
+      "recall_ladder": {
+        "recall>=0.9": {
+          "threshold": 0.02,
+          "precision": 0.6491228070175439,
+          "false_alarms": 40,
+          "alerts": 114
+        }
+      },
+      "framing": "recall is an operating-point CHOICE; precision/false-alarm cost reported beside it, never recall alone."
+    },
+    "0c_improvements": {
+      "cv": "shared 10-fold OOF (apples-to-apples)",
+      "challengers": {
+        "LightGBM (baseline OOF)": {
+          "oof_pr_auc": 0.9022552811809719,
+          "oof_roc_auc": 0.9822283120805507
+        },
+        "XGBoost (OOF)": {
+          "oof_pr_auc": 0.9213168056272335,
+          "oof_roc_auc": 0.9888201722442361
+        },
+        "Stack LGB+XGB (LogReg meta, OOF)": {
+          "oof_pr_auc": 0.9164972329205592,
+          "oof_roc_auc": 0.9609316385970832
+        },
+        "Mean ensemble LGB+XGB (OOF)": {
+          "oof_pr_auc": 0.9205563585382557,
+          "oof_roc_auc": 0.9876831243716404
+        },
+        "CatBoost (ordered boosting, OOF)": {
+          "oof_pr_auc": 0.9408132222849993,
+          "oof_roc_auc": 0.9881714103096911
+        },
+        "PU-learning (bagging, OOB)": {
+          "oof_pr_auc_reported": 1.0,
+          "VALID": false,
+          "discarded_reason": "EVALUATION LEAKAGE: the 81 positive seeds were scored by a classifier trained on those same seeds (always in-bag), so they are memorised and trivially separable. PR-AUC=1.000 is an artifact, NOT a generalisation estimate. Per integrity rule #4 (no evaluating on training rows) this number is discarded and is NOT counted as an improvement. A leakage-free PU estimate would need held-out positives, which standard PU bagging does not provide.",
+          "T_bags": 50
+        }
+      },
+      "baseline_oof_pr_auc": 0.9022552811809719,
+      "best_defensible_method": "CatBoost (ordered boosting, OOF)",
+      "best_defensible_oof_pr_auc": 0.9408132222849993,
+      "improvement_over_baseline": 0.038557941104027404,
+      "improvement_caveat": "+0.039 PR-AUC on a SINGLE 10-fold OOF; baseline 5x2 std is ~0.071, so this sits inside the CV noise band. Treat as honest upside pending repeated-CV confirmation, not a locked gain.",
+      "PU_excluded": "PU-learning PR-AUC=1.000 discarded as an evaluation artifact (see challengers.PU-learning). It is NOT the best method and NOT an improvement.",
+      "headline_decision": "The DEPLOYED/REPORTED BOI headline REMAINS the single sigmoid-calibrated LightGBM at PR-AUC 0.880 +/- 0.071 (5x2 CV) / 0.902 (10-fold OOF) — it keeps SHAP exact and is the defensible submission number. CatBoost (0.941) and the LGB+XGB mean ensemble (0.921) are reported as honest, leakage-safe upside that could be adopted after repeated-CV verification; they are not claimed as the headline."
+    }
+  },
+  "runtime_s": 21262.4
+}

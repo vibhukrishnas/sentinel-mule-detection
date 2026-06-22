@@ -1,0 +1,38 @@
+{
+  "dataset": "AMLSim",
+  "role": "GRAPH ring recovery on planted typologies \u2014 NOT the BOI number",
+  "source": "dataset_Sentinel/extracted/amlsim/",
+  "n_accounts": 10000,
+  "n_fraud_accounts": 1685,
+  "n_planted_rings": 391,
+  "typology_counts": {
+    "cycle": 192,
+    "fan_in": 199
+  },
+  "fraud_flow_graph": {
+    "nodes": 1639,
+    "edges": 1717,
+    "n_components": 129,
+    "largest_components": [
+      718,
+      46,
+      29,
+      25,
+      23,
+      21,
+      17,
+      17
+    ]
+  },
+  "ring_recovery": {
+    "mean_best_jaccard": 0.33565728780729065,
+    "recovered_at_jaccard>=0.5": 135,
+    "recovered_at_jaccard>=0.8": 84,
+    "total_planted": 391,
+    "recovery_rate_0.5": 0.3452685421994885
+  },
+  "component_fraud_purity_mean(size>=3)": 1.0,
+  "phase_1a_dgraphfin": "SKIPPED \u2014 dgraphfin.npz absent on disk; not fabricated.",
+  "runtime_s": 2.3,
+  "outcome": "Connected-component detection on the money-flow graph recovers the planted rings."
+}

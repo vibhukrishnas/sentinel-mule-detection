@@ -6,6 +6,12 @@ artifacts/y.parquet
 # app to demo all 9,082 accounts; the committed samples/sample_accounts.csv suffices otherwise.
 artifacts/all_accounts.parquet
 artifacts/all_targets.parquet
+# External validation datasets (BAF/AMLSim/IEEE-CIS/ULB/PaySim) — raw archives + extracted.
+# Used ONLY for tagged external/graph/auditor experiments, NEVER merged into BOI.
+dataset_Sentinel/
+# phase run logs
+*_run.log
+artifacts/**/_run.log
 # Python caches
 __pycache__/
 *.pyc

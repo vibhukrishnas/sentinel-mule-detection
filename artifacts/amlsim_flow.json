@@ -1,0 +1,74 @@
+{
+  "typologies": [
+    {
+      "type": "fan_in",
+      "alert_id": 193,
+      "n_accounts": 4,
+      "accounts": [
+        1950,
+        4596,
+        6976,
+        9739
+      ],
+      "edges": [
+        {
+          "source": 6976,
+          "target": 9739,
+          "amount": 4.85
+        },
+        {
+          "source": 4596,
+          "target": 9739,
+          "amount": 4.85
+        },
+        {
+          "source": 1950,
+          "target": 9739,
+          "amount": 4.85
+        }
+      ],
+      "total_amount": 14.55
+    },
+    {
+      "type": "cycle",
+      "alert_id": 377,
+      "n_accounts": 5,
+      "accounts": [
+        1089,
+        2570,
+        5776,
+        7352,
+        8542
+      ],
+      "edges": [
+        {
+          "source": 5776,
+          "target": 2570,
+          "amount": 10.27
+        },
+        {
+          "source": 1089,
+          "target": 7352,
+          "amount": 10.27
+        },
+        {
+          "source": 2570,
+          "target": 8542,
+          "amount": 10.27
+        },
+        {
+          "source": 7352,
+          "target": 5776,
+          "amount": 10.27
+        },
+        {
+          "source": 8542,
+          "target": 1089,
+          "amount": 10.27
+        }
+      ],
+      "total_amount": 51.35
+    }
+  ],
+  "note": "REAL transaction-graph money flow from AMLSim (planted laundering typologies). Demonstrates SENTINEL's Phase-2 capability with bank link data; BOI's snapshot has no such edges. Separate dataset \u2014 never merged into BOI."
+}

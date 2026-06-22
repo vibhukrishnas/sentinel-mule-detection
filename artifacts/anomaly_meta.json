@@ -1,0 +1,16 @@
+{
+  "raw_lo": 0.3135529271281203,
+  "raw_hi": 0.37136093983511087,
+  "anomaly_pr_auc": 0.006529868049577689,
+  "supervised_pr_auc": 0.902244108171466,
+  "hybrid_pr_auc": 0.581352766750037,
+  "n_invisible_mules(sup<0.05)": 13,
+  "invisible_mules_mean_anomaly_percentile": 0.4699320718919926,
+  "honest_note": "Anomaly PR-AUC is far below supervised \u2014 as expected: most mules are NOT statistical outliers. Value is COMPLEMENTARY: it gives a second, unsupervised opinion and a non-zero signal on the 'invisible' mules the classifier scores ~0. Featured as a hybrid second opinion, NOT as a replacement for the supervised score.",
+  "lof_pr_auc": 0.00512493985082172,
+  "anomaly_methods_tested": [
+    "IsolationForest",
+    "LocalOutlierFactor"
+  ],
+  "anomaly_verdict": "Two independent unsupervised detectors (IsolationForest, LOF) both score near random (IF 0.007, LOF 0.005) vs supervised 0.902. Mules are NOT statistical outliers \u2014 confirming this is a supervised problem, not an anomaly problem."
+}

@@ -13,3 +13,4 @@ shap==0.51.0            # SHAP explanations (lazy-loaded). 0.51 = last release t
 scipy>=1.13
 pyarrow>=15.0           # reads the parquet demo artifacts
 joblib>=1.4             # loads the .joblib model artifacts
+plotly>=5.20            # interactive network / money-flow map (Network tab)

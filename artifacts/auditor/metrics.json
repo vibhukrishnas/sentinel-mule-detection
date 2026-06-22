@@ -1,0 +1,183 @@
+{
+  "role": "AUDITOR CREDIBILITY \u2014 reusable rigour tool, not hand-tuned to BOI",
+  "runs": {
+    "ulb_injected_control": {
+      "dataset": "ULB credit-card (injected control)",
+      "n_rows": 284807,
+      "prevalence": 0.001727485630620034,
+      "injected_leak_caught": true,
+      "injected_leak_severity": "HIGH",
+      "genuine_PCA_features_flagged": [
+        "V4"
+      ],
+      "n_critical_high": 2,
+      "primary_objective_catch_injected_leak": true,
+      "pca_features_left_untouched": "27 of 28 (only V4 flagged)",
+      "v4_explanation": "V4 has a genuinely fraud-pure value bucket on ULB (fraud concentrates at extreme V4); the auditor flags hyper-pure buckets for HUMAN REVIEW by design. It cannot distinguish a very strong genuine signal from a leak without domain context \u2014 which is exactly why SENTINEL keeps a bank-hint allowlist. Conservative-by-design, not a false mechanism.",
+      "proves": "POSITIVE CONTROL PASSED: auditor CATCHES the planted near-label leak (HIGH) and leaves 27/28 genuine PCA features untouched. The lone V4 flag is a defensible review-flag on a fraud-pure bucket, not auto-removal of genuine signal.",
+      "PASS_primary": true,
+      "PASS_strict_zero_pca_flags": false
+    },
+    "ieee_cis": {
+      "dataset": "IEEE-CIS",
+      "n_rows_sampled": 200000,
+      "prevalence": 0.035495,
+      "n_features": 392,
+      "n_critical_high": 178,
+      "top_flags": [
+        {
+          "feature": "V258",
+          "severity": "CRITICAL",
+          "positives_covered": 3587,
+          "univariate_auc": 0.744,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.617,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V257",
+          "severity": "CRITICAL",
+          "positives_covered": 3587,
+          "univariate_auc": 0.728,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.661,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V232",
+          "severity": "CRITICAL",
+          "positives_covered": 3587,
+          "univariate_auc": 0.712,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.314,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "C4",
+          "severity": "CRITICAL",
+          "positives_covered": 7099,
+          "univariate_auc": 0.693,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.219,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "C8",
+          "severity": "CRITICAL",
+          "positives_covered": 7099,
+          "univariate_auc": 0.69,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.181,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V200",
+          "severity": "CRITICAL",
+          "positives_covered": 3875,
+          "univariate_auc": 0.684,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.39,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V170",
+          "severity": "CRITICAL",
+          "positives_covered": 3875,
+          "univariate_auc": 0.672,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.3,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "C12",
+          "severity": "CRITICAL",
+          "positives_covered": 7099,
+          "univariate_auc": 0.667,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.226,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V149",
+          "severity": "CRITICAL",
+          "positives_covered": 1273,
+          "univariate_auc": 0.655,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.643,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V156",
+          "severity": "CRITICAL",
+          "positives_covered": 1273,
+          "univariate_auc": 0.654,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.622,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V189",
+          "severity": "CRITICAL",
+          "positives_covered": 3875,
+          "univariate_auc": 0.652,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.53,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "C7",
+          "severity": "CRITICAL",
+          "positives_covered": 7099,
+          "univariate_auc": 0.651,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.292,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V45",
+          "severity": "CRITICAL",
+          "positives_covered": 4965,
+          "univariate_auc": 0.642,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.147,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V188",
+          "severity": "CRITICAL",
+          "positives_covered": 3875,
+          "univariate_auc": 0.639,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.553,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        },
+        {
+          "feature": "V154",
+          "severity": "CRITICAL",
+          "positives_covered": 1273,
+          "univariate_auc": 0.627,
+          "best_bucket_rate": 1.0,
+          "best_decile_rate": 0.767,
+          "lift_vs_base": 28.2,
+          "hint_listed": false
+        }
+      ],
+      "proves": "auditor surfaces high-AUC / near-label fields on a real fraud dataset."
+    }
+  },
+  "runtime_s": 341.9
+}

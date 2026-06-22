@@ -1,0 +1,58 @@
+{
+  "dataset": "BOI",
+  "realtime": {
+    "hardware": "commodity CPU, NO GPU",
+    "cpu_logical_cores": 12,
+    "score_latency_ms": {
+      "p50": 225.82424999973227,
+      "p95": 283.9099799993165,
+      "p99": 344.671838000313,
+      "mean": 234.53122166663888
+    },
+    "score_plus_shap_ms": {
+      "p50": 135.21810000020196,
+      "p95": 171.4227800001481,
+      "p99": 271.58423400023815
+    },
+    "batch_throughput_accts_per_sec": 2281,
+    "batch_n": 9082,
+    "batch_seconds": 3.981,
+    "model_footprint_mb": 10.4,
+    "n_features": 2965,
+    "note": "Measured WHILE the box was under load from other jobs -> these are CONSERVATIVE upper bounds; an idle CPU is faster. GPU gives ZERO benefit on tabular boosting, so a 4GB-GPU laptop has no edge here; CPU real-time = deployable on existing bank infra."
+  },
+  "decisioning": {
+    "costs_rupees": {
+      "mule_loss": 250000,
+      "review": 400,
+      "stepup": 50,
+      "false_freeze_harm": 25000,
+      "freeze_miss_benefit": 250000
+    },
+    "policy_thresholds": {
+      "clear_below": 0.0183,
+      "freeze_at_or_above": 0.9,
+      "step_up_verify_between": [
+        0.0183,
+        0.9
+      ]
+    },
+    "naive_threshold_0.5": {
+      "wrongful_freezes": 1,
+      "mules_frozen": 59,
+      "total_expected_cost_rupees": 5549000
+    },
+    "sentinel_graduated": {
+      "high_conf_freezes": 51,
+      "wrongful_freezes": 0,
+      "mules_frozen": 51,
+      "step_up_verifications": 66,
+      "mules_surfaced_by_stepup": 23,
+      "legit_in_stepup_(soft_friction_not_freeze)": 43,
+      "total_expected_cost_rupees": 1773700
+    },
+    "wrongful_freezes_avoided": 1,
+    "expected_cost_reduction_rupees": 3775300,
+    "thesis": "SENTINEL freezes only high-confidence mules and routes the ambiguous band to a cheap, non-harmful step-up verification \u2014 protecting innocent customers from wrongful freezes (the under-counted harm) while still surfacing hard mules. The decision minimises TOTAL cost incl. customer harm, not just classifier error."
+  }
+}

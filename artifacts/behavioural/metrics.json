@@ -1,0 +1,57 @@
+{
+  "role": "BEHAVIOURAL ROBUSTNESS (illustrative) \u2014 NOT the BOI number",
+  "runs": {
+    "ulb_imbalance": {
+      "dataset": "ULB (imbalance check)",
+      "n_rows": 284807,
+      "prevalence": 0.001727485630620034,
+      "pr_auc": 0.79067179639423,
+      "roc_auc": 0.9313650023755571,
+      "brier": 0.0007053175081747313,
+      "recall>=0.90_operating_point": {
+        "target_recall": 0.9,
+        "achievable": false,
+        "max_recall": 0.8516260162601627
+      },
+      "note": "0.17% prevalence (below BOI's 0.89%); PR-AUC + calibrated Brier behave sanely under deeper imbalance."
+    },
+    "paysim": {
+      "dataset": "PaySim (synthetic)",
+      "n_rows_used": 400000,
+      "prevalence": 0.00132,
+      "auditor_flagged_isFlaggedFraud_as_leak": true,
+      "engineered_features": [
+        "errBalOrig",
+        "errBalDest",
+        "amt_to_oldOrig",
+        "amt_to_oldDest",
+        "drains_origin",
+        "dest_was_empty",
+        "is_transfer_or_cashout",
+        "in_cashout_chain"
+      ],
+      "cv_5fold": {
+        "pr_auc": 0.8557148281839702,
+        "roc_auc": 0.9844872314788855,
+        "brier": 0.0002578118916852602
+      },
+      "recall_operating_point": {
+        "target_recall": 0.97,
+        "achieved_recall": 0.9715909090909091,
+        "threshold": 0.51,
+        "precision": 0.8535773710482529,
+        "false_alarms": 88,
+        "alerts": 601
+      },
+      "temporal_step_split": {
+        "split": "step<= 323 train / > 323 test",
+        "n_train": 280405,
+        "n_test": 119595,
+        "pr_auc": 0.7633973312430288,
+        "roc_auc": 0.9694772931007927
+      },
+      "note": "Illustrative behavioural signal; synthetic data; isFlaggedFraud dropped as a confirmed leak."
+    }
+  },
+  "runtime_s": 4199.8
+}
