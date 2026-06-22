@@ -104,9 +104,10 @@ pdf.mc(0, 7, san("CyberShield Hackathon 2026  -  Bank of India x IIT Hyderabad\n
     "Problem Statement 2: AI/ML Classification of Suspicious Mule Accounts\nSolution Approach"), align="C")
 pdf.ln(16)
 pdf.set_font("Helvetica", "", 11); pdf.set_text_color(*GREY)
-pdf.mc(0, 6, san("Team: Probe Rockerz  (individual participation)\n"
-    "Participant: Vibhu Krishna S\n"
-    "Institute: SRM Easwari Engineering College   |   Date: 14/06/2026"), align="C")
+pdf.mc(0, 6, san("Team: Probe Rockerz\n"
+    "Members: Vibhu Krishna S (SRM Easwari Engineering College)  |  "
+    "Thakarshi Anand A (M S Ramaiah Institute of Technology)\n"
+    "Date: 14/06/2026"), align="C")
 pdf.ln(5)
 pdf.set_font("Helvetica", "B", 9.5); pdf.set_text_color(*NAVY)
 pdf.mc(0, 5.5, san("Code (GitHub): https://github.com/vibhukrishnas/sentinel-mule-detection\n"
@@ -329,6 +330,33 @@ pdf.add_page(); pdf.h1("6. See It Work (continued)")
 pdf.figure("shot_investigation.png", 175,
            "Fig 7. The one-click, auto-generated investigation report - analyst-ready, with confidence caveats "
            "and the leakage note built in.")
+
+pdf.h2("Platform capabilities (what we built around the model)")
+pdf.body("Detection is only useful if it turns into accountable action. SENTINEL ships the full operating "
+         "layer a fraud desk needs, all on the provided data:")
+for t in [
+    "Alert Management - accountable case workflow: every account at/above the alert threshold becomes a CASE "
+    "with a status (New -> Investigating -> Escalated -> Cleared) and a named OWNER. Each action writes a "
+    "timestamped, named record to a durable case store - so every decision on a customer account is "
+    "attributable to a specific analyst (the audit trail a bank / SAR review requires).",
+    "Customer-harm-aware decisioning: a graduated response - clear -> step-up verify -> freeze. We freeze only "
+    "high-confidence mules and step-up-verify the ambiguous middle (a mule fails KYC re-check; a genuine "
+    "customer passes), protecting innocent customers from wrongful freezes while still surfacing hard mules.",
+    "Abstention / triage: the model auto-decides ~99% of accounts at ~0.1% error and routes only the ambiguous "
+    "band to a human - crushing alert fatigue instead of guessing on the hard tail.",
+    "Account-network map: for ANY account (including a freshly uploaded one), the engine surfaces its closest "
+    "behavioural look-alikes - the network context behind a single alert.",
+    "AI Copilot: an in-product assistant that answers how the system works - the model, the leakage story, "
+    "rings, decisions, performance - grounded in the live numbers, for judges and analysts alike.",
+    "Real-time on commodity CPU (no GPU): high batch throughput and sub-second on-demand scoring, so it slots "
+    "into a bank's existing infrastructure without specialised hardware.",
+    "Anomaly detection, tested honestly: we evaluated unsupervised detectors (Isolation Forest, LOF); on this "
+    "data mules are NOT statistical outliers, so anomaly is surfaced as a second opinion rather than blended "
+    "into the score - we report what the data actually supports.",
+    "Upload-any-CSV: the entire dashboard (scores, alerts, network, analytics) re-computes live on an uploaded "
+    "account file - it is not hard-wired to a fixed sample.",
+]:
+    pdf.body(san("- " + t))
 
 # ---------- 7. MULE-RING DETECTION ----------
 pdf.add_page(); pdf.h1("7. Mule-Ring Detection - from accounts to networks (prototype)")
