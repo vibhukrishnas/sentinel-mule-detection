@@ -106,7 +106,7 @@ pdf.ln(16)
 pdf.set_font("Helvetica", "", 11); pdf.set_text_color(*GREY)
 pdf.mc(0, 6, san("Team: Probe Rockerz  (individual participation)\n"
     "Participant: Vibhu Krishna S\n"
-    "Institute: SRM Easwari Engineering College   |   Date: 14/06/2026"), align="C")
+    "Institute: SRM Easwari Engineering College   |   Date: 22/06/2026"), align="C")
 pdf.ln(5)
 pdf.set_font("Helvetica", "B", 9.5); pdf.set_text_color(*NAVY)
 pdf.mc(0, 5.5, san("Code (GitHub): https://github.com/vibhukrishnas/sentinel-mule-detection\n"
