@@ -627,10 +627,12 @@ with tab_feeds:
         st.session_state.cc_df = sample_cross_channel()
     if "reg_df" not in st.session_state:
         st.session_state.reg_df = sample_regulatory_feed()
-    if "alert_df" not in st.session_state:
-        ids = allscores.sort_values("risk_score", ascending=False).index[:4].tolist()
+    # always rebuild alert_df from the CURRENT allscores so it stays in sync after a sidebar upload
+    top_ids = allscores.sort_values("risk_score", ascending=False).index[:4].tolist()
+    if ("alert_df" not in st.session_state or
+            not set(st.session_state.alert_df.get("account", pd.Series(dtype=int))).issubset(set(allscores.index))):
         st.session_state.alert_df = pd.DataFrame({
-            "account": ids,
+            "account": top_ids,
             "source": ["TMS", "FraudMon", "TMS", "FraudMon"],
             "severity": ["HIGH", "HIGH", "MEDIUM", "LOW"],
         })
@@ -647,7 +649,15 @@ with tab_feeds:
             st.session_state.txn_df = sample_transactions()
         if up_txn is not None:
             try:
-                st.session_state.txn_df = pd.read_csv(up_txn, low_memory=False)
+                candidate = pd.read_csv(up_txn, low_memory=False)
+                # validate it has an amount column before replacing working data
+                score_transactions(candidate.head(1))
+                st.session_state.txn_df = candidate
+                st.success(f"Loaded {len(candidate):,} transactions from {up_txn.name}")
+            except ValueError as e:
+                st.warning(f"Not a valid transaction feed — {e}")
+                st.info("💡 The **account snapshot** (DataSet.csv / BOI data) goes in the **sidebar uploader** on the left. "
+                        "This tab expects a **transaction log** with an amount column (amount / amt / txn_amount).")
             except Exception as e:
                 st.error(f"{type(e).__name__}: {e}")
         try:
@@ -686,7 +696,14 @@ with tab_feeds:
             st.session_state.cc_df = sample_cross_channel()
         if up_cc is not None:
             try:
-                st.session_state.cc_df = pd.read_csv(up_cc, low_memory=False)
+                candidate = pd.read_csv(up_cc, low_memory=False)
+                cross_channel_view(candidate.head(1))  # validate has account + channel cols
+                st.session_state.cc_df = candidate
+                st.success(f"Loaded {len(candidate):,} transactions from {up_cc.name}")
+            except ValueError as e:
+                st.warning(f"Not a valid multi-rail feed — {e}")
+                st.info("💡 This uploader expects a transaction log with a **channel/rail column** "
+                        "(channel / rail / mode / payment_channel). The BOI account snapshot goes in the sidebar.")
             except Exception as e:
                 st.error(f"{type(e).__name__}: {e}")
         try:
@@ -715,7 +732,14 @@ with tab_feeds:
             st.session_state.reg_df = sample_regulatory_feed()
         if up_reg is not None:
             try:
-                st.session_state.reg_df = pd.read_csv(up_reg, low_memory=False)
+                candidate = pd.read_csv(up_reg, low_memory=False)
+                regulatory_connector(candidate.head(1))  # validate has beneficiary account column
+                st.session_state.reg_df = candidate
+                st.success(f"Loaded {len(candidate):,} regulatory tickets from {up_reg.name}")
+            except ValueError as e:
+                st.warning(f"Not a valid regulatory feed — {e}")
+                st.info("💡 Needs a beneficiary account column (account / account_id / beneficiary_account). "
+                        "The BOI account snapshot goes in the sidebar uploader.")
             except Exception as e:
                 st.error(f"{type(e).__name__}: {e}")
         try:
@@ -749,6 +773,7 @@ with tab_feeds:
         if up_al is not None:
             try:
                 st.session_state.alert_df = pd.read_csv(up_al, low_memory=False)
+                st.success(f"Loaded {len(st.session_state.alert_df):,} alert tickets from {up_al.name}")
             except Exception as e:
                 st.error(f"{type(e).__name__}: {e}")
         try:
@@ -759,11 +784,9 @@ with tab_feeds:
             m3.metric("Sources", len(fr["by_source"]))
             st.dataframe(fr["alerts"], use_container_width=True, hide_index=True)
         except ValueError as e:
-                st.warning(f"Error parsing alert feed: {e}")
-                if "needs an account" in str(e).lower():
-                    st.info("💡 **Did you mean to upload the account snapshot (`DataSet.csv`)?** The main dataset goes in the **sidebar on the left ('Data source')**. This uploader is specifically for external alert tickets.")
-        else:
-            st.info("Upload an alert-ticket feed or load the synthetic TMS sample.")
+            st.warning(f"Error parsing alert feed: {e}")
+            st.info("💡 Needs an account column (account / account_id / acct). "
+                    "The BOI account snapshot goes in the sidebar uploader.")
 
 # =================================== ALERT MANAGEMENT ===================================
 with tab_alerts:
