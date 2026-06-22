@@ -115,4 +115,4 @@ The demo deploys free on **Streamlit Community Cloud** in ~10 min — see **[`do
 
 ## Author
 
-**Team Probe Rockerz** (individual participation) — Vibhu Krishna S, SRM Easwari Engineering College.
+**Team Probe Rockerz** — Vibhu Krishna S, SRM Easwari Engineering College, Thakarshi Anand A, M S Ramaiah Institute of Technology.
