@@ -3,10 +3,9 @@ import { api, AccountRow, Summary } from "../api";
 import { Metric, Card, Loading, fmtInr } from "../ui";
 import { BarChart, Bar as RBar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-export default function Analytics({ s, threshold, setThreshold }: { s: Summary; threshold: number; setThreshold: (n: number) => void }) {
+export default function Analytics({ s }: { s: Summary }) {
   const [rows, setRows] = useState<AccountRow[]>([]);
-  const thr = threshold;
-  const setThr = setThreshold;
+  const [thr, setThr] = useState(0.5);
   const [muleLoss, setMuleLoss] = useState(250000);
   const [reviewCost, setReviewCost] = useState(400);
   const [fpHarm, setFpHarm] = useState(25000);

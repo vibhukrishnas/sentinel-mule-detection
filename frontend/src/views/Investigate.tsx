@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { api, AccountRow, AccountDetail } from "../api";
 import { Metric, Card, Badge, Bar, Loading } from "../ui";
 
-export default function Investigate({ threshold }: { threshold: number }) {
+export default function Investigate() {
+  const threshold = 0.5;
   const [rows, setRows] = useState<AccountRow[]>([]);
   const [pick, setPick] = useState<number | null>(null);
   const [detail, setDetail] = useState<AccountDetail | null>(null);
