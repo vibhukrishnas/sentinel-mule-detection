@@ -104,10 +104,9 @@ pdf.mc(0, 7, san("CyberShield Hackathon 2026  -  Bank of India x IIT Hyderabad\n
     "Problem Statement 2: AI/ML Classification of Suspicious Mule Accounts\nSolution Approach"), align="C")
 pdf.ln(16)
 pdf.set_font("Helvetica", "", 11); pdf.set_text_color(*GREY)
-pdf.mc(0, 6, san("Team: Probe Rockerz\n"
-    "Members: Vibhu Krishna S (SRM Easwari Engineering College)  |  "
-    "Thakarshi Anand A (M S Ramaiah Institute of Technology)\n"
-    "Date: 14/06/2026"), align="C")
+pdf.mc(0, 6, san("Team: Probe Rockerz  (individual participation)\n"
+    "Participant: Vibhu Krishna S\n"
+    "Institute: SRM Easwari Engineering College   |   Date: 14/06/2026"), align="C")
 pdf.ln(5)
 pdf.set_font("Helvetica", "B", 9.5); pdf.set_text_color(*NAVY)
 pdf.mc(0, 5.5, san("Code (GitHub): https://github.com/vibhukrishnas/sentinel-mule-detection\n"
@@ -367,6 +366,9 @@ pdf.body("Banks don't just want one flagged account - they want the RING. The pr
 pdf.figure("11_mule_network.png", 150,
            "Working prototype on the provided data: 67 of 81 mules share a tight behavioral twin, forming 5 "
            "candidate rings - incl. one dominant 50-account cluster a desk would investigate as a batch.")
+pdf.body(san("Reading the graph (colours): each colour is a DISTINCT candidate ring - Ring #1 red, #2 blue, "
+             "#3 green, #4 purple, #5 orange; grey nodes are the 14 mules not grouped into any ring. An edge "
+             "joins two accounts that are behaviourally near-identical on the leak-removed features."))
 pdf.body("Result (real, on this dataset): 67/81 mules cluster into 5 candidate rings; the largest is 50 "
          "behaviourally near-identical accounts. This is the SAME engine that, fed real shared-device / "
          "beneficiary / transaction edges (Phase-2), becomes production mule-NETWORK detection - we show the "
